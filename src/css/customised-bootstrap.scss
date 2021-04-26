@@ -1,0 +1,169 @@
+// 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
+@import "~bootstrap/scss/functions";
+
+// 1.1 Include your custom variables needed prior bootstrap default variable overrides
+$contrast1: #333333;
+$contrast2: #424242;
+$page-bg: #212121;
+$page-text-color: #e2e2e2;
+$primary-color: #bb86fc;
+$secondary-color: #848484;
+
+// 2. Include any bootstrap default variable overrides here
+$body-bg: $page-bg;
+$body-color: $page-text-color;
+$primary: $primary-color;
+$secondary: $secondary-color;
+
+$dark: $page-bg;
+
+$spacer: 1.4rem;
+
+$headings-margin-bottom: $spacer;
+$paragraph-margin-bottom: .7rem;
+
+$input-btn-focus-color-opacity: .5;
+$input-btn-focus-color: rgba(#fff, $input-btn-focus-color-opacity);
+
+$card-title-spacer-y: $spacer;
+$card-bg: $contrast1;
+
+$input-bg: $contrast2;
+$input-disabled-bg: tint-color($contrast2, 10%);
+$input-border-color: tint-color($contrast2, 20%);
+$input-focus-border-color: $contrast2;
+$input-placeholder-color: shade-color($body-color, 50%);
+
+//$form-check-input-width: 1.4em;
+$form-check-input-checked-color: #000;
+$form-check-input-border: 1px solid tint-color($contrast2, 20%);
+
+$form-switch-focus-color: rgba(0, 0, 0, .25);
+
+$modal-content-bg: $body-bg;
+$modal-header-border-color: $contrast2;
+$modal-backdrop-opacity: .7;
+
+$btn-close-color: $page-text-color;
+$btn-close-opacity: 1;
+$btn-close-hover-opacity: 1;
+$btn-close-disabled-opacity: .5;
+
+$spinner-animation-speed: .5s !default;
+$spinner-border-width-sm: .1em !default;
+
+$table-cell-padding-y: .8rem;
+$table-color: $body-color;
+$table-border-color: $contrast1;
+
+$alert-margin-bottom: 1.2rem;
+
+// 3. Include remainder of required Bootstrap stylesheets
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+@import "~bootstrap/scss/utilities";
+
+// 4. Include any optional Bootstrap components as you like
+// Layout & components
+@import "~bootstrap/scss/root";
+@import "~bootstrap/scss/reboot";
+@import "~bootstrap/scss/type";
+@import "~bootstrap/scss/images";
+@import "~bootstrap/scss/containers";
+@import "~bootstrap/scss/grid";
+@import "~bootstrap/scss/tables";
+@import "~bootstrap/scss/forms";
+@import "~bootstrap/scss/buttons";
+@import "~bootstrap/scss/transitions";
+@import "~bootstrap/scss/dropdown";
+@import "~bootstrap/scss/button-group";
+@import "~bootstrap/scss/nav";
+@import "~bootstrap/scss/navbar";
+@import "~bootstrap/scss/card";
+@import "~bootstrap/scss/accordion";
+@import "~bootstrap/scss/breadcrumb";
+@import "~bootstrap/scss/pagination";
+@import "~bootstrap/scss/badge";
+@import "~bootstrap/scss/alert";
+@import "~bootstrap/scss/progress";
+@import "~bootstrap/scss/list-group";
+@import "~bootstrap/scss/close";
+@import "~bootstrap/scss/toasts";
+@import "~bootstrap/scss/modal";
+@import "~bootstrap/scss/tooltip";
+@import "~bootstrap/scss/popover";
+@import "~bootstrap/scss/carousel";
+@import "~bootstrap/scss/spinners";
+@import "~bootstrap/scss/offcanvas";
+
+// Helpers
+@import "~bootstrap/scss/helpers";
+
+// Utilities
+@import "~bootstrap/scss/utilities/api";
+
+// 5. Add additional custom code here
+
+/*
+  Make autofill styles consistent in Chrome & FF
+*/
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  border-color: $input-border-color;
+  -webkit-text-fill-color: $body-color;
+  -webkit-box-shadow: 0 0 0 40px $input-bg inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+input, textarea, select {
+  filter: none;
+}
+
+/*
+  Make disabled fields text look muted
+*/
+input:disabled,
+textarea:disabled,
+select:disabled,
+input:disabled ~ label,
+textarea:disabled ~ label,
+select:disabled ~ label {
+  color: $text-muted;
+}
+
+/*
+  Show focus styles only for `:focus-visible`
+*/
+a[href]:not([tabindex^="-"]):focus:not(:focus-visible),
+area[href]:not([tabindex^="-"]):focus:not(:focus-visible),
+input:not([type="hidden"]):not([type="radio"]):not([disabled]):not([tabindex^="-"]):focus:not(:focus-visible),
+input[type="radio"]:not([disabled]):not([tabindex^="-"]):checked:focus:not(:focus-visible),
+select:not([disabled]):not([tabindex^="-"]):focus:not(:focus-visible),
+textarea:not([disabled]):not([tabindex^="-"]):focus:not(:focus-visible),
+button:not([disabled]):not([tabindex^="-"]):focus:not(:focus-visible),
+iframe:not([tabindex^="-"]):focus:not(:focus-visible),
+audio[controls]:not([tabindex^="-"]):focus:not(:focus-visible),
+video[controls]:not([tabindex^="-"]):focus:not(:focus-visible),
+[contenteditable]:not([tabindex^="-"]):focus:not(:focus-visible),
+[tabindex]:not([tabindex^="-"]):focus:not(:focus-visible) {
+  box-shadow: none !important;
+}
+
+/*
+  Misc modifications
+*/
+
+.btn {
+  text-transform: uppercase;
+}
+
+p:last-child {
+  margin-bottom: 0;
+}

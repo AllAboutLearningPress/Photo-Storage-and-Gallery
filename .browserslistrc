@@ -1,0 +1,15 @@
+# API:
+# https://github.com/ai/browserslist#queries
+# https://github.com/browserslist/browserslist#best-practices
+# https://browserl.ist/
+
+# Stats:
+# https://top.mail.ru/browsers?id=250&period=2&date=2020-02-01&gender=0&agegroup=0&aggregation=sum&sids=mob,chrome,firefox,safari,opera&ytype=value&gtype=line
+# https://gs.statcounter.com/
+
+last 1 version
+not Explorer > 0
+not ExplorerMobile > 0
+not OperaMini > 0
+not OperaMobile > 0
+not BlackBerry > 0
