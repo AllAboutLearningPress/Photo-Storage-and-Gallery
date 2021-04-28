@@ -1,8 +1,405 @@
-@charset "UTF-8";
+@import "customised-bootstrap";
 
+$sidebar-width: 216px;
+$sidebar-gap: 1.1rem;
+$sidebar-left-pad: 1.3rem;
+$main-x-pad: 1rem;
+$main-y-pad: 2rem;
 
-
-
+/*
+    Basic
+*/
+html,
 body {
-  color: rebeccapurple;
+  height: 100%;
+}
+
+/*
+    Page wrapper
+*/
+.wrapper {
+  min-height: 100%;
+  max-width: 1350px;
+}
+
+/*
+    Sidebar
+*/
+
+$sidebar-animation-duration: .2s;
+
+.sidebar {
+  background: $contrast1;
+  width: $sidebar-width;
+  max-width: 100%;
+  position: fixed;
+  z-index: 202;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+  transform: translateX(-100%);
+  transition: visibility $sidebar-animation-duration, transform $sidebar-animation-duration;
+  outline: none;
+  box-shadow: 0 .5rem 1rem rgba($black, .9);
+  visibility: hidden;
+
+  @include media-breakpoint-up(md) {
+    visibility: visible;
+    transform: translateX(0);
+    transition: none;
+  }
+}
+.sidebar.is-open {
+  visibility: visible;
+  transform: translateX(0);
+}
+
+.sidebar__head {
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.sidebar__body {
+  flex-grow: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.sidebar__close {
+  position: absolute;
+  z-index: 2;
+  right: .55rem;
+  margin-top: -.05em;
+  display: none;
+}
+.sidebar.is-open .sidebar__close {
+  display: inline-block;
+
+  @include media-breakpoint-up(md) {
+    display: none;
+  }
+}
+
+.sidebar-backdrop {
+  position: fixed;
+  z-index: 201;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, $modal-backdrop-opacity);
+  pointer-events: none;
+  opacity: 0;
+  will-change: opacity;
+  transition: opacity $sidebar-animation-duration;
+}
+.sidebar.is-open ~ .sidebar-backdrop {
+  opacity: 1;
+  pointer-events: auto;
+
+  @include media-breakpoint-up(md) {
+    display: none;
+  }
+}
+
+.sidebar-dumb-mq-tester {
+  display: none;
+
+  @include media-breakpoint-up(md) {
+    display: block;
+  }
+}
+
+/*
+  Navigation heading with hamburger menu trigger and main `<h1>`
+*/
+$nav-heading-top-shift: -2px; // needed for monitoring stuck state via JS
+
+.nav-heading {
+  position: sticky;
+  left: .4rem;
+  top: $nav-heading-top-shift;
+  z-index: 200;
+  background: $page-bg;
+  margin: -1.2rem (-$main-x-pad) .2rem;
+  padding: calc(1.2rem + #{$nav-heading-top-shift}) $main-x-pad;
+
+  @include media-breakpoint-up(md) {
+    position: relative;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+@-moz-document url-prefix() {
+  .nav-heading {
+    margin: -1.2rem calc(#{-$main-x-pad} + 0.9px) .2rem;
+
+    @include media-breakpoint-up(md) {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+}
+.nav-heading.is-stuck {
+  box-shadow: 0 .5rem 1rem rgba($black, .45);
+
+  @include media-breakpoint-up(md) {
+    box-shadow: none;
+  }
+}
+.nav-heading__open {
+  margin-top: -.15em;
+  margin-left: -$btn-close-padding-x;
+
+  @include media-breakpoint-up(md) {
+    display: none;
+  }
+}
+
+/*
+    Logo
+*/
+.logo {
+  padding: 1rem 2rem 0.5rem $sidebar-left-pad;
+  margin-bottom: 1rem;
+}
+
+/*
+    Navigation
+*/
+.navigation__item,
+.navigation__item:hover,
+.navigation__item:focus {
+  color: $page-text-color;
+}
+
+.navigation__item {
+  background-color: transparent;
+  border: none;
+  padding: 0.5rem 2rem 0.5rem $sidebar-left-pad;
+  font-size: 1.2rem;
+}
+
+.navigation__item:not(.active):hover,
+.navigation__item:not(.active):focus {
+  background-color: $page-bg;
+}
+
+.navigation__item:focus {
+  outline: 0;
+  box-shadow: $input-btn-focus-box-shadow;
+}
+
+.navigation__item.active,
+.navigation__item.active:hover,
+.navigation__item.active:focus {
+  color: #000;
+}
+
+/*
+    Main page content
+*/
+.main {
+  position: relative;
+  padding: $main-y-pad $main-x-pad;
+  margin-left: 0;
+
+  @include media-breakpoint-up(md) {
+    margin-left: calc(#{$sidebar-width} + #{$sidebar-gap});
+  }
+}
+
+/*
+    Allow special input handlers to be within a reach on a wide screen
+*/
+input[type="datetime-local"].form-control,
+input[type="time"].form-control,
+input[type="number"].form-control {
+  max-width: 100%;
+}
+
+input[type="datetime-local"].form-control {
+  width: 200px;
+}
+
+input[type="number"].form-control,
+input[type="time"].form-control {
+  width: 110px;
+}
+
+/*
+    Sorting switch
+*/
+.sorting-switch {
+  position: relative;
+}
+
+.sorting-switch_sidebar {
+  margin-left: $sidebar-left-pad;
+}
+
+.sorting-switch__label {
+  margin-top: .12em;
+}
+
+.sorting-switch__spinner {
+  position: absolute;
+  top: .31em;
+  margin-left: .5em;
+  display: none;
+}
+
+.sorting-switch.is-pending .sorting-switch__spinner {
+  display: inline-block;
+}
+
+
+/*
+    Menu button
+*/
+.btn-menu {
+  box-sizing: content-box;
+  width: $btn-close-width;
+  height: $btn-close-height;
+  padding: $btn-close-padding-y $btn-close-padding-x;
+  color: $btn-close-color;
+  background: transparent escape-svg(url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#{$btn-close-color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>')) 50% 50% no-repeat; // include transparent for button elements
+  border: 0; // for button elements
+  @include border-radius();
+  opacity: $btn-close-opacity;
+
+  // Override <a>'s hover style
+  &:hover {
+    color: $btn-close-color;
+    text-decoration: none;
+    opacity: $btn-close-hover-opacity;
+  }
+
+  &:focus {
+    outline: 0;
+    box-shadow: $btn-close-focus-shadow;
+    opacity: $btn-close-focus-opacity;
+  }
+
+  &:disabled,
+  &.disabled {
+    pointer-events: none;
+    user-select: none;
+    opacity: $btn-close-disabled-opacity;
+  }
+}
+
+/*
+  Reset bootstrap card on narrow screens
+*/
+@include media-breakpoint-down(sm) {
+  .card_0 {
+    border: none;
+    background: none;
+    border-bottom: 1px solid $contrast2;
+  }
+  .card_0:last-of-type {
+    border-bottom: none;
+  }
+  .card_0 > .card-body {
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+  }
+  .card_0:last-of-type > .card-body  {
+    padding-bottom: 0;
+  }
+}
+
+/*
+  Permission columns
+*/
+
+.permission-column {
+  flex-basis: 100%;
+
+  @media screen and (min-width: 640px) {
+    & {
+      flex-basis: 50%;
+    }
+  }
+
+  @include media-breakpoint-up(md) {
+    & {
+      flex-basis: 100%;
+    }
+  }
+
+  @media screen and (min-width: 880px) {
+    & {
+      flex-basis: 50%;
+    }
+  }
+}
+
+/*
+  Responsive tables
+*/
+.table-responsive-wrap {
+  position: relative;
+}
+.table-responsive-wrap::before,
+.table-responsive-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  width: 10px;
+  pointer-events: none;
+  transition: opacity .2s;
+  opacity: 0;
+  background-repeat: no-repeat;
+  background-size: 1px 100%,5px 100%
+}
+.table-responsive-wrap::before {
+  left: 0;
+  background-image: linear-gradient(transparent,rgba(0,0,0,.6) 25%,rgba(0,0,0,.7) 75%,transparent),radial-gradient(farthest-side at 0 50%,rgba(0,0,0,.8),transparent);
+  background-position:0 0,0 0;
+}
+.table-responsive-wrap::after {
+  right: 0;
+  background-image: linear-gradient(transparent,rgba(0,0,0,.6) 25%,rgba(0,0,0,.7) 75%,transparent),radial-gradient(farthest-side at 100% 50%,rgba(0,0,0,.8),transparent);
+  background-position:100% 0,100% 0;
+}
+.table-responsive-wrap.is-overflown_left::before,
+.table-responsive-wrap.is-overflown_right::after {
+  opacity: 1;
+}
+
+/*
+  Improve touch hit area for standalone checkboxes/radios.
+  For this `.form-check` element should be a `<label>`
+*/
+.form-check_standalone {
+  position: relative;
+  display: inline-block;
+  padding: 0;
+  min-height: 0;
+  margin: 0;
+  vertical-align: baseline;
+}
+.form-check_standalone::before {
+  content: '';
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  left: 50%;
+  // .25em is default bootstrap margin-top for `.form-check-input` which allows vertical aligning with text
+  top: calc(50% + (.25em / 2));
+  transform: translate(-50%, -50%);
+}
+.form-check_standalone > .form-check-input {
+  margin-left: 0;
+  margin-right: 0;
 }

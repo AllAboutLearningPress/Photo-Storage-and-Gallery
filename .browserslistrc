@@ -8,8 +8,8 @@
 # https://gs.statcounter.com/
 
 last 1 version
-not Explorer > 0
-not ExplorerMobile > 0
-not OperaMini > 0
+not IE > 0
+not IEMob > 0
+not op_mini all
 not OperaMobile > 0
 not BlackBerry > 0
