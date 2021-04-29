@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- See https://github.com/h5bp/html5-boilerplate for details -->
+
+    <!-- see https://github.com/h5bp/html5-boilerplate/blob/fd9f88e846a409088e81292b24ac74a53e86c693/src/doc/html.md#web-app-manifest -->
+    <link rel="manifest" href="site.webmanifest" />
+    <link rel="apple-touch-icon" href="icon.png" />
+
+    <!-- Place favicon.ico in the root directory -->
+
+    <link rel="stylesheet" href="css/main.css" />
+
+    <!-- see https://github.com/h5bp/html5-boilerplate/blob/0ebf00b4c24ea4e27fdb63ff312740f3b6aa14fe/dist/doc/extend.md#theme-color -->
+    <meta name="theme-color" content="#fafafa" />
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <div class="image-view">
+        <div class="image-view__toolbar row">
+          <div class="image-view__toolbar-back col">
+            <button type="button" class="js-image-view__back btn btn-lg btn-outline-secondary">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="currentColor"
+                class="bi bi-arrow-left-short"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"
+                ></path>
+              </svg>
+              <span class="visually-hidden">Go back</span>
+            </button>
+          </div>
+          <div class="image-view__toolbar-aside col">
+            <!--            <button type="button" class="js-image-view__info btn btn-lg btn-outline-secondary">-->
+            <!--              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">-->
+            <!--                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>-->
+            <!--                <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"></path>-->
+            <!--              </svg>-->
+            <!--              <span class="visually-hidden">See details</span>-->
+            <!--            </button>-->
+            <button type="button" class="js-image-view__share btn btn-lg btn-outline-secondary">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="currentColor"
+                class="bi bi-share"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5zm-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"
+                ></path>
+              </svg>
+              <span class="visually-hidden">Share</span>
+            </button>
+            <button type="button" class="js-image-view__download btn btn-lg btn-outline-secondary">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="currentColor"
+                class="bi bi-cloud-download"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M4.406 1.342A5.53 5.53 0 0 1 8 0c2.69 0 4.923 2 5.166 4.579C14.758 4.804 16 6.137 16 7.773 16 9.569 14.502 11 12.687 11H10a.5.5 0 0 1 0-1h2.688C13.979 10 15 8.988 15 7.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 2.825 10.328 1 8 1a4.53 4.53 0 0 0-2.941 1.1c-.757.652-1.153 1.438-1.153 2.055v.448l-.445.049C2.064 4.805 1 5.952 1 7.318 1 8.785 2.23 10 3.781 10H6a.5.5 0 0 1 0 1H3.781C1.708 11 0 9.366 0 7.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383z"
+                ></path>
+                <path
+                  d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z"
+                ></path>
+              </svg>
+              <span class="visually-hidden">Download</span>
+            </button>
+            <button type="button" class="js-image-view__delete btn btn-lg btn-outline-secondary">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="currentColor"
+                class="bi bi-trash"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"
+                ></path>
+                <path
+                  fill-rule="evenodd"
+                  d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
+                ></path>
+              </svg>
+              <span class="visually-hidden">Download</span>
+            </button>
+          </div>
+        </div>
+        <div class="image-view__content">
+          <div class="image-view__image">
+            <img class="image-view__pic" src="http://placekitten.com/800/800" alt="" />
+          </div>
+          <div class="image-view__aside">
+            <dl>
+              <dt>Dimensions:</dt>
+              <dd>323x233</dd>
+              <dt>File size:</dt>
+              <dd>1 Mb</dd>
+              <dt>Family tree:</dt>
+              <dd><a href="#">show family tree</a></dd>
+              <dt>Tags:</dt>
+              <dd>
+                <input
+                  type="text"
+                  name="detailed-tags"
+                  class="detailed-tags"
+                  placeholder="Add tags"
+                  value="tag1, tag2, some tag"
+                />
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/vendor/pig.min.js"></script>
+    <script src="js/vendor/tagify.min.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>

@@ -1,4 +1,5 @@
 @import "customised-bootstrap";
+@import "@yaireo/tagify/src/tagify";
 
 $sidebar-width: 216px;
 $sidebar-gap: 1.1rem;
@@ -6,6 +7,25 @@ $sidebar-left-pad: 1.3rem;
 
 $main-x-pad: 1rem;
 $main-y-pad: 2rem;
+
+@mixin bootstrap-focus() {
+  //box-shadow: $input-focus-box-shadow;
+  //border-color: $input-focus-border-color;
+  //background: $input-focus-bg;
+  //color: $input-focus-color;
+
+  color: $input-focus-color;
+  background-color: $input-focus-bg;
+  border-color: $input-focus-border-color;
+  outline: 0;
+
+  @if $enable-shadows {
+    @include box-shadow($input-box-shadow, $input-focus-box-shadow);
+  } @else {
+    // Avoid using mixin so we can pass custom focus shadow properly
+    box-shadow: $input-focus-box-shadow;
+  }
+}
 
 /*
     Basic
@@ -160,10 +180,7 @@ $header-height: 90px;
   border-bottom-right-radius: 0;
 }
 .search__field:focus-within .search__input {
-  box-shadow: $input-focus-box-shadow;
-  border-color: $input-focus-border-color;
-  background: $input-focus-bg;
-  color: $input-focus-color;
+  @include bootstrap-focus();
 }
 
 .search-dumb-mq-tester {
@@ -207,7 +224,7 @@ $header-height: 90px;
 .search__suggest-item,
 .search__suggest-item:hover,
 .search__suggest-item:focus,
-.search__suggest-item.is-selected {
+.search__suggest-item.is-highlighted {
   color: $page-text-color;
 }
 .search__suggest-item {
@@ -218,7 +235,7 @@ $header-height: 90px;
 
 .search__suggest-item:hover,
 .search__suggest-item:focus,
-.search__suggest-item.is-selected {
+.search__suggest-item.is-highlighted {
   background-color: $contrast1;
 }
 
@@ -227,6 +244,16 @@ $header-height: 90px;
   box-shadow: $input-btn-focus-box-shadow;
 }
 
+/*
+  Upload
+*/
+.upload__input {
+  @include visually-hidden();
+  @include visually-hidden-focusable();
+}
+.upload:focus-within {
+  @include bootstrap-focus();
+}
 
 /*
    Content
@@ -405,7 +432,8 @@ $sidebar-animation-duration: .2s;
   opacity: $btn-close-opacity;
 
   // Override <a>'s hover style
-  &:hover {
+  &:hover,
+  &:focus {
     color: $btn-close-color;
     text-decoration: none;
     opacity: $btn-close-hover-opacity;
@@ -458,6 +486,34 @@ $sidebar-animation-duration: .2s;
 
 .pig-figure {
   background-color: $contrast1 !important;
+}
+
+/*
+  Image view
+*/
+.image-view {
+  padding: $main-y-pad $main-x-pad;
+}
+.image-view__toolbar {
+  margin-bottom: 2rem;
+}
+.image-view__toolbar-back,
+.image-view__toolbar-aside {
+  flex-grow: 0;
+}
+.image-view__toolbar-aside {
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.image-view__content {
+  display: flex;
+}
+.image-view__image {
+  text-align: center;
+}
+.image-view__pic {
+  object-fit: contain;
 }
 
 /*

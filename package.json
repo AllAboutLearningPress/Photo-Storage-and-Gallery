@@ -7,6 +7,7 @@
     "doc": "doc"
   },
   "dependencies": {
+    "@yaireo/tagify": "^4.1.1",
     "bootstrap": "^5.0.0-beta3",
     "bootstrap-icons": "^1.4.1",
     "pig.js": "github:schlosser/pig.js"

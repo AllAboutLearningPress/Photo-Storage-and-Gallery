@@ -95,6 +95,11 @@ function debounce(wait, func, immediate) {
  */
 (function () {
   const sidebar = document.querySelector('.sidebar');
+
+  if (!sidebar) {
+    return;
+  }
+
   const backdrop = document.querySelector('.sidebar-backdrop');
   const activeKlass = 'is-open';
   // elem is `display: block` on `md` bootstrap media query;
@@ -158,6 +163,11 @@ function debounce(wait, func, immediate) {
  */
 (function () {
   const header = document.querySelector('.js-search-header');
+
+  if (!header) {
+    return;
+  }
+
   const search = header.querySelector('.js-search');
   const field = search.querySelector('.js-search__field');
   const input = search.querySelector('.js-search__input');
@@ -166,7 +176,28 @@ function debounce(wait, func, immediate) {
 
   const activeKlass = 'is-searchable';
   const suggestingKlass = 'is-suggesting';
-  const selectedSuggestionKlass = 'is-selected';
+  const highlightedSuggestionKlass = 'is-highlighted';
+
+  function submitSearch(e) {
+    e.preventDefault();
+  }
+
+  function unhighlightSuggestion() {
+    const highlighted = suggester.querySelector(`.${highlightedSuggestionKlass}`);
+    highlighted && highlighted.classList.remove(highlightedSuggestionKlass);
+  }
+
+  function selectSuggestion(suggestionElem) {
+    alert(`suggesting: ${suggestionElem.textContent.trim()}`);
+  }
+
+  function toggleSuggester(inputElem) {
+    const isToggled = inputElem.form.classList.toggle(suggestingKlass, inputElem.value.length);
+
+    if (!isToggled) {
+      unhighlightSuggestion();
+    }
+  }
 
   function toggleSearchfield({ force, resetFocus = false, togglerElem } = {}) {
     let isToggled = header.classList.toggle(activeKlass, force);
@@ -176,6 +207,7 @@ function debounce(wait, func, immediate) {
     } else {
       input.value = '';
       search.classList.remove(suggestingKlass);
+      unhighlightSuggestion();
     }
 
     setTimeout(() => {
@@ -209,19 +241,18 @@ function debounce(wait, func, immediate) {
       });
     }
   });
-
-  search.addEventListener('submit', (e) => {
-    e.preventDefault();
-  });
-
-  // toggle suggester visibility
-  input.addEventListener('input', (e) => {
-    e.target.form.classList.toggle(suggestingKlass, e.target.value.length);
-  });
-
-  // close search field on focusout
+  search.addEventListener('submit', submitSearch);
+  input.addEventListener('input', (e) => toggleSuggester(e.target));
   field.addEventListener('focusout', (e) => {
     if (!field.contains(e.relatedTarget)) {
+      toggleSearchfield({
+        force: false,
+        resetFocus: true,
+      });
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
       toggleSearchfield({
         force: false,
         resetFocus: true,
@@ -232,51 +263,38 @@ function debounce(wait, func, immediate) {
   // handle clicking suggestions
   suggester.addEventListener('click', (e) => {
     const item = e.target.closest('.js-search__suggest-item');
-    let selected;
 
     if (item) {
-      selected = suggester.querySelector(`.${selectedSuggestionKlass}`);
-      selected && selected.classList.remove(selectedSuggestionKlass);
-      input.value = item.textContent.trim();
+      unhighlightSuggestion();
+      selectSuggestion(item);
     }
   });
 
-  // handle up/down arrows to select suggestions
+  // handle up/down arrows to highlight suggestions
   input.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
       e.preventDefault();
 
       const suggesterItems = [].slice.call(suggester.querySelectorAll('.js-search__suggest-item'));
-      let selectedIndex = suggesterItems.findIndex((el) =>
-        el.classList.contains(selectedSuggestionKlass)
+      let highlightedIndex = suggesterItems.findIndex((el) =>
+        el.classList.contains(highlightedSuggestionKlass)
       );
       const increment = e.key === 'ArrowDown' ? 1 : -1;
-      const selected = suggesterItems[selectedIndex];
-      const nextIndex = selectedIndex + increment;
+      const nextIndex = highlightedIndex + increment;
       const next = suggesterItems[nextIndex < -1 ? suggesterItems.length - 1 : nextIndex];
 
-      selected && selected.classList.remove(selectedSuggestionKlass);
-      next && next.classList.add(selectedSuggestionKlass);
+      unhighlightSuggestion();
+      next && next.classList.add(highlightedSuggestionKlass);
     }
 
     if (e.key === 'Enter') {
-      const selectedItem = suggester.querySelector(`.${selectedSuggestionKlass}`);
+      const highlightedItem = suggester.querySelector(`.${highlightedSuggestionKlass}`);
 
-      if (selectedItem) {
-        selectedItem.click();
+      if (highlightedItem) {
+        selectSuggestion(highlightedItem);
       } else {
         search.submit();
       }
-    }
-  });
-
-  // close search field on escape keypress
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      toggleSearchfield({
-        force: false,
-        resetFocus: true,
-      });
     }
   });
 
@@ -287,73 +305,235 @@ function debounce(wait, func, immediate) {
 /**
  * Upload
  */
-;(function() {
+(function () {
   document.addEventListener('change', (e) => {
     const uploader = e.target.closest('.js-upload__input');
 
     if (uploader) {
-      alert(`selected ${uploader.files.length} files.`)
+      alert(`selected ${uploader.files.length} files.`);
     }
   });
-}());
-
+})();
 
 /**
  * Gallery
  */
-;(function() {
-  const imageData = [
-    {filename: 'blue.jpg', aspectRatio: 1.777},
-    {filename: 'red.jpg', aspectRatio: 1.5},
-    {filename: 'green.jpg', aspectRatio: 1.777},
-    {filename: 'orange.jpg', aspectRatio: 1.777},
-    {filename: 'yellow.jpg', aspectRatio: 1},
-    {filename: 'purple.jpg', aspectRatio: 2.4},
-    {filename: 'red.jpg', aspectRatio: 1.5},
-    {filename: 'green.jpg', aspectRatio: 1.777},
-    {filename: 'orange.jpg', aspectRatio: 1.777},
-    {filename: 'green.jpg', aspectRatio: 1.777},
-    {filename: 'orange.jpg', aspectRatio: 1.777},
-    {filename: 'yellow.jpg', aspectRatio: 1},
-    {filename: 'purple.jpg', aspectRatio: 2.4},
-    {filename: 'red.jpg', aspectRatio: 1.5},
-    {filename: 'blue.jpg', aspectRatio: 1.777},
-    {filename: 'red.jpg', aspectRatio: 1.5},
-    {filename: 'green.jpg', aspectRatio: 1.777},
-    {filename: 'orange.jpg', aspectRatio: 1.777},
-    {filename: 'yellow.jpg', aspectRatio: 1},
-    {filename: 'purple.jpg', aspectRatio: 2.4},
-    {filename: 'red.jpg', aspectRatio: 1.5},
-    {filename: 'green.jpg', aspectRatio: 1.777},
-    {filename: 'orange.jpg', aspectRatio: 1.777},
-    {filename: 'green.jpg', aspectRatio: 1.777},
-    {filename: 'orange.jpg', aspectRatio: 1.777},
-    {filename: 'green.jpg', aspectRatio: 1.777},
-    {filename: 'orange.jpg', aspectRatio: 1.777},
-    {filename: 'yellow.jpg', aspectRatio: 1},
-    {filename: 'purple.jpg', aspectRatio: 2.4},
-    {filename: 'red.jpg', aspectRatio: 1.5},
-    {filename: 'blue.jpg', aspectRatio: 1.777},
-    {filename: 'red.jpg', aspectRatio: 1.5},
-    {filename: 'green.jpg', aspectRatio: 1.777},
-    {filename: 'orange.jpg', aspectRatio: 1.777},
-    {filename: 'yellow.jpg', aspectRatio: 1},
-    {filename: 'purple.jpg', aspectRatio: 2.4},
-    {filename: 'red.jpg', aspectRatio: 1.5},
-    {filename: 'green.jpg', aspectRatio: 1.777},
+(function () {})();
 
-
-
-  ];
-
-  const options = {
-    urlForSize: function(filename, size) {
-      return '/img/' + size + '/' + filename;
+/**
+ * Tagging
+ */
+(function () {
+  const input = document.querySelector('input[name="detailed-tags"]');
+  const tagify = new Tagify(input, {
+    whitelist: [
+      'A# .NET',
+      'A# (Axiom)',
+      'A-0 System',
+      'A+',
+      'A++',
+      'ABAP',
+      'ABC',
+      'ABC ALGOL',
+      'ABSET',
+      'ABSYS',
+      'ACC',
+      'Accent',
+      'Ace DASL',
+      'ACL2',
+      'Avicsoft',
+      'ACT-III',
+      'Action!',
+      'ActionScript',
+      'Ada',
+      'Adenine',
+      'Agda',
+      'Agilent VEE',
+      'Agora',
+      'AIMMS',
+      'Alef',
+      'ALF',
+      'ALGOL 58',
+      'ALGOL 60',
+      'ALGOL 68',
+      'ALGOL W',
+      'Alice',
+      'Alma-0',
+      'AmbientTalk',
+      'Amiga E',
+      'AMOS',
+      'AMPL',
+      'Apex (Salesforce.com)',
+      'APL',
+      'AppleScript',
+      'Arc',
+      'ARexx',
+      'Argus',
+      'AspectJ',
+      'Assembly language',
+      'ATS',
+      'Ateji PX',
+      'AutoHotkey',
+      'Autocoder',
+      'AutoIt',
+      'AutoLISP / Visual LISP',
+      'Averest',
+      'AWK',
+      'Axum',
+      'Active Server Pages',
+      'ASP.NET',
+      'B',
+      'Babbage',
+      'Bash',
+      'BASIC',
+      'bc',
+      'BCPL',
+      'BeanShell',
+      'Batch (Windows/Dos)',
+      'Bertrand',
+      'BETA',
+      'Bigwig',
+      'Bistro',
+      'BitC',
+      'BLISS',
+      'Blockly',
+      'BlooP',
+      'Blue',
+      'Boo',
+      'Boomerang',
+      'Bourne shell (including bash and ksh)',
+      'BREW',
+      'BPEL',
+      'B',
+      'C--',
+      'C++ – ISO/IEC 14882',
+      'C# – ISO/IEC 23270',
+      'C/AL',
+      'Caché ObjectScript',
+      'C Shell',
+      'Caml',
+      'Cayenne',
+      'CDuce',
+      'Cecil',
+      'Cesil',
+      'Céu',
+      'Ceylon',
+      'CFEngine',
+      'CFML',
+      'Cg',
+      'Ch',
+      'Chapel',
+      'Charity',
+      'Charm',
+      'Chef',
+      'CHILL',
+      'CHIP-8',
+      'chomski',
+      'ChucK',
+      'CICS',
+      'Cilk',
+      'Citrine (programming language)',
+      'CL (IBM)',
+      'Claire',
+      'Clarion',
+      'Clean',
+      'Clipper',
+      'CLIPS',
+      'CLIST',
+      'Clojure',
+      'CLU',
+      'CMS-2',
+      'COBOL – ISO/IEC 1989',
+      'CobolScript – COBOL Scripting language',
+      'Cobra',
+      'CODE',
+      'CoffeeScript',
+      'ColdFusion',
+      'COMAL',
+      'Combined Programming Language (CPL)',
+      'COMIT',
+      'Common Intermediate Language (CIL)',
+      'Common Lisp (also known as CL)',
+      'COMPASS',
+      'Component Pascal',
+      'Constraint Handling Rules (CHR)',
+      'COMTRAN',
+      'Converge',
+      'Cool',
+      'Coq',
+      'Coral 66',
+      'Corn',
+      'CorVision',
+      'COWSEL',
+      'CPL',
+      'CPL',
+      'Cryptol',
+      'csh',
+      'Csound',
+      'CSP',
+      'CUDA',
+      'Curl',
+      'Curry',
+      'Cybil',
+      'Cyclone',
+      'Cython',
+      'Java',
+      'Javascript',
+      'M2001',
+      'M4',
+      'M#',
+      'Machine code',
+      'MAD (Michigan Algorithm Decoder)',
+      'MAD/I',
+      'Magik',
+      'Magma',
+      'make',
+      'Maple',
+      'MAPPER now part of BIS',
+      'MARK-IV now VISION:BUILDER',
+      'Mary',
+      'MASM Microsoft Assembly x86',
+      'MATH-MATIC',
+      'Mathematica',
+      'MATLAB',
+      'Maxima (see also Macsyma)',
+      'Max (Max Msp – Graphical Programming Environment)',
+      'Maya (MEL)',
+      'MDL',
+      'Mercury',
+      'Mesa',
+      'Metafont',
+      'Microcode',
+      'MicroScript',
+      'MIIS',
+      'Milk (programming language)',
+      'MIMIC',
+      'Mirah',
+      'Miranda',
+      'MIVA Script',
+      'ML',
+      'Model 204',
+      'Modelica',
+      'Modula',
+      'Modula-2',
+      'Modula-3',
+      'Mohol',
+      'MOO',
+      'Mortran',
+      'Mouse',
+      'MPD',
+      'Mathcad',
+      'MSIL – deprecated name for CIL',
+      'MSL',
+      'MUMPS',
+      'Mystic Programming L',
+    ],
+    maxTags: 10,
+    dropdown: {
+      maxItems: 20, // <- mixumum allowed rendered suggestions
+      classname: 'tags-look', // <- custom classname for this dropdown, so it could be targeted
+      enabled: 0, // <- show suggestions on focus
+      closeOnSelect: false, // <- do not hide the suggestions dropdown once an item has been selected
     },
-    onClickHandler(filename) {
-      alert(`select ${filename}`);
-    }
-  };
-
-  const pig = new Pig(imageData, options).enable();
-}());
+  });
+})();

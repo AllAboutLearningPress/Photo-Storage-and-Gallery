@@ -14,8 +14,6 @@
     <!-- Place favicon.ico in the root directory -->
 
     <link rel="stylesheet" href="css/main.css" />
-    <script defer src="js/vendor/pig.min.js"></script>
-    <script defer src="js/main.js"></script>
 
     <!-- see https://github.com/h5bp/html5-boilerplate/blob/0ebf00b4c24ea4e27fdb63ff312740f3b6aa14fe/dist/doc/extend.md#theme-color -->
     <meta name="theme-color" content="#fafafa" />
@@ -33,20 +31,27 @@
             >
               <span class="visually-hidden">Open menu</span>
             </button>
-            <!--<button type="button" class="js-sidebar-toggle header__open-sidebar btn-menu btn btn-outline-secondary" aria-controls="sidebar">
-              <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"></path>
-              </svg>
-              <span class="visually-hidden">Open menu</span>
-            </button>-->
             <a class="logo btn-lg btn" href="#">Photos</a>
           </div>
           <div class="header__search col">
             <form action="#" class="js-search search">
               <div class="js-search__field search__field">
-                <button type="button" class="js-search__field-toggle search__field-hide btn btn-lg btn-outline-secondary">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-arrow-left-short" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"></path>
+                <button
+                  type="button"
+                  class="js-search__field-toggle search__field-hide btn btn-lg btn-outline-secondary"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="26"
+                    height="26"
+                    fill="currentColor"
+                    class="bi bi-arrow-left-short"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"
+                    ></path>
                   </svg>
                   <span class="visually-hidden">Go back</span>
                 </button>
@@ -79,7 +84,10 @@
                   </a>
                 </div>
               </div>
-              <button type="button" class="js-search__field-toggle search__field-show btn btn-lg btn-outline-secondary">
+              <button
+                type="button"
+                class="js-search__field-toggle search__field-show btn btn-lg btn-outline-secondary"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"
@@ -98,10 +106,7 @@
             </form>
           </div>
           <div class="header__actions col">
-            <label
-              tabindex="0"
-              class="js-upload header__action-btn btn btn-lg btn-outline-secondary"
-            >
+            <label class="js-upload upload header__action-btn btn btn-lg btn-outline-secondary">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="26"
@@ -120,7 +125,7 @@
                 ></path>
               </svg>
               <span class="header__action-btn__txt">Upload</span>
-              <input class="js-upload__input" type="file" multiple hidden>
+              <input class="js-upload__input upload__input" type="file" multiple />
             </label>
           </div>
         </div>
@@ -161,5 +166,199 @@
         </main>
       </div>
     </div>
+
+    <script src="js/vendor/pig.min.js"></script>
+    <script src="js/vendor/tagify.min.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+      const imageData = [
+        { filename: '100', aspectRatio: 1.777 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '500', aspectRatio: 1 },
+        { filename: '400', aspectRatio: 2.4 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '500', aspectRatio: 1 },
+        { filename: '400', aspectRatio: 2.4 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '100', aspectRatio: 1.777 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '500', aspectRatio: 1 },
+        { filename: '400', aspectRatio: 2.4 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '500', aspectRatio: 1 },
+        { filename: '400', aspectRatio: 2.4 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '100', aspectRatio: 1.777 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '500', aspectRatio: 1 },
+        { filename: '400', aspectRatio: 2.4 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '500', aspectRatio: 1 },
+        { filename: '400', aspectRatio: 2.4 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '100', aspectRatio: 1.777 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '500', aspectRatio: 1 },
+        { filename: '400', aspectRatio: 2.4 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '500', aspectRatio: 1 },
+        { filename: '400', aspectRatio: 2.4 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '100', aspectRatio: 1.777 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '500', aspectRatio: 1 },
+        { filename: '400', aspectRatio: 2.4 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '500', aspectRatio: 1 },
+        { filename: '400', aspectRatio: 2.4 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '100', aspectRatio: 1.777 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '500', aspectRatio: 1 },
+        { filename: '400', aspectRatio: 2.4 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '500', aspectRatio: 1 },
+        { filename: '400', aspectRatio: 2.4 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '100', aspectRatio: 1.777 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '500', aspectRatio: 1 },
+        { filename: '400', aspectRatio: 2.4 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '500', aspectRatio: 1 },
+        { filename: '400', aspectRatio: 2.4 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '100', aspectRatio: 1.777 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '500', aspectRatio: 1 },
+        { filename: '400', aspectRatio: 2.4 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '500', aspectRatio: 1 },
+        { filename: '400', aspectRatio: 2.4 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '100', aspectRatio: 1.777 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '500', aspectRatio: 1 },
+        { filename: '400', aspectRatio: 2.4 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '500', aspectRatio: 1 },
+        { filename: '400', aspectRatio: 2.4 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '100', aspectRatio: 1.777 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '500', aspectRatio: 1 },
+        { filename: '400', aspectRatio: 2.4 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '500', aspectRatio: 1 },
+        { filename: '400', aspectRatio: 2.4 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '100', aspectRatio: 1.777 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '500', aspectRatio: 1 },
+        { filename: '400', aspectRatio: 2.4 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '500', aspectRatio: 1 },
+        { filename: '400', aspectRatio: 2.4 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '100', aspectRatio: 1.777 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '500', aspectRatio: 1 },
+        { filename: '400', aspectRatio: 2.4 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '500', aspectRatio: 1 },
+        { filename: '400', aspectRatio: 2.4 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '100', aspectRatio: 1.777 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '400', aspectRatio: 1.777 },
+        { filename: '150', aspectRatio: 1.777 },
+        { filename: '500', aspectRatio: 1 },
+        { filename: '400', aspectRatio: 2.4 },
+        { filename: '200', aspectRatio: 1.5 },
+        { filename: '400', aspectRatio: 1.777 },
+      ];
+
+      const options = {
+        urlForSize: function (filename, size) {
+          return `//placekitten.com/${size}/${filename}`;
+        },
+        onClickHandler(filename) {
+          alert(`select ${filename}`);
+        },
+        figureTagName: 'a',
+      };
+
+      const pig = new Pig(imageData, options).enable();
+    </script>
+
   </body>
 </html>
