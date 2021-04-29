@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Tag extends Model
 {
     use HasFactory;
+
+    /**
+     * The photos that belong to this tag
+     */
+    public function photos()
+    {
+        return $this->belongsToMany(Photo::class)->using(PhotoTag::class);
+    }
 }
