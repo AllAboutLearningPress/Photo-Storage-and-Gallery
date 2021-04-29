@@ -16,8 +16,13 @@ class CreatePhotosTable extends Migration
         Schema::create('photos', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('parent_id');
+            $table->bigInteger('size')->comment('size in bytes');
+            $table->integer('height');
+            $table->integer('width');
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('parent_id')->constrained('photos');
             $table->string('file_name');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
