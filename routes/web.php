@@ -26,9 +26,12 @@ use Inertia\Inertia;
 //     ]);
 // });
 
-Route::get("/", [IndexController::class, 'index'])->name('index');
-Route::get("/upload", [PhotoController::class, 'create'])->name('upload');
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->name('dashboard');
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get("/", [IndexController::class, 'index'])->name('index');
+    Route::get("/upload", [PhotoController::class, 'create'])->name('upload');
+    Route::post("/store", []);
+    Route::get("/dashboard", function () {
+        return Inertia::render('Dashboard');
+    });
+});
