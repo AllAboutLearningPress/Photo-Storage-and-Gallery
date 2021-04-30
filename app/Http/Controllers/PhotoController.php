@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Photo;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -44,9 +45,11 @@ class PhotoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, $name)
     {
-        //
+        return  Inertia::render('Photo/Show', [
+            'photo' => Photo::find($id)
+        ]);
     }
 
     /**

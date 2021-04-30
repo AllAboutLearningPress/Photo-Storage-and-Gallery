@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Photo;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -14,6 +15,8 @@ class IndexController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Index');
+        return Inertia::render('Index', [
+            'photos' => Photo::all()
+        ]);
     }
 }

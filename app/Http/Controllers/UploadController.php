@@ -31,15 +31,14 @@ class UploadController extends Controller
             'file' => 'required|mimes:jpg,jpeg,png,zip,psd|max:2048',
             'name' => 'required|string'
         ]);
-
-        $data['file']->getClientOriginalName();
-
         // generating a random string and getting the first 8 characters of the random
         // hex string. then adding an underscore to the file name. also all spaces are
         // removed from filename
-        $name = substr(bin2hex(random_bytes(32)), 0, 8) . "." . $data['file']->getClientOriginalName(); // . "_" . str_replace(' ', '', $data['file']->getClientOriginalName());
-        $data['file']->storeAs("public/attachments", $name, 'local');
+        $name = bin2hex(random_bytes(32)) . str_replace(" ", "_", $data['file']->getClientOriginalName()); //
+        $data['file']->storeAs("public/", $name, 'local');
         $imgsize = getimagesize($data['file']->getPathName());
+
+        // adding the photo entry
         Photo::create([
             'name' => $name,
             'size' => $data['file']->getSize(),
