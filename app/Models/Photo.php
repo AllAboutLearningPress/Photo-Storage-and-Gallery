@@ -10,7 +10,11 @@ class Photo extends Model
 {
     use HasFactory;
     use SoftDeletes;
-
+    protected $fillable = [
+        'name', 'size', 'height',
+        'width', 'parent_id', 'user_id',
+        'file_type'
+    ];
     /**
      * The tags that belong to this photo
      */
