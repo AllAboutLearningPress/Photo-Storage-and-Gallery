@@ -54,14 +54,24 @@ function patchFocus(showEvent, hideEvent) {
     },
   };
 
-  document.addEventListener(showEvent, (evt) => {
+  function onShow(evt) {
     handler.container = evt.target;
     document.addEventListener('keydown', handler);
-  });
-  document.addEventListener(hideEvent, (evt) => {
+  }
+  function onHide(evt) {
     handler.container = null;
     document.removeEventListener('keydown', handler);
-  });
+  }
+
+  document.addEventListener(showEvent, onShow);
+  document.addEventListener(hideEvent, onHide);
+
+  function destroy() {
+    document.removeEventListener(showEvent, onShow);
+    document.removeEventListener(hideEvent, onHide);
+  }
+
+  return destroy;
 }
 
 /**
@@ -75,15 +85,15 @@ function patchFocus(showEvent, hideEvent) {
  * @returns {function(...[*]=)}
  */
 function debounce(wait, func, immediate) {
-  var timeout;
+  let timeout;
   return function () {
-    var context = this,
+    const context = this,
       args = arguments;
-    var later = function () {
+    const later = function () {
       timeout = null;
       if (!immediate) func.apply(context, args);
     };
-    var callNow = immediate && !timeout;
+    const callNow = immediate && !timeout;
     clearTimeout(timeout);
     timeout = setTimeout(later, wait);
     if (callNow) func.apply(context, args);
@@ -93,447 +103,380 @@ function debounce(wait, func, immediate) {
 /**
  * Toggle sidebar
  */
-(function () {
-  const sidebar = document.querySelector('.sidebar');
-
-  if (!sidebar) {
-    return;
-  }
-
-  const backdrop = document.querySelector('.sidebar-backdrop');
+const Sidebar = (function () {
   const activeKlass = 'is-open';
-  // elem is `display: block` on `md` bootstrap media query;
-  const mqTestElem = document.querySelector('.sidebar-dumb-mq-tester');
+  const togglerKlass = 'js-sidebar-toggle';
 
-  function toggleSidebar(toggler, force, resetFocus = true) {
-    const wasOpened = sidebar.classList.contains(activeKlass);
+  // DOM elements to dereference on destroy
+  let sidebar = null;
+  let backdrop = null;
+  let mqTestElem = null;
+  let isInited = false;
 
-    if (wasOpened === force) {
-      return;
-    }
+  // event handlers to unbind on destroy
+  let onTogglersClick;
+  let onBackdropClick;
+  let onEscapeKey;
+  let resizeHandler;
+  let orientationchangeHandler;
 
-    sidebar.classList.toggle(activeKlass, force);
-    sidebar.dispatchEvent(
-      new CustomEvent(wasOpened ? 'sidebarhide' : 'sidebarshow', { bubbles: true })
-    );
-    setTimeout(() => {
-      if (resetFocus) {
-        (wasOpened ? sidebar._trigger : sidebar).focus();
+  // `patchFocus()` cleanup function
+  let destroyPatchedFocus;
+
+  return {
+    init() {
+      sidebar = document.querySelector('.sidebar');
+
+      if (isInited || !sidebar) {
+        return;
       }
 
-      sidebar._trigger = toggler;
-    }, 50);
-  }
+      isInited = true;
+      backdrop = document.querySelector('.sidebar-backdrop');
+      mqTestElem = document.querySelector('.sidebar-dumb-mq-tester'); // elem is `display: block` on `md` bootstrap media query;
 
-  // patch sidebar focus
-  patchFocus('sidebarshow', 'sidebarhide');
+      /**
+       * Toggle visibility of a sidebar (i.e. when it is hidden by default on narrow screen)
+       * @param force{Boolean} - optional visibility state
+       * @param resetFocus{Boolean} - optional flag to reset a focus to the element which was focused before toggling happened
+       * @param toggler{HTMLElement} - optional DOM element by which the action was performed
+       */
+      function toggleSidebar(toggler, force, resetFocus = true) {
+        const wasOpened = sidebar.classList.contains(activeKlass);
 
-  document.querySelectorAll('.js-sidebar-toggle').forEach((elem) => {
-    elem.addEventListener('click', () => toggleSidebar(elem));
-  });
+        if (wasOpened === force) {
+          return;
+        }
 
-  // close sidebar on escape keypress
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      toggleSidebar(undefined, false);
-    }
-  });
-  // close sidebar on backdrop click
-  backdrop.addEventListener('click', () => toggleSidebar(undefined, false, false));
+        sidebar.classList.toggle(activeKlass, force);
+        sidebar.dispatchEvent(
+          new CustomEvent(wasOpened ? 'sidebarhide' : 'sidebarshow', { bubbles: true })
+        );
+        setTimeout(() => {
+          if (resetFocus) {
+            (wasOpened ? sidebar._trigger : sidebar).focus();
+          }
 
-  // hide sidebar which wasn't hidden and then bootstrap `md` mq fired up
-  function cleanup() {
-    if (!sidebar.classList.contains(activeKlass)) {
-      return;
-    }
+          sidebar._trigger = toggler;
+        }, 50);
+      }
 
-    const display = window.getComputedStyle(mqTestElem, null).display;
+      // hide sidebar which wasn't hidden and then bootstrap `md` mq fired up
+      function cleanup() {
+        if (!sidebar.classList.contains(activeKlass)) {
+          return;
+        }
 
-    if (display === 'block') {
-      toggleSidebar(undefined, false);
-    }
-  }
+        const display = window.getComputedStyle(mqTestElem, null).display;
 
-  window.addEventListener('resize', debounce(50, cleanup));
-  window.addEventListener('orientationchange', debounce(0, cleanup));
+        if (display === 'block') {
+          toggleSidebar(undefined, false);
+        }
+      }
+
+      // activate sidebar by clicking on specific toggler elements
+      onTogglersClick = (e) => {
+        const toggler = e.target.closest(`.${togglerKlass}`);
+
+        toggler && toggleSidebar(toggler);
+      };
+
+      // handle the click on the backdrop
+      onBackdropClick = () => toggleSidebar(undefined, false, false);
+
+      // handle escape key
+      onEscapeKey = (e) => {
+        if (e.key === 'Escape') {
+          toggleSidebar(undefined, false);
+        }
+      };
+
+      // window resize handlers
+      resizeHandler = debounce(50, cleanup);
+      orientationchangeHandler = debounce(0, cleanup);
+
+      destroyPatchedFocus = patchFocus('sidebarshow', 'sidebarhide');
+      document.addEventListener('click', onTogglersClick);
+      document.addEventListener('keydown', onEscapeKey);
+      backdrop.addEventListener('click', onBackdropClick);
+      window.addEventListener('resize', resizeHandler);
+      window.addEventListener('orientationchange', orientationchangeHandler);
+    },
+    destroy() {
+      if (isInited) {
+        destroyPatchedFocus();
+        document.removeEventListener('click', onTogglersClick);
+        document.removeEventListener('keydown', onEscapeKey);
+        backdrop.removeEventListener('click', onBackdropClick);
+        window.removeEventListener('resize', resizeHandler);
+        window.removeEventListener('orientationchange', orientationchangeHandler);
+
+        sidebar = null;
+        backdrop = null;
+        mqTestElem = null;
+        isInited = false;
+      }
+    },
+  };
 })();
 
 /**
  * Search field
  */
-(function () {
-  const header = document.querySelector('.js-search-header');
-
-  if (!header) {
-    return;
-  }
-
-  const search = header.querySelector('.js-search');
-  const field = search.querySelector('.js-search__field');
-  const input = search.querySelector('.js-search__input');
-  const suggester = search.querySelector('.js-search__suggest');
-  const mqTestElem = document.querySelector('.search-dumb-mq-tester');
-
+const Suggester = (function () {
   const activeKlass = 'is-searchable';
   const suggestingKlass = 'is-suggesting';
   const highlightedSuggestionKlass = 'is-highlighted';
 
-  function submitSearch(e) {
-    e.preventDefault();
-  }
+  // DOM elements to dereference on destroy
+  let header = null;
+  let search = null;
+  let field = null;
+  let input = null;
+  let suggester = null;
+  let mqTestElem = null;
+  let isInited = false;
 
-  function unhighlightSuggestion() {
-    const highlighted = suggester.querySelector(`.${highlightedSuggestionKlass}`);
-    highlighted && highlighted.classList.remove(highlightedSuggestionKlass);
-  }
+  // event handlers to unbind on destroy
+  let onSearchSubmit;
+  let onSearchInput;
+  let onFieldTogglerClick;
+  let onFieldFocusout;
+  let onEscapeKey;
+  let onSuggestionItemClick;
+  let onSearchKeydown;
+  let resizeHandler;
+  let orientationchangeHandler;
 
-  function selectSuggestion(suggestionElem) {
-    alert(`suggesting: ${suggestionElem.textContent.trim()}`);
-  }
+  return {
+    init() {
+      header = document.querySelector('.js-search-header');
 
-  function toggleSuggester(inputElem) {
-    const isToggled = inputElem.form.classList.toggle(suggestingKlass, inputElem.value.length);
-
-    if (!isToggled) {
-      unhighlightSuggestion();
-    }
-  }
-
-  function toggleSearchfield({ force, resetFocus = false, togglerElem } = {}) {
-    let isToggled = header.classList.toggle(activeKlass, force);
-
-    if (isToggled) {
-      input.focus();
-    } else {
-      input.value = '';
-      search.classList.remove(suggestingKlass);
-      unhighlightSuggestion();
-    }
-
-    setTimeout(() => {
-      if (resetFocus && !isToggled && header._trigger) {
-        header._trigger.focus();
+      if (isInited || !header) {
+        return;
       }
 
-      header._trigger = togglerElem;
-    }, 0);
-  }
+      isInited = true;
 
-  function cleanup() {
-    if (!header.classList.contains(activeKlass)) {
-      return;
-    }
+      search = header.querySelector('.js-search');
+      field = search.querySelector('.js-search__field');
+      input = search.querySelector('.js-search__input');
+      suggester = search.querySelector('.js-search__suggest');
+      mqTestElem = document.querySelector('.search-dumb-mq-tester');
 
-    const display = window.getComputedStyle(mqTestElem, null).display;
-
-    if (display === 'block') {
-      toggleSearchfield();
-    }
-  }
-
-  header.addEventListener('click', (e) => {
-    const togglerElem = e.target.closest('.js-search__field-toggle');
-
-    if (togglerElem) {
-      toggleSearchfield({
-        togglerElem,
-        resetFocus: !e.detail,
-      });
-    }
-  });
-  search.addEventListener('submit', submitSearch);
-  input.addEventListener('input', (e) => toggleSuggester(e.target));
-  field.addEventListener('focusout', (e) => {
-    if (!field.contains(e.relatedTarget)) {
-      toggleSearchfield({
-        force: false,
-        resetFocus: true,
-      });
-    }
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      toggleSearchfield({
-        force: false,
-        resetFocus: true,
-      });
-    }
-  });
-
-  // handle clicking suggestions
-  suggester.addEventListener('click', (e) => {
-    const item = e.target.closest('.js-search__suggest-item');
-
-    if (item) {
-      unhighlightSuggestion();
-      selectSuggestion(item);
-    }
-  });
-
-  // handle up/down arrows to highlight suggestions
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-      e.preventDefault();
-
-      const suggesterItems = [].slice.call(suggester.querySelectorAll('.js-search__suggest-item'));
-      let highlightedIndex = suggesterItems.findIndex((el) =>
-        el.classList.contains(highlightedSuggestionKlass)
-      );
-      const increment = e.key === 'ArrowDown' ? 1 : -1;
-      const nextIndex = highlightedIndex + increment;
-      const next = suggesterItems[nextIndex < -1 ? suggesterItems.length - 1 : nextIndex];
-
-      unhighlightSuggestion();
-      next && next.classList.add(highlightedSuggestionKlass);
-    }
-
-    if (e.key === 'Enter') {
-      const highlightedItem = suggester.querySelector(`.${highlightedSuggestionKlass}`);
-
-      if (highlightedItem) {
-        selectSuggestion(highlightedItem);
-      } else {
-        search.submit();
+      /**
+       * Remove "highlighted" state for any highlighted suggestion item
+       */
+      function unhighlightSuggestion() {
+        const highlighted = suggester.querySelector(`.${highlightedSuggestionKlass}`);
+        highlighted && highlighted.classList.remove(highlightedSuggestionKlass);
       }
-    }
-  });
 
-  window.addEventListener('resize', debounce(50, cleanup));
-  window.addEventListener('orientationchange', debounce(0, cleanup));
+      /**
+       * The action upon suggestion item is "selected"
+       * @param suggestionElem{HTMLElement} - DOM element for selected suggestion item
+       */
+      function selectSuggestion(suggestionElem) {
+        alert(`suggesting: ${suggestionElem.textContent.trim()}`);
+      }
+
+      /**
+       * Toggle "activated" state for the suggestions box
+       * @param inputElem{HTMLElement} - required parameter for the `<input>` for which suggestions box is being toggled
+       */
+      function toggleSuggester(inputElem) {
+        const isToggled = inputElem.form.classList.toggle(suggestingKlass, inputElem.value.length);
+
+        if (!isToggled) {
+          unhighlightSuggestion();
+        }
+      }
+
+      /**
+       * Toggle the "activated" state of a search field (i.e. when it is hidden by default on narrow screen)
+       * @param force{Boolean} - optional activated state
+       * @param resetFocus{Boolean} - optional flag to reset a focus to the element which was focused before toggling happened
+       * @param togglerElem{HTMLElement} - optional DOM element by which the action was performed
+       */
+      function toggleSearchfield({ force, resetFocus = false, togglerElem } = {}) {
+        let isToggled = header.classList.toggle(activeKlass, force);
+
+        if (isToggled) {
+          input.focus();
+        } else {
+          input.value = '';
+          search.classList.remove(suggestingKlass);
+          unhighlightSuggestion();
+        }
+
+        setTimeout(() => {
+          if (resetFocus && !isToggled && header._trigger) {
+            header._trigger.focus();
+          }
+
+          header._trigger = togglerElem;
+        }, 0);
+      }
+
+      // deactivate search field if needed, based bootstrap `md` media-query
+      function cleanup() {
+        if (!header.classList.contains(activeKlass)) {
+          return;
+        }
+
+        const display = window.getComputedStyle(mqTestElem, null).display;
+
+        if (display === 'block') {
+          toggleSearchfield();
+        }
+      }
+
+      // handle search form `submit` event
+      onSearchSubmit = (e) => {
+        e.preventDefault();
+      };
+      // handle `input` event inside search input
+      onSearchInput = (e) => toggleSuggester(e.target);
+      // activate search field by clicking on specific toggler elements
+      onFieldTogglerClick = (e) => {
+        const togglerElem = e.target.closest('.js-search__field-toggle');
+
+        if (togglerElem) {
+          toggleSearchfield({
+            togglerElem,
+            resetFocus: !e.detail,
+          });
+        }
+      };
+      // inactivate search field on loosing focus
+      onFieldFocusout = (e) => {
+        if (!field.contains(e.relatedTarget)) {
+          toggleSearchfield({
+            force: false,
+            resetFocus: true,
+          });
+        }
+      };
+      // close search field on escape
+      onEscapeKey = (e) => {
+        if (e.key === 'Escape') {
+          toggleSearchfield({
+            force: false,
+            resetFocus: true,
+          });
+        }
+      };
+      // handle suggestion item selection
+      onSuggestionItemClick = (e) => {
+        const item = e.target.closest('.js-search__suggest-item');
+
+        if (item) {
+          unhighlightSuggestion();
+          selectSuggestion(item);
+        }
+      };
+      // handle up/down arrows to highlight suggestions
+      onSearchKeydown = (e) => {
+        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+          e.preventDefault();
+
+          const suggesterItems = [].slice.call(
+            suggester.querySelectorAll('.js-search__suggest-item')
+          );
+          let highlightedIndex = suggesterItems.findIndex((el) =>
+            el.classList.contains(highlightedSuggestionKlass)
+          );
+          const increment = e.key === 'ArrowDown' ? 1 : -1;
+          const nextIndex = highlightedIndex + increment;
+          const next = suggesterItems[nextIndex < -1 ? suggesterItems.length - 1 : nextIndex];
+
+          unhighlightSuggestion();
+          next && next.classList.add(highlightedSuggestionKlass);
+        }
+
+        if (e.key === 'Enter') {
+          const highlightedItem = suggester.querySelector(`.${highlightedSuggestionKlass}`);
+
+          if (highlightedItem) {
+            selectSuggestion(highlightedItem);
+          } else {
+            search.submit();
+          }
+        }
+      };
+
+      // window resize handlers
+      resizeHandler = debounce(50, cleanup);
+      orientationchangeHandler = debounce(0, cleanup);
+
+      header.addEventListener('click', onFieldTogglerClick);
+      search.addEventListener('submit', onSearchSubmit);
+      input.addEventListener('input', onSearchInput);
+      field.addEventListener('focusout', onFieldFocusout);
+      document.addEventListener('keydown', onEscapeKey);
+      suggester.addEventListener('click', onSuggestionItemClick);
+      input.addEventListener('keydown', onSearchKeydown);
+      window.addEventListener('resize', resizeHandler);
+      window.addEventListener('orientationchange', orientationchangeHandler);
+    },
+    destroy() {
+      if (isInited) {
+        header.removeEventListener('click', onFieldTogglerClick);
+        search.removeEventListener('submit', onSearchSubmit);
+        input.removeEventListener('input', onSearchInput);
+        field.removeEventListener('focusout', onFieldFocusout);
+        document.removeEventListener('keydown', onEscapeKey);
+        suggester.removeEventListener('click', onSuggestionItemClick);
+        input.removeEventListener('keydown', onSearchKeydown);
+        window.removeEventListener('resize', resizeHandler);
+        window.removeEventListener('orientationchange', orientationchangeHandler);
+
+        header = null;
+        search = null;
+        field = null;
+        input = null;
+        suggester = null;
+        mqTestElem = null;
+        isInited = false;
+      }
+    },
+  };
 })();
 
 /**
  * Upload
  */
-(function () {
-  document.addEventListener('change', (e) => {
-    const uploader = e.target.closest('.js-upload__input');
+const Upload = (function () {
+  let isInited = false;
 
-    if (uploader) {
-      alert(`selected ${uploader.files.length} files.`);
-    }
-  });
-})();
+  let onUploadInputChange;
 
-/**
- * Gallery
- */
-(function () {})();
+  return {
+    init() {
+      if (isInited) {
+        return;
+      }
 
-/**
- * Tagging
- */
-(function () {
-  const input = document.querySelector('input[name="detailed-tags"]');
-  const tagify = new Tagify(input, {
-    whitelist: [
-      'A# .NET',
-      'A# (Axiom)',
-      'A-0 System',
-      'A+',
-      'A++',
-      'ABAP',
-      'ABC',
-      'ABC ALGOL',
-      'ABSET',
-      'ABSYS',
-      'ACC',
-      'Accent',
-      'Ace DASL',
-      'ACL2',
-      'Avicsoft',
-      'ACT-III',
-      'Action!',
-      'ActionScript',
-      'Ada',
-      'Adenine',
-      'Agda',
-      'Agilent VEE',
-      'Agora',
-      'AIMMS',
-      'Alef',
-      'ALF',
-      'ALGOL 58',
-      'ALGOL 60',
-      'ALGOL 68',
-      'ALGOL W',
-      'Alice',
-      'Alma-0',
-      'AmbientTalk',
-      'Amiga E',
-      'AMOS',
-      'AMPL',
-      'Apex (Salesforce.com)',
-      'APL',
-      'AppleScript',
-      'Arc',
-      'ARexx',
-      'Argus',
-      'AspectJ',
-      'Assembly language',
-      'ATS',
-      'Ateji PX',
-      'AutoHotkey',
-      'Autocoder',
-      'AutoIt',
-      'AutoLISP / Visual LISP',
-      'Averest',
-      'AWK',
-      'Axum',
-      'Active Server Pages',
-      'ASP.NET',
-      'B',
-      'Babbage',
-      'Bash',
-      'BASIC',
-      'bc',
-      'BCPL',
-      'BeanShell',
-      'Batch (Windows/Dos)',
-      'Bertrand',
-      'BETA',
-      'Bigwig',
-      'Bistro',
-      'BitC',
-      'BLISS',
-      'Blockly',
-      'BlooP',
-      'Blue',
-      'Boo',
-      'Boomerang',
-      'Bourne shell (including bash and ksh)',
-      'BREW',
-      'BPEL',
-      'B',
-      'C--',
-      'C++ – ISO/IEC 14882',
-      'C# – ISO/IEC 23270',
-      'C/AL',
-      'Caché ObjectScript',
-      'C Shell',
-      'Caml',
-      'Cayenne',
-      'CDuce',
-      'Cecil',
-      'Cesil',
-      'Céu',
-      'Ceylon',
-      'CFEngine',
-      'CFML',
-      'Cg',
-      'Ch',
-      'Chapel',
-      'Charity',
-      'Charm',
-      'Chef',
-      'CHILL',
-      'CHIP-8',
-      'chomski',
-      'ChucK',
-      'CICS',
-      'Cilk',
-      'Citrine (programming language)',
-      'CL (IBM)',
-      'Claire',
-      'Clarion',
-      'Clean',
-      'Clipper',
-      'CLIPS',
-      'CLIST',
-      'Clojure',
-      'CLU',
-      'CMS-2',
-      'COBOL – ISO/IEC 1989',
-      'CobolScript – COBOL Scripting language',
-      'Cobra',
-      'CODE',
-      'CoffeeScript',
-      'ColdFusion',
-      'COMAL',
-      'Combined Programming Language (CPL)',
-      'COMIT',
-      'Common Intermediate Language (CIL)',
-      'Common Lisp (also known as CL)',
-      'COMPASS',
-      'Component Pascal',
-      'Constraint Handling Rules (CHR)',
-      'COMTRAN',
-      'Converge',
-      'Cool',
-      'Coq',
-      'Coral 66',
-      'Corn',
-      'CorVision',
-      'COWSEL',
-      'CPL',
-      'CPL',
-      'Cryptol',
-      'csh',
-      'Csound',
-      'CSP',
-      'CUDA',
-      'Curl',
-      'Curry',
-      'Cybil',
-      'Cyclone',
-      'Cython',
-      'Java',
-      'Javascript',
-      'M2001',
-      'M4',
-      'M#',
-      'Machine code',
-      'MAD (Michigan Algorithm Decoder)',
-      'MAD/I',
-      'Magik',
-      'Magma',
-      'make',
-      'Maple',
-      'MAPPER now part of BIS',
-      'MARK-IV now VISION:BUILDER',
-      'Mary',
-      'MASM Microsoft Assembly x86',
-      'MATH-MATIC',
-      'Mathematica',
-      'MATLAB',
-      'Maxima (see also Macsyma)',
-      'Max (Max Msp – Graphical Programming Environment)',
-      'Maya (MEL)',
-      'MDL',
-      'Mercury',
-      'Mesa',
-      'Metafont',
-      'Microcode',
-      'MicroScript',
-      'MIIS',
-      'Milk (programming language)',
-      'MIMIC',
-      'Mirah',
-      'Miranda',
-      'MIVA Script',
-      'ML',
-      'Model 204',
-      'Modelica',
-      'Modula',
-      'Modula-2',
-      'Modula-3',
-      'Mohol',
-      'MOO',
-      'Mortran',
-      'Mouse',
-      'MPD',
-      'Mathcad',
-      'MSIL – deprecated name for CIL',
-      'MSL',
-      'MUMPS',
-      'Mystic Programming L',
-    ],
-    maxTags: 10,
-    dropdown: {
-      maxItems: 20, // <- mixumum allowed rendered suggestions
-      classname: 'tags-look', // <- custom classname for this dropdown, so it could be targeted
-      enabled: 0, // <- show suggestions on focus
-      closeOnSelect: false, // <- do not hide the suggestions dropdown once an item has been selected
+      isInited = true;
+
+      // handle `change` event on the upload file input
+      onUploadInputChange = (e) => {
+        const uploader = e.target.closest('.js-upload__input');
+
+        if (uploader) {
+          alert(`selected ${uploader.files.length} files.`);
+        }
+      };
+
+      document.addEventListener('change', onUploadInputChange);
     },
-  });
+    destroy() {
+      document.removeEventListener('change', onUploadInputChange);
+    },
+  };
 })();
+
+// Initialize things, use `.destroy()` to clean it up when needed
+Sidebar.init();
+Suggester.init();
+Upload.init();
