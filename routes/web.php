@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\UploadController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -29,8 +30,8 @@ use Inertia\Inertia;
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get("/", [IndexController::class, 'index'])->name('index');
-    Route::get("/upload", [PhotoController::class, 'create'])->name('upload');
-    Route::post("/store", []);
+    Route::get("/upload", [UploadController::class, 'create'])->name('upload');
+    Route::post("/store", [UploadController::class, 'store'])->name('upload.store');
     Route::get("/dashboard", function () {
         return Inertia::render('Dashboard');
     });

@@ -17,11 +17,11 @@ class CreatePhotosTable extends Migration
             $table->id();
             $table->string('name');
             $table->bigInteger('size')->comment('size in bytes');
-            $table->integer('height');
-            $table->integer('width');
+            $table->integer('height')->nullable();
+            $table->integer('width')->nullable();
+            $table->string('file_type')->nullable();
             $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('parent_id')->constrained('photos');
-            $table->string('file_name');
+            $table->foreignId('parent_id')->nullable()->constrained('photos');
             $table->softDeletes();
             $table->timestamps();
         });
