@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\UploadController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 /*
@@ -33,7 +35,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get("/upload", [UploadController::class, 'create'])->name('upload');
     Route::post("/store", [UploadController::class, 'store'])->name('upload.store');
     Route::get("show/{id}/{name}", [PhotoController::class, 'show'])->name('photos.show');
+
     Route::get("/dashboard", function () {
         return Inertia::render('Dashboard');
     });
+
+    /** Routes related to tags */
+    Route::get("tags/search-by-partial")->name('tags.search_partial');
+    Route::resource('tags', TagController::class);
 });
