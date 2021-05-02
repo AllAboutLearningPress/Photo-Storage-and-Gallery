@@ -6,6 +6,7 @@ use App\Models\Photo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use phpDocumentor\Reflection\PseudoTypes\False_;
 
 class UploadController extends Controller
 {
@@ -59,23 +60,26 @@ class UploadController extends Controller
     {
         $data = $request->validate([
             'file' => 'required|mimes:jpg,jpeg,png,zip,psd|max:2048',
-            'name' => 'required|string'
+            'name' => 'string'
         ]);
         // generating a random string and getting the first 8 characters of the random
         // hex string. then adding an underscore to the file name. also all spaces are
         // removed from filename
-        $name = bin2hex(random_bytes(32)) . str_replace(" ", "_", $data['file']->getClientOriginalName()); //
-        $data['file']->storeAs("public/", $name, 'local');
+        $fileName = bin2hex(random_bytes(32)) . '.' . $data['file']->getClientOriginalExtension(); //
         $imgsize = getimagesize($data['file']->getPathName());
-
+        $data['file']->storeAs("full_size/", $fileName, 's3');
         // adding the photo entry
-        Photo::create([
-            'name' => $name,
+        $photoId = Photo::create([
+            'name' => $data['file']->getClientOriginalName(),
+            'file_name' => $fileName,
             'size' => $data['file']->getSize(),
             'height' => $imgsize[1],
             'width' => $imgsize[0],
             'file_type' => $data['file']->getClientMimeType(),
             'user_id' => Auth::user()->id,
-        ]);
+            'should_process' => False,
+        ])->id;
+
+        return $photoId;
     }
 }

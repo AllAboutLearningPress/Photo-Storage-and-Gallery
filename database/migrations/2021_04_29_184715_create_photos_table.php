@@ -22,6 +22,8 @@ class CreatePhotosTable extends Migration
             $table->string('file_type')->nullable();
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('parent_id')->nullable()->constrained('photos');
+            $table->string('file_name');
+            $table->boolean('should_process')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });
