@@ -179,6 +179,12 @@ textarea:not([disabled]):not([tabindex^="-"]),
   @include transition($input-transition);
 }
 
+// keep link outlines sane
+a[href]:not([tabindex^="-"]):focus-visible {
+  outline-color: $link-color;
+  outline-style: solid;
+}
+
 /*
   Misc modifications
 */

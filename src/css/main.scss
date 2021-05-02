@@ -760,13 +760,13 @@ $tag-delete-gap-x: .25em;
 /*
   Fullscreen upload target
 */
-.drop-target {
-  position: fixed;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 999;
-  background-color: transparentize($primary-color, .5);
-}
+//.drop-target {
+//  position: fixed;
+//  left: 0;
+//  top: 0;
+//  right: 0;
+//  bottom: 0;
+//  z-index: 999;
+//  background-color: transparentize($primary-color, .5);
+//}
 

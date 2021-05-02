@@ -10819,6 +10819,11 @@ textarea:not([disabled]):not([tabindex^="-"]),
   }
 }
 
+a[href]:not([tabindex^="-"]):focus-visible {
+  outline-color: #bb86fc;
+  outline-style: solid;
+}
+
 /*
   Misc modifications
 */
@@ -11632,12 +11637,3 @@ html::-webkit-scrollbar-track,
 /*
   Fullscreen upload target
 */
-.drop-target {
-  position: fixed;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 999;
-  background-color: rgba(187, 134, 252, 0.5);
-}
