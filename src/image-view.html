@@ -13,18 +13,187 @@
 
     <!-- Place favicon.ico in the root directory -->
 
-    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/bundle.css" />
 
     <!-- see https://github.com/h5bp/html5-boilerplate/blob/0ebf00b4c24ea4e27fdb63ff312740f3b6aa14fe/dist/doc/extend.md#theme-color -->
     <meta name="theme-color" content="#fafafa" />
   </head>
 
   <body>
-    <div class="wrapper">
-      <div class="image-view">
-        <div class="image-view__toolbar row">
-          <div class="image-view__toolbar-back col">
-            <button title="Go back" type="button" class="js-image-view__back btn btn-lg btn-outline-secondary">
+    <div class="image-view">
+      <aside
+        id="image-details-sidebar"
+        class="js-image-details-sidebar sidebar_always-hideable sidebar_right sidebar image-view__details"
+        tabindex="-1"
+        aria-labelledby="sidebar"
+      >
+        <div class="image-view__details-head sidebar__head">
+          <button
+            title="Close details"
+            type="button"
+            class="js-sidebar-toggle image-view__details-toggle btn-lg btn-close"
+            data-sidebar="#image-details-sidebar"
+            aria-label="Close details"
+          >
+            <span class="visually-hidden">Close details</span>
+          </button>
+        </div>
+        <div class="sidebar__body scrollbar">
+          <div class="image-view__details-content">
+            <dl class="dlist_0 dlist">
+              <dt>Title:</dt>
+              <dd>Image</dd>
+              <dt>Dimensions:</dt>
+              <dd>323x233</dd>
+              <dt>File size:</dt>
+              <dd>1 Mb</dd>
+              <dt>Family tree:</dt>
+              <dd><a href="#">Show</a></dd>
+              <dt><label for="tag-input">Tags:</label></dt>
+              <dd>
+                <div class="js-tags tags">
+                  <form
+                    onsubmit="this.elements['tag-input'].value && alert(`add tag: ${this.elements['tag-input'].value}`);return false;"
+                    action="#"
+                  >
+                    <div class="input-group mt-1 mb-3">
+                      <input
+                        id="tag-input"
+                        name="tag-input"
+                        class="js-tags__input form-control form-control-lg"
+                        type="text"
+                        placeholder="Specify tag"
+                        autocomplete="off"
+                      />
+                      <button
+                        title="Add tag"
+                        class="btn btn-lg btn-outline-secondary"
+                        type="submit"
+                      >
+                        Add
+                      </button>
+                    </div>
+                  </form>
+
+                  <div class="tags__list">
+                    <a class="tags__tag tag btn btn-secondary" href="#">
+                      Tag
+                      <object type="no/suchtype">
+                        <button
+                          title="Delete tag"
+                          type="button"
+                          class="js-tag-delete tag__delete btn-close"
+                          aria-label="Delete tag"
+                        >
+                          <span class="visually-hidden">Delete tag</span>
+                        </button>
+                      </object>
+                    </a>
+                    <a class="tags__tag tag btn btn-secondary" href="#">
+                      Some tag
+                      <object type="no/suchtype">
+                        <button
+                          title="Delete tag"
+                          type="button"
+                          class="js-tag-delete tag__delete btn-close"
+                          aria-label="Delete tag"
+                        >
+                          <span class="visually-hidden">Delete tag</span>
+                        </button>
+                      </object>
+                    </a>
+                    <a class="tags__tag tag btn btn-secondary" href="#">
+                      Another tag
+                      <object type="no/suchtype">
+                        <button
+                          title="Delete tag"
+                          type="button"
+                          class="js-tag-delete tag__delete btn-close"
+                          aria-label="Delete tag"
+                        >
+                          <span class="visually-hidden">Delete tag</span>
+                        </button>
+                      </object>
+                    </a>
+                    <a class="tags__tag tag btn btn-secondary" href="#">
+                      Tag
+                      <object type="no/suchtype">
+                        <button
+                          title="Delete tag"
+                          type="button"
+                          class="js-tag-delete tag__delete btn-close"
+                          aria-label="Delete tag"
+                        >
+                          <span class="visually-hidden">Delete tag</span>
+                        </button>
+                      </object>
+                    </a>
+                    <a class="tags__tag tag btn btn-secondary" href="#">
+                      My test tag
+                      <object type="no/suchtype">
+                        <button
+                          title="Delete tag"
+                          type="button"
+                          class="js-tag-delete tag__delete btn-close"
+                          aria-label="Delete tag"
+                        >
+                          <span class="visually-hidden">Delete tag</span>
+                        </button>
+                      </object>
+                    </a>
+                    <a class="tags__tag tag btn btn-secondary" href="#">
+                      Tag
+                      <object type="no/suchtype">
+                        <button
+                          title="Delete tag"
+                          type="button"
+                          class="js-tag-delete tag__delete btn-close"
+                          aria-label="Delete tag"
+                        >
+                          <span class="visually-hidden">Delete tag</span>
+                        </button>
+                      </object>
+                    </a>
+
+                    <a class="tags__tag tag btn btn-secondary" href="#">
+                      Sometagometagometagometagometagometagometagometagometagometagometagometagometagometagometagometag
+                      <object type="no/suchtype">
+                        <button
+                          title="Delete tag"
+                          type="button"
+                          class="js-tag-delete tag__delete btn-close"
+                          aria-label="Delete tag"
+                        >
+                          <span class="visually-hidden">Delete tag</span>
+                        </button>
+                      </object>
+                    </a>
+                    <a class="tags__tag tag btn btn-secondary" href="#">
+                      Some tag ometagomet agomet agometa etag
+                      <object type="no/suchtype">
+                        <button
+                          title="Delete tag"
+                          type="button"
+                          class="js-tag-delete tag__delete btn-close"
+                          aria-label="Delete tag"
+                        >
+                          <span class="visually-hidden">Delete tag</span>
+                        </button>
+                      </object>
+                    </a>
+                  </div>
+                </div>
+              </dd>
+            </dl>
+          </div>
+        </div>
+        <div class="overlaying-sidebar-mq-test-elem"></div>
+      </aside>
+      <div class="sidebar-backdrop"></div>
+      <div class="image-view__picture-area">
+        <div class="image-view__toolbar">
+          <div class="image-view__toolbar-back">
+            <button title="Go back" type="button" class="js-image-view__back btn">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -41,15 +210,29 @@
               <span class="visually-hidden">Go back</span>
             </button>
           </div>
-          <div class="image-view__toolbar-aside col">
-            <!--            <button title="See image details" type="button" class="js-image-view__info btn btn-lg btn-outline-secondary">-->
-            <!--              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">-->
-            <!--                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>-->
-            <!--                <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"></path>-->
-            <!--              </svg>-->
-            <!--              <span class="visually-hidden">See details</span>-->
-            <!--            </button>-->
-            <button title="Share image" type="button" class="js-image-view__share btn btn-lg btn-outline-secondary">
+          <div class="image-view__toolbar-aside">
+            <button
+              title="Show details"
+              type="button"
+              class="js-sidebar-toggle image-view__show-details btn"
+              data-sidebar="#image-details-sidebar"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="currentColor"
+                class="bi bi-info-circle"
+                viewBox="0 0 16 16"
+              >
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                <path
+                  d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"
+                />
+              </svg>
+              <span class="visually-hidden">Show details</span>
+            </button>
+            <button title="Share image" type="button" class="js-image-view__share btn">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -64,7 +247,7 @@
               </svg>
               <span class="visually-hidden">Share</span>
             </button>
-            <button title="Download image" type="button" class="js-image-view__download btn btn-lg btn-outline-secondary">
+            <button title="Download image" type="button" class="js-image-view__download btn">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -82,7 +265,7 @@
               </svg>
               <span class="visually-hidden">Download</span>
             </button>
-            <button title="Delete image" type="button" class="js-image-view__delete btn btn-lg btn-outline-secondary">
+            <button title="Delete image" type="button" class="js-image-view__delete btn">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -103,36 +286,38 @@
             </button>
           </div>
         </div>
-        <div class="image-view__content">
-          <div class="image-view__image">
-            <img class="image-view__pic" src="http://placekitten.com/800/800" alt="" />
-          </div>
-          <div class="image-view__aside">
-            <dl>
-              <dt>Dimensions:</dt>
-              <dd>323x233</dd>
-              <dt>File size:</dt>
-              <dd>1 Mb</dd>
-              <dt>Family tree:</dt>
-              <dd><a href="#">show family tree</a></dd>
-              <dt>Tags:</dt>
-              <dd>
-                <input
-                  type="text"
-                  name="detailed-tags"
-                  class="detailed-tags"
-                  placeholder="Add tags"
-                  value="tag1, tag2, some tag"
-                />
-              </dd>
-            </dl>
-          </div>
+        <!--
+          The values for required inline styles are the following:
+
+          `padding-top: min(x, y)`: x is an img aspect ratio calculated by a formula "img height / img width * 100%"; y — actual image height
+          `width`: actual img width
+
+          Add any elements inside (for preloading/etc.) but keep existing elements intact
+        -->
+        <div style="padding-top: min(100%, 800px); width: 800px" class="image-view__pic">
+          <img
+            draggable="false"
+            class="image-view__img"
+            width="800"
+            height="800"
+            src="http://placekitten.com/800/800"
+            alt=""
+          />
         </div>
+        <a
+          href="#"
+          class="image-view__picture-nav-prev image-view__picture-nav"
+          title="Previous image"
+        >
+          <span class="visually-hidden">Previous image</span>
+        </a>
+        <a href="#" class="image-view__picture-nav-next image-view__picture-nav" title="Next image">
+          <span class="visually-hidden">Next image</span>
+        </a>
       </div>
     </div>
 
     <script src="js/vendor/pig.min.js"></script>
-    <script src="js/vendor/tagify.min.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/bundle.js"></script>
   </body>
 </html>

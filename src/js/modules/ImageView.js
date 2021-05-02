@@ -1,0 +1,4 @@
+/**
+ * Detailed image view
+ */
+

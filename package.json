@@ -7,18 +7,20 @@
     "doc": "doc"
   },
   "dependencies": {
-    "@yaireo/tagify": "^4.1.1",
     "bootstrap": "^5.0.0-beta3",
     "bootstrap-icons": "^1.4.1",
     "pig.js": "github:schlosser/pig.js"
   },
   "devDependencies": {
-    "nodemon": "^2.0.7",
+    "copy-webpack-plugin": "^8.1.1",
     "prettier": "^2.2.1",
-    "sass": "^1.32.11"
+    "sass": "^1.32.11",
+    "webpack": "^5.36.1",
+    "webpack-cli": "^4.6.0"
   },
   "scripts": {
     "css-compile": "sass --load-path=node_modules --style compressed --source-map --embed-sources --no-error-css src/css/:src/css/",
-    "watch": "nodemon -e scss -x \"npm run css-compile\""
+    "bundle": "webpack",
+    "watch": "webpack --watch --progress"
   }
 }
