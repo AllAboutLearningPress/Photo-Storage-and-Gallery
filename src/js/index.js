@@ -1,8 +1,8 @@
-import Sidebar from './modules/Sidebar';
-import Search from './modules/Search';
-import Upload from './modules/Upload';
+import Sidebar from './components/Sidebar';
+import Search from './components/Search';
+import Upload from './components/Upload';
 
-import './modules/Tags';
+import './components/Tags';
 
 const contentSidebar = new Sidebar();
 const imageDetailsSidebar = new Sidebar();
