@@ -42,13 +42,17 @@ export default {
                         return;
                     }
                 }
-                this.filesArray.push({ file: file, serverTempName: null });
+                this.filesArray.push({
+                    file: file,
+                    id: null,
+                    isUploading: false,
+                });
             });
 
             console.log(this.filesArray);
 
             // start file uploading
-            //this.uploadFiles();
+            this.uploadFiles();
         },
 
         /**
@@ -67,7 +71,15 @@ export default {
             ) {
                 console.log(this.uploadCount);
                 console.log(this.fileCount);
-                this.uploadSingleFile(this.filesArray[this.fileCount].file);
+                // selecting a file to upload that is
+                // not currently uploading
+                for (let i = 0; i < this.filesArray.length; i++) {
+                    if (this.filesArray[i].isUploading == false) {
+                        this.uploadSingleFile(i);
+                        break;
+                    }
+                }
+
                 this.uploadCount++;
                 this.fileCount++;
             }
@@ -77,17 +89,23 @@ export default {
          * @property {File} file - The file to upload
          * @property {boolean} retry - True if file upload is retried, Defaults to False
          */
-        uploadSingleFile(file, retry = false) {
-            console.log("started ", file);
-            const formData = new FormData();
-            formData.append("file", file);
-            formData.append("name", file.name);
+        uploadSingleFile(filePostion, retry = false) {
+            console.log("started ", this.filesArray[filePostion].file.name);
 
+            // marking it as uploading so it wont be
+            // picked up again for uploading
+            this.filesArray[filePostion].isUploading = true;
+            const formData = new FormData();
+            formData.append("file", this.filesArray[filePostion].file);
             axios
-                .post("/store", formData)
+                .post(route("uploads.store_file"), formData)
                 .then((response) => {
                     console.log(response);
                     this.uploadCount--;
+
+                    // server returns the stored file id
+                    this.filesArray[filePostion].id = response.data;
+                    console.log(this.filesArray);
                     // upload finished. Now it will check and
                     // start a new upload
                     this.uploadFiles();
@@ -95,12 +113,12 @@ export default {
                 .catch((error) => {
                     console.log(error);
                     if (retry == false) {
-                        this.uploadSingleFile(file, (retry = True));
+                        this.uploadSingleFile(filePostion, (retry = True));
                     } else {
                         // Show error notification to user
                         console.error(
                             "File upload failed. File name: ",
-                            file.name
+                            this.filesArray[filePostion].file.name
                         );
                     }
                 });
