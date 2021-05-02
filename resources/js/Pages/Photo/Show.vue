@@ -11,6 +11,10 @@
 export default {
     props: {
         photo: Object,
+        jetstream: Object,
+        user: Object,
+        errorBags: Array,
+        errors: Object,
     },
     methods: {},
 };

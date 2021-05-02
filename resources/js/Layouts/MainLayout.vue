@@ -9,9 +9,6 @@ export default {
     components: {
         Header,
     },
-    props: {
-        photos: Array,
-    },
     methods: {},
 };
 </script>
