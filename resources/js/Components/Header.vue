@@ -1,6 +1,5 @@
 <template>
     <inertia-link href="/">home</inertia-link>
-    <inertia-link href="/upload">upload files</inertia-link>
     <header-search></header-search>
     <header-upload></header-upload>
 </template>

@@ -2,6 +2,11 @@
     <div>
         <input type="file" @change="previewFiles" multiple />
     </div>
+    <div>
+        <div v-for="fileEntry in filesArray" :key="fileEntry.file.name">
+            {{ fileEntry.file.name }}
+        </div>
+    </div>
 
     <button class="btn" v-on:click="uploadFiles">upload</button>
 </template>
@@ -10,7 +15,7 @@
 export default {
     data: function () {
         return {
-            filesArray: Array,
+            filesArray: [],
             maxUploadCount: 4,
             uploadCount: 0,
             fileCount: 0,
@@ -23,9 +28,27 @@ export default {
          */
         previewFiles(event) {
             console.log(event);
-            this.filesArray = Array.from(event.target.files);
+            console.log(this.filesArray);
+            Array.from(event.target.files).forEach((file) => {
+                let fileAlreadyExist = false;
+                for (let i = 0; i < this.filesArray.length; i++) {
+                    if (
+                        this.filesArray[i].file.name == file.name &&
+                        this.filesArray[i].file.size == file.size &&
+                        this.filesArray[i].file.type == file.type
+                    ) {
+                        // this file is already in the list and
+                        console.log("file already exists");
+                        return;
+                    }
+                }
+                this.filesArray.push({ file: file, serverTempName: null });
+            });
 
             console.log(this.filesArray);
+
+            // start file uploading
+            //this.uploadFiles();
         },
 
         /**
@@ -44,7 +67,7 @@ export default {
             ) {
                 console.log(this.uploadCount);
                 console.log(this.fileCount);
-                this.uploadSingleFile(this.filesArray[this.fileCount]);
+                this.uploadSingleFile(this.filesArray[this.fileCount].file);
                 this.uploadCount++;
                 this.fileCount++;
             }
