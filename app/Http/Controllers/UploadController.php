@@ -28,26 +28,27 @@ class UploadController extends Controller
      */
     public function store(Request $request)
     {
+        // 'required|mimes:jpg,jpeg,png,zip,psd|max:2048';
         $data = $request->validate([
-            'file' => 'required|mimes:jpg,jpeg,png,zip,psd|max:2048',
-            'name' => 'required|string'
+            'files.*.id' => 'exists:photos,id',
+            'files.*.name' => 'string',
+            'files.*.description' => 'string',
+            'files.*.tags' => 'exists:tags,id',
         ]);
-        // generating a random string and getting the first 8 characters of the random
-        // hex string. then adding an underscore to the file name. also all spaces are
-        // removed from filename
-        $name = bin2hex(random_bytes(32)) . str_replace(" ", "_", $data['file']->getClientOriginalName()); //
-        $data['file']->storeAs("public/", $name, 'local');
-        $imgsize = getimagesize($data['file']->getPathName());
 
-        // adding the photo entry
-        Photo::create([
-            'name' => $name,
-            'size' => $data['file']->getSize(),
-            'height' => $imgsize[1],
-            'width' => $imgsize[0],
-            'file_type' => $data['file']->getClientMimeType(),
-            'user_id' => Auth::user()->id,
-        ]);
+        foreach ($data['files'] as $file) {
+            $photo = Photo::where('id', '=', $file['id'])->get();
+
+            $photo->update([
+                'name' => $file['name'],
+                'description' => $file['description'] ? $file['description'] : null,
+                'should_process' => true
+            ]);
+
+            // updating tags
+            $photo->tags->sync($file['tags']);
+        }
+        return http_response_code(202);
     }
 
     /**
