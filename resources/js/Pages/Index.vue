@@ -3,7 +3,7 @@
         <inertia-link
             v-for="photo in photos"
             :key="photo.id"
-            :href="route('photos.show', [photo.id, photo.name])"
+            :href="route('photos.show', [photo.name])"
         >
             <img
                 :src="photo.name"
