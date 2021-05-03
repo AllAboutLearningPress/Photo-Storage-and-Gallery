@@ -32,6 +32,7 @@ use Inertia\Inertia;
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get("/", [IndexController::class, 'index'])->name('index');
+    Route::post("/load-more", [IndexController::class, 'fetch_more'])->name('index.fetch_more');
 
     /* Routes related to uploading files */
     Route::get("/upload", [UploadController::class, 'create'])->name('uploads.index');
