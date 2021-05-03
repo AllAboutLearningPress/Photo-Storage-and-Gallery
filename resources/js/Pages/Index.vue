@@ -55,9 +55,15 @@ export default {
             const formData = new FormData();
             formData.append("offset", this.offset);
             axios
-                .post(route("index.fetch_more"), formData)
+                .post(route("index.load_more"), formData)
                 .then((resp) => {
                     console.log(resp);
+                    if (resp.data.length == 0) {
+                        console.log("No more photos");
+                        return;
+                    }
+                    this.photos.push(...resp.data);
+                    this.offset += 5;
                 })
                 .catch((err) => {
                     console.error(err);
