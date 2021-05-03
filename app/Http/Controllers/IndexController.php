@@ -17,15 +17,16 @@ class IndexController extends Controller
      */
     public function index()
     {
-        $photos =  Photo::limit(2)->get();
+        $photos =  Photo::limit(5)->get();
         return Inertia::render('Index', [
             'photos' => $this->add_temp_url($photos)
         ]);
     }
 
-    public function fetch_more($requst)
+    public function fetch_more(Request $request)
     {
-        $data = $requst->validate([
+
+        $data = $request->validate([
             'offset' => "required|integer"
         ]);
 
@@ -33,6 +34,10 @@ class IndexController extends Controller
         return $this->add_temp_url($photos);
     }
 
+    /**
+     * @param Array $photos - The array of photos returned by Laravel eloquet
+     * @return Array Returns the same array with added url parameter
+     */
     public function add_temp_url($photos)
     {
         foreach ($photos as $photo) {

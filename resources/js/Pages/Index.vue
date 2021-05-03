@@ -24,6 +24,45 @@ export default {
     props: {
         photos: Array,
     },
-    methods: {},
+    data() {
+        return {
+            offset: 5,
+        };
+    },
+    mounted() {
+        this.scroll();
+    },
+    methods: {
+        scroll() {
+            window.onscroll = () => {
+                let bottomOfWindow =
+                    Math.max(
+                        window.pageYOffset,
+                        document.documentElement.scrollTop,
+                        document.body.scrollTop
+                    ) +
+                        window.innerHeight ===
+                    document.documentElement.offsetHeight;
+
+                if (bottomOfWindow) {
+                    console.log("scrolled to bottom. should load more");
+                    this.fetchMorePhotos();
+                }
+            };
+        },
+
+        fetchMorePhotos() {
+            const formData = new FormData();
+            formData.append("offset", this.offset);
+            axios
+                .post(route("index.fetch_more"), formData)
+                .then((resp) => {
+                    console.log(resp);
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        },
+    },
 };
 </script>
