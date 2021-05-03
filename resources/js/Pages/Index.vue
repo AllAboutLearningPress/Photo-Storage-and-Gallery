@@ -6,7 +6,7 @@
             :href="route('photos.show', [photo.name])"
         >
             <img
-                :src="photo.name"
+                :src="photo.url"
                 :alt="photo.name"
                 style="height: 300px; width: 300px"
             />
