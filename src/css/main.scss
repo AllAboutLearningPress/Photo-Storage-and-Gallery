@@ -183,6 +183,14 @@ $header-height: 74px;
     padding-left: $input-padding-x-lg;
   }
 }
+
+// match specificity from `custom-bootstrap.scss`
+.search__input:not([type=hidden]):not([type=radio]):not([disabled]):not([tabindex^="-"]),
+.search__field-show.has-no-transition:not([disabled]):not([tabindex^="-"]) {
+  @include media-breakpoint-down(sm) {
+    transition: none;
+  }
+}
 .is-suggesting .search__input {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
@@ -375,7 +383,6 @@ $sidebar-animation-duration: 0.2s;
     Logo
 */
 .logo {
-  text-transform: none;
   padding-left: 0.5rem;
   padding-right: 0.5rem;
 
@@ -515,6 +522,7 @@ $sidebar-animation-duration: 0.2s;
 $image-view-sidebar-width: 400px;
 $image-view-toolbar-height: 72px;
 $image-view-toolbar-y-pad: .907rem;
+$image-view-image-actions-bp: 450px;
 
 .image-view {
   height: 100%;
@@ -549,14 +557,48 @@ $image-view-toolbar-y-pad: .907rem;
   height: $image-view-toolbar-height;
   padding: $image-view-toolbar-y-pad $main-x-pad;
   background-color: transparentize($page-bg, 0.5);
+  white-space: nowrap;
 }
-.image-view__toolbar-back,
+.image-view__toolbar-main,
 .image-view__toolbar-aside {
   flex-grow: 0;
 }
+.image-view__toolbar-main {
+  margin-left: -$main-x-pad;
+
+  @media (min-width: $image-view-image-actions-bp) {
+    margin-left: 0;
+  }
+}
 .image-view__toolbar-aside {
+  display: flex;
+  flex-wrap: nowrap;
   margin-left: auto;
   white-space: nowrap;
+
+  margin-right: -$main-x-pad;
+
+  @media (min-width: $image-view-image-actions-bp) {
+    margin-right: 0;
+  }
+}
+
+$image-view-toolbar-action-sections-gap: .5rem;
+
+.image-view__image-actions {
+  padding-right: $image-view-toolbar-action-sections-gap / 2.5;
+
+  @media (min-width: $image-view-image-actions-bp) {
+    padding-right: $image-view-toolbar-action-sections-gap;
+  }
+}
+.image-view__main-actions {
+  border-left: 1px solid $contrast2;
+  padding-left: $image-view-toolbar-action-sections-gap / 2.5;
+
+  @media (min-width: $image-view-image-actions-bp) {
+    padding-left: $image-view-toolbar-action-sections-gap;
+  }
 }
 
 .image-view__pic {
@@ -568,17 +610,20 @@ $image-view-toolbar-y-pad: .907rem;
   height: 0;
   max-width: 100%;
 }
-.image-view__img {
+.image-view__img,
+.image-view__picture-nav {
   position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
   -o-user-select: none;
   user-select: none;
+}
+.image-view__img {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
 }
 
 $image-view-picture-nav-size: 36px;
@@ -586,11 +631,11 @@ $image-view-picture-nav-color: $page-text-color;
 $image-view-picture-nav-gap-y: 1rem;
 
 .image-view__picture-nav {
-  position: absolute;
   z-index: 1;
   top: 100px;
   bottom: 0;
   width: 50%;
+  outline: none !important;
 }
 .image-view__picture-nav::before,
 .image-view__picture-nav::after {
@@ -666,6 +711,8 @@ $image-view-picture-nav-gap-y: 1rem;
 }
 .image-view__details-toggle {
   margin-left: -$btn-close-padding-x;
+  position: relative;
+  top: -.25em;
 }
 
 /*
@@ -734,7 +781,6 @@ $tag-delete-gap-x: .25em;
 .tag {
   position: relative;
   padding-right: calc(#{$btn-close-width} + #{$input-btn-focus-width} + #{$btn-close-padding-x * 2} + #{$tag-delete-gap-x});
-  text-transform: none;
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
@@ -760,13 +806,49 @@ $tag-delete-gap-x: .25em;
 /*
   Fullscreen upload target
 */
-//.drop-target {
-//  position: fixed;
-//  left: 0;
-//  top: 0;
-//  right: 0;
-//  bottom: 0;
-//  z-index: 999;
-//  background-color: transparentize($primary-color, .5);
-//}
+$drop-target-transition-duration: .2s;
 
+.drop-target {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  background-color: transparentize($dark, .05);
+  opacity: 0;
+  visibility: hidden;
+  will-change: opacity;
+}
+.drop-target.is-active {
+  visibility: visible;
+  opacity: 1;
+  transition: visibility $drop-target-transition-duration, opacity $drop-target-transition-duration;
+}
+.drop-target__message {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 1200px;
+  max-width: 100%;
+  padding: 1em;
+  font-size: 3rem;
+  text-align: center;
+}
+
+/*
+  Drop manager
+*/
+.drop-manager:not(.is-single-image) .drop-manager__note,
+.drop-manager__note_upload,
+.drop-manager.is-upload-preferred .drop-manager__note_search {
+  display: none;
+}
+.drop-manager.is-upload-preferred .drop-manager__note_upload {
+  display: block;
+}
+
+.drop-manager__note {
+  font-size: .65em;
+}

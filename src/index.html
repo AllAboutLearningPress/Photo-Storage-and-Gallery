@@ -102,7 +102,11 @@
                   />
                 </svg>
                 <span class="visually-hidden">Search by image</span>
-                <input class="js-search__image-input button-file__input" type="file" />
+                <input
+                  class="js-search__image-input button-file__input"
+                  type="file"
+                  accept="image/jpeg, image/png, image/gif, image/tiff, image/vnd.adobe.photoshop"
+                />
               </label>
               <div class="js-search__suggest search__suggest">
                 <div class="search__suggest-content scrollbar">
@@ -193,12 +197,23 @@
               ></path>
             </svg>
             <span class="header__action-btn__txt">Upload</span>
-            <input class="js-upload__input button-file__input" type="file" multiple />
+            <input
+              class="js-upload__input button-file__input"
+              type="file"
+              accept="image/jpeg, image/png, image/gif, image/tiff, image/vnd.adobe.photoshop"
+              multiple
+            />
+            <span class="visually-hidden">Upload more</span>
           </label>
         </div>
       </header>
       <div class="content">
-        <aside id="content-sidebar" class="js-content-sidebar sidebar" tabindex="-1" aria-labelledby="sidebar">
+        <aside
+          id="content-sidebar"
+          class="js-content-sidebar sidebar"
+          tabindex="-1"
+          aria-labelledby="sidebar"
+        >
           <div class="sidebar__head">
             <button
               title="Close menu"
@@ -236,7 +251,38 @@
           <div id="pig" class="gallery"></div>
         </main>
       </div>
-      <div class="drop-target"></div>
+    </div>
+
+    <div class="js-drop-target drop-target">
+      <div class="drop-target__message">
+        Drop anywhere
+        <div class="js-drop-manager drop-manager">
+          <div class="drop-manager__note_search drop-manager__note">
+            (hold the Shift key to search)
+          </div>
+          <div class="drop-manager__note_upload drop-manager__note">
+            (release the Shift key to upload)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="upload-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Understood</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script src="js/vendor/pig.min.js"></script>

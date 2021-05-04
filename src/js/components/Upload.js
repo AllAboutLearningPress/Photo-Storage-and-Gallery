@@ -1,47 +1,76 @@
+import { addEventListener } from '../utils';
+
+import SingleImageDropManager from './SingleImageDropManager';
+import Modal from 'bootstrap/js/dist/modal';
+import Toast from 'bootstrap/js/dist/toast';
+
 /**
  * Upload
  */
 
 class Upload {
-  constructor() {
-    this.upload = null;
-    this.handlers = null;
-
-    this.isInited = false;
-  }
-  init(uploadElem) {
+  constructor(uploadElem) {
     this.upload = uploadElem;
 
-    if (this.isInited || !this.upload) {
+    if (!this.upload) {
       return;
     }
 
     const that = this;
 
-    this.handlers = {
-      // handle `change` event on the upload file input
-      onUploadInputChange(e) {
-        const uploader = e.target.closest('.js-upload__input');
+    this.fileInput = this.upload.querySelector('.js-upload__input');
+    this.dropManager = new SingleImageDropManager(document.querySelector('.js-drop-manager'));
 
-        if (uploader) {
-          alert(`selected ${uploader.files.length} files.`);
-        }
+    function handleFileDrop(e) {
+      const isUploadDrop =
+        !that.dropManager.isInited || that.dropManager.getLatestDropStats().upload;
+
+      if (isUploadDrop) {
+        that.handleUpload(e.detail.fileEntriesArray);
       }
-    };
+    }
 
-    this.upload.addEventListener('change', this.handlers.onUploadInputChange);
+    function handleFileinputChange(e) {
+      that.handleUpload([...e.target.files]);
+    }
+
+    this.handlers = [
+      addEventListener(this.fileInput, 'change', (e) => {
+        handleFileinputChange(e);
+      }),
+      addEventListener(document, 'items-dropped', (e) => {
+        handleFileDrop(e);
+      }),
+    ];
 
     this.isInited = true;
   }
+  handleUpload(filesArray) {
+    if (!filesArray.length) {
+      return;
+    }
+
+    alert(`initiate upload of ${filesArray.length} files`);
+
+    // filesArray.forEach((file) => {
+    //   console.log(file.name);
+    // });
+  }
   destroy() {
     //unbind events
-    this.upload.removeEventListener('change', this.handlers.onUploadInputChange);
+    this.handlers.forEach((fn) => fn && fn());
 
-    // dereference handler functions object
+    // dereference handlers array
     this.handlers = null;
 
     // dereference DOM nodes
     this.upload = null;
+    this.fileInput = null;
+
+    if (this.dropManager) {
+      this.dropManager.destroy();
+      this.dropManager = null;
+    }
 
     this.isInited = false;
   }

@@ -1,4 +1,6 @@
-import { debounce } from '../utils';
+import { debounce, addEventListener } from '../utils';
+
+import SingleImageDropManager from './SingleImageDropManager';
 
 /**
  * Search bar
@@ -6,20 +8,149 @@ import { debounce } from '../utils';
 const activeKlass = 'is-searchable';
 const suggestingKlass = 'is-suggesting';
 const highlightedSuggestionKlass = 'is-highlighted';
+const noTransitionKlass = 'has-no-transition';
 
 class Search {
-  constructor() {
-    this.handlers = null;
-    this.header = null;
-    this.search = null;
-    this.field = null;
-    this.input = null;
-    this.searchImageInput = null;
-    this.suggester = null;
-    this.mqTestElem = null;
+  constructor(searchElem) {
+    this.search = searchElem;
 
-    this.isInited = false;
-    this.isSearchImageFileinputActivated = false;
+    if (!this.search) {
+      return;
+    }
+
+    const that = this;
+
+    this.dropManager = new SingleImageDropManager(document.querySelector('.js-drop-manager'));
+
+    this.header = this.search.closest('.js-search-header');
+    this.field = this.search.querySelector('.js-search__field');
+    this.input = this.search.querySelector('.js-search__input');
+    this.searchImageInput = this.search.querySelector('.js-search__image-input');
+    this.suggester = this.search.querySelector('.js-search__suggest');
+    this.mqTestElem = this.search.querySelector('.search-dumb-mq-tester');
+
+    this.dropManager = new SingleImageDropManager(document.querySelector('.js-drop-manager'));
+
+    function handleImageSearch(imageFileEntry) {
+      alert(`searching by file: ${imageFileEntry.name}`);
+    }
+
+    function handleFileDrop(e) {
+      const isSearchDrop =
+        !that.dropManager.isInited || that.dropManager.getLatestDropStats().search;
+
+      if (isSearchDrop) {
+        handleImageSearch(e.detail.fileEntriesArray[0]);
+      }
+    }
+
+    this.handlers = [
+      addEventListener(this.header, 'click', (e) => {
+        const togglerElem = e.target.closest('.js-search__toggle');
+
+        if (togglerElem) {
+          this.toggleSearchfield({
+            togglerElem,
+            resetFocus: !e.detail,
+          });
+        }
+      }),
+      addEventListener(this.search, 'submit', (e) => {
+        e.preventDefault();
+      }),
+      addEventListener(this.input, 'input', (e) => {
+        this.toggleSuggester({
+          inputElem: e.target,
+        });
+      }),
+      addEventListener(this.searchImageInput, 'focusin', () => {
+        this.isSearchImageFileinputActivated = false;
+      }),
+      addEventListener(this.searchImageInput, 'click', () => {
+        this.isSearchImageFileinputActivated = true;
+      }),
+      // inactivate search field on "loosing focus" within (an actual logic is a bit more complex)
+      addEventListener(this.field, 'focusout', (e) => {
+        if (
+          (e.relatedTarget || !this.isSearchImageFileinputActivated) &&
+          !this.field.contains(e.relatedTarget)
+        ) {
+          const initialTrigger = this.header._trigger;
+
+          if (initialTrigger) {
+            initialTrigger.classList.add(noTransitionKlass);
+            setTimeout(() => {
+              initialTrigger.classList.remove(noTransitionKlass);
+            }, 0);
+          }
+
+          this.toggleSearchfield({
+            force: false,
+            resetFocus: true,
+          });
+        }
+      }),
+      addEventListener(document, 'keydown', (e) => {
+        if (e.key === 'Escape') {
+          this.toggleSearchfield({
+            force: false,
+            resetFocus: true,
+          });
+        }
+      }),
+      addEventListener(this.suggester, 'click', (e) => {
+        const item = e.target.closest('.js-search__suggest-item');
+
+        if (item) {
+          this.unhighlightSuggestion();
+          this.selectSuggestion(item.dataset.suggestionId);
+        }
+      }),
+      // handle up/down arrows to highlight suggestions
+      addEventListener(this.input, 'keydown', (e) => {
+        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+          e.preventDefault();
+
+          const suggesterItems = [].slice.call(
+            this.suggester.querySelectorAll('.js-search__suggest-item')
+          );
+          let highlightedIndex = suggesterItems.findIndex((el) =>
+            el.classList.contains(highlightedSuggestionKlass)
+          );
+          const increment = e.key === 'ArrowDown' ? 1 : -1;
+          const nextIndex = highlightedIndex + increment;
+          const next = suggesterItems[nextIndex < -1 ? suggesterItems.length - 1 : nextIndex];
+
+          this.unhighlightSuggestion();
+          next && this.highlightSuggestion(next);
+        }
+
+        if (e.key === 'Enter') {
+          const highlightedItem = this.suggester.querySelector(`.${highlightedSuggestionKlass}`);
+
+          if (highlightedItem) {
+            this.selectSuggestion(highlightedItem.dataset.suggestionId);
+          } else {
+            this.search.submit();
+          }
+        }
+      }),
+      addEventListener(document, 'items-dropped', (e) => {
+        handleFileDrop(e);
+      }),
+      addEventListener(
+        window,
+        'resize',
+        debounce(50, () => this.cleanup)
+      ),
+      addEventListener(
+        window,
+        'orientationchange',
+        debounce(0, () => this.cleanup)
+      ),
+    ];
+
+    this.isInited = true;
   }
 
   /**
@@ -68,7 +199,7 @@ class Search {
   }
 
   /**
-   * Toggle the "activated" state of a search field (i.e. when it is hidden by default on narrow screen)
+   * Toggle the "activated" state of a search field (when it is hidden by default on narrow screen)
    * @param force{Boolean} - optional activated state
    * @param resetFocus{Boolean} - optional flag to reset a focus to the element which was focused before toggling happened
    * @param togglerElem{HTMLElement} - optional DOM element by which the action was performed
@@ -86,7 +217,12 @@ class Search {
 
     setTimeout(() => {
       if (resetFocus && !isToggled && this.header._trigger) {
-        this.header._trigger.focus();
+        const currentTrigger = this.header._trigger;
+        currentTrigger.classList.add(noTransitionKlass);
+        currentTrigger.focus();
+        setTimeout(() => {
+          currentTrigger.classList.remove(noTransitionKlass);
+        }, 0);
       }
 
       this.header._trigger = togglerElem;
@@ -105,145 +241,12 @@ class Search {
       this.toggleSearchfield();
     }
   }
-  init(searchElem) {
-    this.search = searchElem;
-
-    if (this.isInited || !this.search) {
-      return;
-    }
-
-    const that = this;
-
-    this.header = this.search.closest('.js-search-header');
-    this.field = this.search.querySelector('.js-search__field');
-    this.input = this.search.querySelector('.js-search__input');
-    this.searchImageInput = this.search.querySelector('.js-search__image-input');
-    this.suggester = this.search.querySelector('.js-search__suggest');
-    this.mqTestElem = this.search.querySelector('.search-dumb-mq-tester');
-
-    this.handlers = {
-      // handle search form `submit` event
-      onSearchSubmit(e) {
-        e.preventDefault();
-      },
-      // handle `input` event inside search input
-      onSearchInput(e) {
-        that.toggleSuggester({
-          inputElem: e.target,
-        });
-      },
-      onSearchImageFocusin() {
-        that.isSearchImageFileinputActivated = false;
-      },
-      onSearchImageClick() {
-        that.isSearchImageFileinputActivated = true;
-      },
-      // toggle search field by clicking on specific toggler elements
-      onFieldTogglerClick(e) {
-        const togglerElem = e.target.closest('.js-search__toggle');
-
-        if (togglerElem) {
-          that.toggleSearchfield({
-            togglerElem,
-            resetFocus: !e.detail,
-          });
-        }
-      },
-      // inactivate search field on "loosing focus" within (an actual logic is a bit more complex)
-      onFieldFocusout(e) {
-        if (
-          (e.relatedTarget || !that.isSearchImageFileinputActivated) &&
-          !that.field.contains(e.relatedTarget)
-        ) {
-          that.toggleSearchfield({
-            force: false,
-            resetFocus: true,
-          });
-        }
-      },
-      // close search field on escape
-      onEscapeKey(e) {
-        if (e.key === 'Escape') {
-          that.toggleSearchfield({
-            force: false,
-            resetFocus: true,
-          });
-        }
-      },
-      // handle suggestion item selection
-      onSuggestionItemClick(e) {
-        const item = e.target.closest('.js-search__suggest-item');
-
-        if (item) {
-          that.unhighlightSuggestion();
-          that.selectSuggestion(item.dataset.suggestionId);
-        }
-      },
-      // handle up/down arrows to highlight suggestions
-      onSearchKeydown(e) {
-        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-          e.preventDefault();
-
-          const suggesterItems = [].slice.call(
-            that.suggester.querySelectorAll('.js-search__suggest-item')
-          );
-          let highlightedIndex = suggesterItems.findIndex((el) =>
-            el.classList.contains(highlightedSuggestionKlass)
-          );
-          const increment = e.key === 'ArrowDown' ? 1 : -1;
-          const nextIndex = highlightedIndex + increment;
-          const next = suggesterItems[nextIndex < -1 ? suggesterItems.length - 1 : nextIndex];
-
-          that.unhighlightSuggestion();
-          next && that.highlightSuggestion(next);
-        }
-
-        if (e.key === 'Enter') {
-          const highlightedItem = that.suggester.querySelector(`.${highlightedSuggestionKlass}`);
-
-          if (highlightedItem) {
-            that.selectSuggestion(highlightedItem.dataset.suggestionId);
-          } else {
-            that.search.submit();
-          }
-        }
-      },
-
-      // window resize handlers
-      resizeHandler: debounce(50, () => that.cleanup),
-      orientationchangeHandler: debounce(0, () => that.cleanup),
-    };
-
-    this.header.addEventListener('click', this.handlers.onFieldTogglerClick);
-    this.search.addEventListener('submit', this.handlers.onSearchSubmit);
-    this.input.addEventListener('input', this.handlers.onSearchInput);
-    this.searchImageInput.addEventListener('focusin', this.handlers.onSearchImageFocusin);
-    this.searchImageInput.addEventListener('click', this.handlers.onSearchImageClick);
-    this.field.addEventListener('focusout', this.handlers.onFieldFocusout);
-    document.addEventListener('keydown', this.handlers.onEscapeKey);
-    this.suggester.addEventListener('click', this.handlers.onSuggestionItemClick);
-    this.input.addEventListener('keydown', this.handlers.onSearchKeydown);
-    window.addEventListener('resize', this.handlers.resizeHandler);
-    window.addEventListener('orientationchange', this.handlers.orientationchangeHandler);
-
-    this.isInited = true;
-  }
   destroy() {
     if (this.isInited) {
       //unbind events
-      this.header.removeEventListener('click', this.handlers.onFieldTogglerClick);
-      this.search.removeEventListener('submit', this.handlers.onSearchSubmit);
-      this.input.removeEventListener('input', this.handlers.onSearchInput);
-      this.searchImageInput.removeEventListener('focusin', this.handlers.onSearchImageFocusin);
-      this.searchImageInput.removeEventListener('click', this.handlers.onSearchImageClick);
-      this.field.removeEventListener('focusout', this.handlers.onFieldFocusout);
-      document.removeEventListener('keydown', this.handlers.onEscapeKey);
-      this.suggester.removeEventListener('click', this.handlers.onSuggestionItemClick);
-      this.input.removeEventListener('keydown', this.handlers.onSearchKeydown);
-      window.removeEventListener('resize', this.handlers.resizeHandler);
-      window.removeEventListener('orientationchange', this.handlers.orientationchangeHandler);
+      this.handlers.forEach((fn) => fn && fn());
 
-      // dereference handler functions object
+      // dereference handlers array
       this.handlers = null;
 
       // dereference DOM nodes
@@ -254,6 +257,9 @@ class Search {
       this.searchImageInput = null;
       this.suggester = null;
       this.mqTestElem = null;
+
+      this.dropManager.destroy();
+      this.dropManager = null;
 
       this.isInited = false;
     }

@@ -1,4 +1,4 @@
-import { patchFocus, debounce } from '../utils';
+import { patchFocus, debounce, addEventListener } from '../utils';
 
 /**
  * Toggle sidebar
@@ -19,20 +19,10 @@ document.addEventListener('click', (e) => {
 });
 
 class Sidebar {
-  constructor() {
-    this.sidebar = null;
-    this.backdrop = null;
-    this.overlayingSidebarMqTestElem = null;
-
-    this.handlers = null;
-    this.cleanupFuntions = null;
-
-    this.isInited = false;
-  }
-  init(sidebarElem) {
+  constructor(sidebarElem) {
     this.sidebar = sidebarElem;
 
-    if (this.isInited || !this.sidebar) {
+    if (!this.sidebar) {
       return;
     }
 
@@ -91,59 +81,43 @@ class Sidebar {
       }
     }
 
-    this.handlers = {
-      // activate sidebar by clicking on specific toggler elements
-      onTogglerClick(e) {
+    this.handlers = [
+      addEventListener(document, 'sidebar-toggle-click', (e) => {
         const targetSidebar = document.querySelector(e.target.dataset && e.target.dataset.sidebar);
 
         if (targetSidebar === that.sidebar) {
           toggleSidebar({ toggler: e.target });
         }
-      },
-
-      // handle the click on the backdrop
-      onBackdropClick() {
-        toggleSidebar({ force: false, resetFocus: false });
-      },
-
-      // handle escape key
-      onEscapeKey(e) {
+      }),
+      addEventListener(document, 'keydown', (e) => {
         if (e.key === 'Escape') {
           toggleSidebar({ force: false });
         }
-      },
-
-      // window resize handlers
-      resizeHandler: debounce(100, cleanup),
-      orientationchangeHandler: debounce(0, cleanup),
-    };
+      }),
+      this.backdrop &&
+        addEventListener(this.backdrop, 'click', () => {
+          toggleSidebar({ force: false, resetFocus: false });
+        }),
+      addEventListener(window, 'resize', debounce(100, cleanup)),
+      addEventListener(window, 'orientationchange', debounce(0, cleanup)),
+    ];
 
     destroyPatchedFocus = patchFocus('sidebarshow', 'sidebarhide', () => isSidebarOverlaying());
 
     this.cleanupFuntions.push(destroyPatchedFocus);
 
-    document.addEventListener('sidebar-toggle-click', this.handlers.onTogglerClick);
-    document.addEventListener('keydown', this.handlers.onEscapeKey);
-    this.backdrop && this.backdrop.addEventListener('click', this.handlers.onBackdropClick);
-    window.addEventListener('resize', this.handlers.resizeHandler);
-    window.addEventListener('orientationchange', this.handlers.orientationchangeHandler);
-
     this.isInited = true;
   }
   destroy() {
     if (this.isInited) {
-      // call any existing cleanup functions and clear the array
+      // call any existing cleanup functions and dereference the array
       this.cleanupFuntions.forEach((fn) => fn());
-      this.cleanupFuntions.length = 0;
+      this.cleanupFuntions = null;
 
       //unbind events
-      document.removeEventListener('sidebar-toggle-click', this.handlers.onTogglerClick);
-      document.removeEventListener('keydown', this.handlers.onEscapeKey);
-      this.backdrop && this.backdrop.removeEventListener('click', this.handlers.onBackdropClick);
-      window.removeEventListener('resize', this.handlers.resizeHandler);
-      window.removeEventListener('orientationchange', this.handlers.orientationchangeHandler);
+      this.handlers.forEach((fn) => fn && fn());
 
-      // dereference handler functions object
+      // dereference handlers array
       this.handlers = null;
 
       // dereference DOM nodes

@@ -100,3 +100,31 @@ export function debounce(wait, func, immediate) {
     if (callNow) func.apply(context, args);
   };
 }
+
+/**
+ * Helper of `addEventListener`.
+ * @param elem{HTMLElement} - element to bind event
+ * @param type{String} - event type
+ * @param listener{Function} - event listener
+ * @param options{Boolean|Object} - optional parameter which passed as a third parameter to native `addEventListener`
+ * @returns {function(): *} - the unbind callback
+ */
+export function addEventListener(elem, type, listener, options) {
+  elem.addEventListener(type, listener, options);
+
+  return () => elem.removeEventListener(type, listener, options);
+}
+
+/**
+ * Detect if a specific key is down.
+ * `key` should be a valid `KeyboardEvent.key` value: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key
+ * @returns {function(*=): *|boolean}
+ */
+export const isKeyDown = (function isKeyDown() {
+  const state = {};
+
+  window.addEventListener('keyup', (e) => (state[e.key] = false));
+  window.addEventListener('keydown', (e) => (state[e.key] = true));
+
+  return (key) => (state.hasOwnProperty(key) && state[key]) || false;
+})();

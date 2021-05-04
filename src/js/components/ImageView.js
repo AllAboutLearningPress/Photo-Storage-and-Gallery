@@ -1,4 +1,0 @@
-/**
- * Detailed image view
- */
-
