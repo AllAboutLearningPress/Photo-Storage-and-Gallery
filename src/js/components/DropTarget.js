@@ -59,8 +59,8 @@ async function readEntriesPromise(directoryReader) {
   }
 }
 
-const dropTargetAvailableEventName = 'drop-target-available';
-const dropTargetUnavailableEventName = 'drop-target-unavailable';
+const dropTargetAvailableEventName = 'drop-target-active';
+const dropTargetUnavailableEventName = 'drop-target-inactive';
 
 const activeDropTargetKlass = 'is-active';
 
@@ -68,8 +68,8 @@ const activeDropTargetKlass = 'is-active';
  * Global drop target. Processes drag and drop, dispatches custom event with an array of dropped file entries (see below).
  *
  * Custom events (which bubble) are triggered at the drop target DOM element:
- * - `drop-target-available`: the drop target is shown and ready for drop, the event passes along the `dataTransfer` object for the `dragenter` event
- * - `drop-target-unavailable`: the drop target is hidden
+ * - `drop-target-active`: the drop target is shown and ready for drop, the event passes along the `dataTransfer` object for the `dragenter` event
+ * - `drop-target-inactive`: the drop target is hidden
  * - `items-dropped`: the items were the drop target, the event passes along the array of items with a type of FileSystemFileEntry
  *
  * For constructor, pass an optional second argument — an array of strings, representing allowed file extensions for the drop,

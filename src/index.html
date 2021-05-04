@@ -35,24 +35,6 @@
           <a class="logo btn-lg btn" href="#">Photos</a>
         </div>
         <div class="header__slot_search header__slot">
-          <!--
-            Search by image, and general images upload:
-
-            1. Mobile devices require a button which activates a system file picker, because it's the only way to upload files there
-            2. It isn't possible to reliably detect mobile devices. Touch support and screen size aren't
-            reliable signs of a mobile device like iPhone (touch can be present on desktop,
-            screen size doesn't signify anything except a screen size, UA sniffing is fragile). That's the point of a whole mobile-first movement:
-            can't detect mobile, so design everything with a mobile in mind by default
-            3. Because of 1 and 2, we have a button to pick an image for a search everywhere, including desktop
-            4. Adding yet another button to trigger a separate drag-n-drop for image search (and again everywhere, because we can't reliably distinguish a mobile device)
-            looks like a bad idea
-
-            So it comes to this:
-            - we have 2 buttons, each triggering a system file picker: one for image search, another for files upload, which are the only working things on mobile
-            - we also have 2 drop zones for drag-n-drop: one for image search, another for files upload
-
-            That's how I implemented it, but feel free to propose alternatives.
-          -->
           <form action="#" class="js-search search">
             <div class="js-search__field search__field">
               <button
