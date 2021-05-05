@@ -31,7 +31,7 @@
           <button
             title="Close details"
             type="button"
-            class="js-sidebar-toggle image-view__details-toggle btn-lg btn-close"
+            class="js-sidebar-toggle image-view__details-toggle btn-subtle btn-lg btn-close"
             data-sidebar="#image-details-sidebar"
             aria-label="Close details"
           >
@@ -43,12 +43,27 @@
             <dl class="dlist_0 dlist">
               <dt>Title:</dt>
               <dd>Image</dd>
+              <dt>Created:</dt>
+              <dd>21.21.21</dd>
+              <dt>Uploaded:</dt>
+              <dd>21.21.21</dd>
               <dt>Dimensions:</dt>
               <dd>323x233</dd>
               <dt>File size:</dt>
               <dd>1 Mb</dd>
               <dt>Family tree:</dt>
               <dd><a href="#">Show</a></dd>
+              <dt>Uploaded by:</dt>
+              <dd>username</dd>
+              <dt>Location map:</dt>
+              <dd>LocationLocationLocationLocationLocationLocationLocationLocationLocation</dd>
+              <dt>Licensing and attribution:</dt>
+              <dd>
+                Whether the photographer and/or models has signed an agreement with us;
+                Whether we need to give attribution;
+                Whether someone owns the copyright other than us;
+                Whether it is stock photography
+              </dd>
               <dt><label for="tag-input">Tags:</label></dt>
               <dd>
                 <div class="js-tags tags">
@@ -193,7 +208,7 @@
       <div class="image-view__picture-area">
         <div class="image-view__toolbar">
           <div class="image-view__toolbar-main">
-            <button title="Go back" type="button" class="js-image-view__back btn">
+            <button title="Go back" type="button" class="js-image-view__back btn-subtle btn">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -216,7 +231,7 @@
                 <button
                   title="Show details"
                   type="button"
-                  class="js-sidebar-toggle image-view__show-details btn"
+                  class="js-sidebar-toggle image-view__show-details btn-subtle btn"
                   data-sidebar="#image-details-sidebar"
                 >
                   <svg
@@ -234,7 +249,7 @@
                   </svg>
                   <span class="visually-hidden">Show details</span>
                 </button>
-                <button title="Share image" type="button" class="js-image-view__share btn">
+                <button title="Share image" type="button" class="js-image-view__share btn-subtle btn">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -249,7 +264,7 @@
                   </svg>
                   <span class="visually-hidden">Share</span>
                 </button>
-                <button title="Download image" type="button" class="js-image-view__download btn">
+                <button title="Download image" type="button" class="js-image-view__download btn-subtle btn">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -267,7 +282,7 @@
                   </svg>
                   <span class="visually-hidden">Download</span>
                 </button>
-                <button title="Delete image" type="button" class="js-image-view__delete btn">
+                <button title="Delete image" type="button" class="js-image-view__delete btn-subtle btn">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -289,7 +304,7 @@
               </div>
             </div>
             <div class="image-view__main-actions">
-              <label title="Upload more" class="js-upload button-file btn">
+              <label title="Upload more" class="js-upload button-file btn-subtle btn">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -307,7 +322,7 @@
                     d="M7.646 4.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V14.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3z"
                   ></path>
                 </svg>
-                <input class="js-upload__input button-file__input" type="file" multiple accept="image/jpeg, image/png, image/gif, image/tiff, image/vnd.adobe.photoshop" />
+                <input class="js-upload__input button-file__input" type="file" multiple accept="image/jpeg, image/png, image/gif, image/tiff, image/vnd.adobe.photoshop, .jpg, .jpeg, .png, .gif, .tif, .tiff, .psd" />
                 <span class="visually-hidden">Upload more</span>
               </label>
             </div>
@@ -354,6 +369,21 @@
     <div class="js-drop-target drop-target">
       <div class="drop-target__message">
         Drop anywhere
+      </div>
+    </div>
+
+    <div aria-live="polite" aria-atomic="true" class="notification-area">
+      <div class="js-notification-container notification-area__container toast-container">
+        <!-- Put toasts here -->
+
+        <div class="js-invalid-drop-note notification-area__toast toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body">
+              Some of the files you dropped aren't allowed
+            </div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>
       </div>
     </div>
 

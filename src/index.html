@@ -26,7 +26,7 @@
           <button
             title="Open menu"
             type="button"
-            class="js-sidebar-toggle header__open-sidebar btn-menu btn-lg btn"
+            class="js-sidebar-toggle header__open-sidebar btn-subtle btn-menu btn-lg btn"
             data-sidebar="#content-sidebar"
             aria-controls="sidebar"
           >
@@ -40,7 +40,7 @@
               <button
                 title="Hide search"
                 type="button"
-                class="js-search__toggle search__infield-action search__infield-action_hide btn btn-lg"
+                class="js-search__toggle search__infield-action search__infield-action_hide btn btn-subtle btn-lg"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -66,7 +66,7 @@
               <label
                 tabindex="-1"
                 title="Search by image"
-                class="search__infield-action search__infield-action_image-search button-file btn btn-lg"
+                class="search__infield-action search__infield-action_image-search button-file btn btn-subtle btn-lg"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -87,7 +87,7 @@
                 <input
                   class="js-search__image-input button-file__input"
                   type="file"
-                  accept="image/jpeg, image/png, image/gif, image/tiff, image/vnd.adobe.photoshop"
+                  accept="image/jpeg, image/png, image/gif, image/tiff, image/vnd.adobe.photoshop, .jpg, .jpeg, .png, .gif, .tif, .tiff, .psd"
                 />
               </label>
               <div class="js-search__suggest search__suggest">
@@ -140,7 +140,7 @@
             <button
               title="Show search"
               type="button"
-              class="js-search__toggle search__field-show btn btn-lg"
+              class="js-search__toggle search__field-show btn btn-subtle btn-lg"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -160,7 +160,7 @@
           </form>
         </div>
         <div class="header__slot_actions header__slot">
-          <label title="Upload" class="js-upload header__action-btn button-file btn btn-lg">
+          <label title="Upload" class="js-upload header__action-btn button-file btn btn-subtle btn-lg">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="26"
@@ -182,7 +182,7 @@
             <input
               class="js-upload__input button-file__input"
               type="file"
-              accept="image/jpeg, image/png, image/gif, image/tiff, image/vnd.adobe.photoshop"
+              accept="image/jpeg, image/png, image/gif, image/tiff, image/vnd.adobe.photoshop, .jpg, .jpeg, .png, .gif, .tif, .tiff, .psd"
               multiple
             />
             <span class="visually-hidden">Upload more</span>
@@ -200,7 +200,7 @@
             <button
               title="Close menu"
               type="button"
-              class="js-sidebar-toggle sidebar__close btn-lg btn-close"
+              class="js-sidebar-toggle sidebar__close btn-subtle btn-lg btn-close"
               data-sidebar="#content-sidebar"
               aria-label="Close"
             >
@@ -249,23 +249,21 @@
       </div>
     </div>
 
-    <div class="modal fade" id="upload-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
+    <div aria-live="polite" aria-atomic="true" class="notification-area">
+      <div class="js-notification-container notification-area__container toast-container">
+        <!-- Put toasts here -->
 
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Understood</button>
+        <div class="js-invalid-drop-note notification-area__toast toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body">
+              Some of the files you dropped aren't allowed
+            </div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
           </div>
         </div>
       </div>
     </div>
+
 
     <script src="js/vendor/pig.min.js"></script>
     <script src="js/bundle.js"></script>

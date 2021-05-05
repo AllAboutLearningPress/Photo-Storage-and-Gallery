@@ -1,4 +1,4 @@
-import { debounce, addEventListener } from '../utils';
+import { debounce, addEventListener } from '../util/utils';
 
 import SingleImageDropManager from './SingleImageDropManager';
 
@@ -31,16 +31,12 @@ class Search {
 
     this.dropManager = new SingleImageDropManager(document.querySelector('.js-drop-manager'));
 
-    function handleImageSearch(imageFileEntry) {
-      alert(`searching by file: ${imageFileEntry.name}`);
-    }
-
     function handleFileDrop(e) {
       const isSearchDrop =
         !that.dropManager.isInited || that.dropManager.getLatestDropStats().search;
 
       if (isSearchDrop) {
-        handleImageSearch(e.detail.fileEntriesArray[0]);
+        that.handleImageSearch(e.detail.fileArray[0]);
       }
     }
 
@@ -151,6 +147,22 @@ class Search {
     ];
 
     this.isInited = true;
+  }
+
+
+  /**
+   * Handle a search by provided image.
+   *
+   * We can get either a promise (coming from `processDroppedFiles`, see `js/components/DropTarget.js` for details),
+   * or a File object (coming from a `<input type="file">`).
+   *
+   * To account for that, always use `Promise.resolve(file)` on the argument, to make sure it is always a promise.
+   * So to get a file from an arguments , `await Promise.resolve(file)` can be used.
+   * @param file{File|Promise} - a File object or a promise resolving to it
+   * @returns {Promise<void>}
+   */
+  async handleImageSearch(file) {
+    console.log(await Promise.resolve(file));
   }
 
   /**

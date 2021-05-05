@@ -1,12 +1,5 @@
-import { addEventListener, isKeyDown } from '../utils';
-
-const allowedMimeTypes = [
-  'image/jpeg',
-  'image/png',
-  'image/gif',
-  'image/tif',
-  'image/vnd.adobe.photoshop',
-];
+import { addEventListener, isKeyDown } from '../util/utils';
+import allowedMimeTypes from '../util/allowedMimeTypes';
 
 const singleImageTransferKlass = 'is-single-image';
 const uploadDecisionKlass = 'is-upload-preferred';
@@ -53,8 +46,8 @@ class SingleImageDropManager {
 
     const that = this;
 
-    let deciderHandlers;
-    let windowFocusHandlers;
+    let deciderHandlers = [];
+    let windowFocusHandlers = [];
 
     function toggleSearchAbility(flag) {
       that.dropManager.classList.toggle(uploadDecisionKlass, flag);

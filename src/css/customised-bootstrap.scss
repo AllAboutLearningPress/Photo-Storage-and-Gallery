@@ -46,6 +46,7 @@ $btn-close-padding-x: .5em;
 $modal-content-bg: $body-bg;
 $modal-header-border-color: $contrast2;
 $modal-backdrop-opacity: .7;
+$modal-fade-transform: scale(.9);
 
 $btn-close-color: $page-text-color;
 $btn-close-opacity: 1;
@@ -60,6 +61,12 @@ $table-color: $body-color;
 $table-border-color: $contrast1;
 
 $alert-margin-bottom: 1.2rem;
+
+$toast-background-color: $contrast2;
+
+$toast-header-background-color: $toast-background-color;
+$toast-header-border-color: $contrast1;
+$toast-header-color: transparentize($page-text-color, .3);
 
 // 3. Include remainder of required Bootstrap stylesheets
 @import "node_modules/bootstrap/scss/variables";
@@ -183,6 +190,15 @@ textarea:not([disabled]):not([tabindex^="-"]),
 a[href]:not([tabindex^="-"]):focus-visible {
   outline-color: $link-color;
   outline-style: solid;
+}
+
+/*
+  Custom button style
+*/
+$btn-hover-subtle-bg: transparentize($secondary-color, .8);
+
+.btn-subtle:hover {
+  background-color: $btn-hover-subtle-bg;
 }
 
 /*

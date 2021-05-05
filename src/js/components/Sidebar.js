@@ -1,4 +1,4 @@
-import { patchFocus, debounce, addEventListener } from '../utils';
+import { patchFocus, debounce, addEventListener } from '../util/utils';
 
 /**
  * Toggle sidebar
@@ -6,6 +6,9 @@ import { patchFocus, debounce, addEventListener } from '../utils';
 
 const activeKlass = 'is-open';
 const alwaysHideableKlass = 'sidebar_always-hideable';
+const collapsedStateLocalStorageKey = '__unique-photo-gallery-key-for-details-state';
+
+let sidebarId = 0;
 
 document.addEventListener('click', (e) => {
   const toggler = e.target.closest('.js-sidebar-toggle');
@@ -19,12 +22,20 @@ document.addEventListener('click', (e) => {
 });
 
 class Sidebar {
-  constructor(sidebarElem) {
+  constructor(
+    sidebarElem,
+    options = {
+      saveState: false,
+    }
+  ) {
     this.sidebar = sidebarElem;
 
     if (!this.sidebar) {
       return;
     }
+
+    this.id = sidebarId += 1;
+    this.options = options;
 
     const that = this;
     // `patchFocus()` cleanup function
@@ -64,6 +75,17 @@ class Sidebar {
       }, 50);
     }
 
+    function getCollapsedState() {
+      return that.sidebar.classList.contains(activeKlass);
+    }
+
+    function saveCollapsedState() {
+      localStorage.setItem(
+        `${collapsedStateLocalStorageKey}_${that.id}`,
+        JSON.stringify(getCollapsedState())
+      );
+    }
+
     function isSidebarOverlaying() {
       return window.getComputedStyle(that.overlayingSidebarMqTestElem, null).display === 'none';
     }
@@ -98,6 +120,11 @@ class Sidebar {
         addEventListener(this.backdrop, 'click', () => {
           toggleSidebar({ force: false, resetFocus: false });
         }),
+      addEventListener(window, 'beforeunload', () => {
+        if (that.options.saveState) {
+          saveCollapsedState();
+        }
+      }),
       addEventListener(window, 'resize', debounce(100, cleanup)),
       addEventListener(window, 'orientationchange', debounce(0, cleanup)),
     ];
@@ -106,8 +133,19 @@ class Sidebar {
 
     this.cleanupFuntions.push(destroyPatchedFocus);
 
+    if (this.options.saveState && !isSidebarOverlaying()) {
+      const shouldBeShown = JSON.parse(
+        localStorage.getItem(`${collapsedStateLocalStorageKey}_${this.id}`)
+      );
+
+      if (shouldBeShown) {
+        toggleSidebar();
+      }
+    }
+
     this.isInited = true;
   }
+  toggle(force) {}
   destroy() {
     if (this.isInited) {
       // call any existing cleanup functions and dereference the array

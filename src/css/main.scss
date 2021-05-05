@@ -661,12 +661,9 @@ $image-view-picture-nav-gap-y: 1rem;
   background-size: cover;
 
   border-radius: $input-border-radius;
-  transition: transform 0.15s;
-  transform: translateY(0) scale(1);
-  will-change: transform;
 }
 .image-view__picture-nav:hover::after {
-  transform: translateY(-#{$image-view-picture-nav-size / 6}) scale(1.1);
+  background-color: $btn-hover-subtle-bg;
 }
 .image-view__picture-nav:focus-visible::after {
   box-shadow: $input-focus-box-shadow;
@@ -708,6 +705,11 @@ $image-view-picture-nav-gap-y: 1rem;
 .image-view__details-head {
   text-align: left;
   border-bottom: 1px solid $contrast2;
+}
+.image-view__details-content {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
 }
 .image-view__details-toggle {
   margin-left: -$btn-close-padding-x;
@@ -804,7 +806,7 @@ $tag-delete-gap-x: .25em;
 }
 
 /*
-  Fullscreen upload target
+  Fullscreen drop target
 */
 $drop-target-transition-duration: .2s;
 
@@ -851,4 +853,32 @@ $drop-target-transition-duration: .2s;
 
 .drop-manager__note {
   font-size: .65em;
+}
+
+/*
+  Upload widget
+*/
+
+
+/*
+  Notification area containing toasts
+*/
+.notification-area,
+.notification-area__container {
+  pointer-events: none;
+}
+.notification-area {
+  position: relative;
+  z-index: 500;
+  pointer-events: none;
+}
+.notification-area__container {
+  position: fixed;
+  right: 0;
+  top: 0;
+  padding: 1rem;
+}
+// keep bootstrap toast hidden until they gets initialised
+.notification-area__toast:not(.fade) {
+  display: none;
 }

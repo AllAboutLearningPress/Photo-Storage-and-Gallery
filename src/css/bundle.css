@@ -5086,7 +5086,7 @@ textarea.form-control-lg {
   max-width: 100%;
   font-size: 0.875rem;
   pointer-events: auto;
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: #424242;
   background-clip: padding-box;
   border: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
@@ -5112,10 +5112,10 @@ textarea.form-control-lg {
   display: flex;
   align-items: center;
   padding: 0.5rem 0.75rem;
-  color: #6c757d;
-  background-color: rgba(255, 255, 255, 0.85);
+  color: rgba(226, 226, 226, 0.7);
+  background-color: #424242;
   background-clip: padding-box;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid #333333;
   border-top-left-radius: calc(0.25rem - 1px);
   border-top-right-radius: calc(0.25rem - 1px);
 }
@@ -5157,7 +5157,7 @@ textarea.form-control-lg {
 }
 .modal.fade .modal-dialog {
   transition: transform 0.3s ease-out;
-  transform: translate(0, -50px);
+  transform: scale(0.9);
 }
 @media (prefers-reduced-motion: reduce) {
   .modal.fade .modal-dialog {
@@ -10825,6 +10825,13 @@ a[href]:not([tabindex^="-"]):focus-visible {
 }
 
 /*
+  Custom button style
+*/
+.btn-subtle:hover {
+  background-color: rgba(132, 132, 132, 0.2);
+}
+
+/*
   Misc modifications
 */
 p:last-child {
@@ -11531,13 +11538,10 @@ body {
   background-position: 0 0;
   background-size: cover;
   border-radius: 0.25rem;
-  transition: transform 0.15s;
-  transform: translateY(0) scale(1);
-  will-change: transform;
 }
 
 .image-view__picture-nav:hover::after {
-  transform: translateY(-6px) scale(1.1);
+  background-color: rgba(132, 132, 132, 0.2);
 }
 
 .image-view__picture-nav:focus-visible::after {
@@ -11580,6 +11584,12 @@ body {
 .image-view__details-head {
   text-align: left;
   border-bottom: 1px solid #424242;
+}
+
+.image-view__details-content {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
 }
 
 .image-view__details-toggle {
@@ -11679,7 +11689,7 @@ html::-webkit-scrollbar-track,
 }
 
 /*
-  Fullscreen upload target
+  Fullscreen drop target
 */
 .drop-target {
   position: fixed;
@@ -11727,4 +11737,32 @@ html::-webkit-scrollbar-track,
 
 .drop-manager__note {
   font-size: 0.65em;
+}
+
+/*
+  Upload widget
+*/
+/*
+  Notification area containing toasts
+*/
+.notification-area,
+.notification-area__container {
+  pointer-events: none;
+}
+
+.notification-area {
+  position: relative;
+  z-index: 500;
+  pointer-events: none;
+}
+
+.notification-area__container {
+  position: fixed;
+  right: 0;
+  top: 0;
+  padding: 1rem;
+}
+
+.notification-area__toast:not(.fade) {
+  display: none;
 }

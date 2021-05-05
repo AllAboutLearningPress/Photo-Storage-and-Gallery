@@ -1,4 +1,10 @@
-import { addEventListener } from '../utils';
+import { addEventListener } from '../util/utils';
+import Notificator from './Notificator';
+
+const dropTargetAvailableEventName = 'drop-target-active';
+const dropTargetUnavailableEventName = 'drop-target-inactive';
+
+const activeDropTargetKlass = 'is-active';
 
 function setImmediate(callback, ...args) {
   let cancelled = false;
@@ -59,10 +65,14 @@ async function readEntriesPromise(directoryReader) {
   }
 }
 
-const dropTargetAvailableEventName = 'drop-target-active';
-const dropTargetUnavailableEventName = 'drop-target-inactive';
-
-const activeDropTargetKlass = 'is-active';
+// get a file from FileEntry, promisified
+async function getFile(fileEntry) {
+  try {
+    return await new Promise((resolve, reject) => fileEntry.file(resolve, reject));
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 /**
  * Global drop target. Processes drag and drop, dispatches custom event with an array of dropped file entries (see below).
@@ -92,29 +102,44 @@ class DropTarget {
     let count = 0;
     let cancelImmediate = () => {};
 
+    this.notificator = new Notificator();
+
+    /**
+     * Uploading directories requires using DataTransferItemList (instead of FileList) which supports `webkitGetAsEntry()` on items.
+     * Using `DataTransferItemList` means that instead of an actual file we get FileSystemFileEntry object: https://developer.mozilla.org/en-US/docs/Web/API/FileSystemFileEntry
+     * This object needs to be converted to a file using an async `.file()` method.
+     * Because of that, `processDroppedFiles` outputs an array of promises.
+     */
     async function processDroppedFiles(dataTransferItemList) {
       const allItems = await getAllFileEntries(dataTransferItemList);
 
       // filter allowed files by extension (that's appears to be what imgur is doing; checking MIME type is possible,
-      // but it is an async operation of getting a File object for each entry, maybe it can be not that efficient i.e. for large group of items)
-      const allowedItems = allItems.filter(
-        (item) =>
-          that.allowedExtensions.includes('*') ||
-          that.allowedExtensions.includes(item.name.split('.').pop())
-      );
+      // but it is an async operation of getting a File object for each entry, maybe it can be not that efficient i.e. for large group of items),
+      // so it appears to better first filter out obviously wrong files entries and then convert them to actual files
+      const allowedItems = allItems
+        .filter(
+          (item) =>
+            that.allowedExtensions.includes('*') ||
+            that.allowedExtensions.includes(item.name.split('.').pop())
+        )
+        .map(async (entry) => await getFile(entry));
 
       that.dropTarget.dispatchEvent(
         new CustomEvent('items-dropped', {
           bubbles: true,
           detail: {
-            fileEntriesArray: allowedItems,
+            fileArray: allowedItems,
           },
         })
       );
+
+      // notify if unsupported files were dropped
+      if (allItems.length !== allowedItems.length) {
+        that.notificator.show('.js-invalid-drop-note');
+      }
     }
 
-    // ignored dragged text strings
-    function isValidDragItems(dataTransfer) {
+    function isNotDraggedString(dataTransfer) {
       return !(dataTransfer.items.length === 1 && dataTransfer.items[0].kind === 'string');
     }
 
@@ -129,7 +154,7 @@ class DropTarget {
         if (count === 0) {
           that.dragging = true;
 
-          if (isValidDragItems(e.dataTransfer)) {
+          if (isNotDraggedString(e.dataTransfer)) {
             that.dropTarget.dispatchEvent(
               new CustomEvent(dropTargetAvailableEventName, {
                 bubbles: true,
@@ -152,7 +177,7 @@ class DropTarget {
           if (count === 0) {
             this.dragging = false;
 
-            if (isValidDragItems(e.dataTransfer)) {
+            if (isNotDraggedString(e.dataTransfer)) {
               this.dropTarget.dispatchEvent(
                 new CustomEvent(dropTargetUnavailableEventName, {
                   bubbles: true,
@@ -171,7 +196,8 @@ class DropTarget {
           count = 0;
           this.dragging = false;
 
-          if (isValidDragItems(e.dataTransfer)) {
+          if (isNotDraggedString(e.dataTransfer)) {
+            // uploading directories requires using DataTransferItemList (instead of FileList) which supports `webkitGetAsEntry()` on items
             processDroppedFiles(e.dataTransfer.items);
             this.dropTarget.dispatchEvent(
               new CustomEvent(dropTargetUnavailableEventName, {
@@ -202,6 +228,8 @@ class DropTarget {
 
     // dereference DOM nodes
     this.dropTarget = null;
+    this.notificator.destroy();
+    this.notificator = null;
 
     this.allowedExtensions = null;
 
