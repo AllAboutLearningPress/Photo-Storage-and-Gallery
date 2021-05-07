@@ -48,6 +48,7 @@ class Sidebar {
 
     this.noOverlayingSidebarMq = matchMedia(mq.md);
 
+    let isIOSReflown = false;
     /**
      * Toggle visibility of a sidebar (i.e. when it is hidden by default on narrow screen)
      * @param toggler{HTMLElement} - optional DOM element by which the action was performed
@@ -61,22 +62,18 @@ class Sidebar {
         return;
       }
 
-      let isIOSReflown = false;
-
       // reflow iphone ios
       if (!wasOpened && !isIOSReflown) {
         const scrollableBody = that.sidebar.querySelector('.scrollbar');
 
-        that.sidebar.style.visibility = 'visible'
+        that.sidebar.style.visibility = 'visible';
         scrollableBody.style.overflow = 'hidden';
         scrollableBody.offsetHeight;
         scrollableBody.style.overflow = '';
 
         isIOSReflown = true;
       }
-
-      // run transition on the next event loop tick
-      setTimeout(() => {
+      function doTransition() {
         that.sidebar.classList.toggle(activeKlass, force);
         that.sidebar.dispatchEvent(
           new CustomEvent(wasOpened ? 'sidebarhide' : 'sidebarshow', { bubbles: true })
@@ -93,7 +90,15 @@ class Sidebar {
         if (that.options.saveState) {
           saveCollapsedState();
         }
-      }, 0);
+      }
+
+      if (!isIOSReflown) {
+        // run transition on the next event loop tick
+        setTimeout(doTransition, 0);
+      } else {
+        doTransition();
+      }
+
     }
 
     function getCollapsedState() {
