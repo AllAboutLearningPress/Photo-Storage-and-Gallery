@@ -1,4 +1,5 @@
 import { debounce, addEventListener } from '../util/utils';
+import mq from '../util/mediaQueryList';
 
 import SingleImageDropManager from './SingleImageDropManager';
 
@@ -20,6 +21,8 @@ class Search {
 
     const that = this;
 
+    this.desktopSearchStyleMq = matchMedia(mq.sm);
+
     this.dropManager = new SingleImageDropManager(document.querySelector('.js-drop-manager'));
 
     this.header = this.search.closest('.js-search-header');
@@ -27,7 +30,6 @@ class Search {
     this.input = this.search.querySelector('.js-search__input');
     this.searchImageInput = this.search.querySelector('.js-search__image-input');
     this.suggester = this.search.querySelector('.js-search__suggest');
-    this.mqTestElem = this.search.querySelector('.search-dumb-mq-tester');
 
     this.dropManager = new SingleImageDropManager(document.querySelector('.js-drop-manager'));
 
@@ -247,10 +249,10 @@ class Search {
       return;
     }
 
-    const display = window.getComputedStyle(this.mqTestElem, null).display;
-
-    if (display === 'block') {
-      this.toggleSearchfield();
+    if (this.desktopSearchStyleMq.matches) {
+      this.toggleSearchfield({
+        force: false,
+      });
     }
   }
   destroy() {
@@ -268,7 +270,6 @@ class Search {
       this.input = null;
       this.searchImageInput = null;
       this.suggester = null;
-      this.mqTestElem = null;
 
       this.dropManager.destroy();
       this.dropManager = null;

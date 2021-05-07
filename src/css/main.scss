@@ -42,6 +42,7 @@ body {
   Header
 */
 $header-height: 74px;
+$header-z-index: 199;
 
 .header {
   position: fixed;
@@ -49,7 +50,7 @@ $header-height: 74px;
   top: 0;
   right: 0;
   height: $header-height;
-  z-index: 199;
+  z-index: $header-z-index;
   background: $page-bg;
   padding: 0.9rem $main-x-pad;
   border-bottom: 1px solid $contrast1;
@@ -200,13 +201,6 @@ $header-height: 74px;
   @include bootstrap-focus();
 }
 
-.search-dumb-mq-tester {
-  display: none;
-
-  @include media-breakpoint-up(sm) {
-    display: block;
-  }
-}
 .search__suggest,
 .search__suggest::after {
   position: absolute;
@@ -280,7 +274,10 @@ $header-height: 74px;
    Content
 */
 .content {
-  padding: calc(#{$header-height} + #{$main-y-pad}) $main-x-pad;
+  padding: $main-y-pad $main-x-pad;
+}
+.header + .content {
+  padding-top: calc(#{$header-height} + #{$main-y-pad});
 }
 
 /*
@@ -368,14 +365,6 @@ $sidebar-animation-duration: 0.2s;
 
   @include media-breakpoint-up(md) {
     display: none;
-  }
-}
-
-.overlaying-sidebar-mq-test-elem {
-  display: none;
-
-  @include media-breakpoint-up(md) {
-    display: block;
   }
 }
 
@@ -516,13 +505,77 @@ $sidebar-animation-duration: 0.2s;
 }
 
 /*
+  Toolbar for detailed views (image view, family images view)
+*/
+
+$toolbar-height: 72px;
+$toolbar-y-pad: .907rem;
+$toolbar-shrink-bp: 450px;
+$toolbar-action-sections-gap: .5rem;
+
+.toolbar {
+  position: sticky;
+  z-index: $header-z-index;
+  left: 0;
+  right: 0;
+  top: 0;
+  display: flex;
+  flex-grow: 0;
+  height: $toolbar-height;
+  padding: $toolbar-y-pad $main-x-pad;
+  background: $page-bg;
+  white-space: nowrap;
+}
+
+.toolbar__main,
+.toolbar__aside {
+  flex-grow: 0;
+}
+.toolbar__main {
+  margin-left: -$main-x-pad;
+
+  @media (min-width: $toolbar-shrink-bp) {
+    margin-left: 0;
+  }
+}
+.toolbar__aside {
+  display: flex;
+  flex-wrap: nowrap;
+  margin-left: auto;
+  white-space: nowrap;
+
+  margin-right: -$main-x-pad;
+
+  @media (min-width: $toolbar-shrink-bp) {
+    margin-right: 0;
+  }
+}
+
+.toolbar__specific-actions {
+  padding-right: $toolbar-action-sections-gap / 2.5;
+
+  @media (min-width: $toolbar-shrink-bp) {
+    padding-right: $toolbar-action-sections-gap;
+  }
+}
+.toolbar__main-actions {
+  border-left: 1px solid $contrast2;
+  padding-left: $toolbar-action-sections-gap / 2.5;
+
+  @media (min-width: $toolbar-shrink-bp) {
+    padding-left: $toolbar-action-sections-gap;
+  }
+}
+
+.toolbar + .content {
+  padding-top: 0;
+}
+
+/*
   Image view
 */
 
 $image-view-sidebar-width: 400px;
-$image-view-toolbar-height: 72px;
-$image-view-toolbar-y-pad: .907rem;
-$image-view-image-actions-bp: 450px;
 
 .image-view {
   height: 100%;
@@ -550,55 +603,7 @@ $image-view-image-actions-bp: 450px;
 .image-view__toolbar {
   position: absolute;
   z-index: 2;
-  left: 0;
-  right: 0;
-  display: flex;
-  flex-grow: 0;
-  height: $image-view-toolbar-height;
-  padding: $image-view-toolbar-y-pad $main-x-pad;
   background-color: transparentize($page-bg, 0.5);
-  white-space: nowrap;
-}
-.image-view__toolbar-main,
-.image-view__toolbar-aside {
-  flex-grow: 0;
-}
-.image-view__toolbar-main {
-  margin-left: -$main-x-pad;
-
-  @media (min-width: $image-view-image-actions-bp) {
-    margin-left: 0;
-  }
-}
-.image-view__toolbar-aside {
-  display: flex;
-  flex-wrap: nowrap;
-  margin-left: auto;
-  white-space: nowrap;
-
-  margin-right: -$main-x-pad;
-
-  @media (min-width: $image-view-image-actions-bp) {
-    margin-right: 0;
-  }
-}
-
-$image-view-toolbar-action-sections-gap: .5rem;
-
-.image-view__image-actions {
-  padding-right: $image-view-toolbar-action-sections-gap / 2.5;
-
-  @media (min-width: $image-view-image-actions-bp) {
-    padding-right: $image-view-toolbar-action-sections-gap;
-  }
-}
-.image-view__main-actions {
-  border-left: 1px solid $contrast2;
-  padding-left: $image-view-toolbar-action-sections-gap / 2.5;
-
-  @media (min-width: $image-view-image-actions-bp) {
-    padding-left: $image-view-toolbar-action-sections-gap;
-  }
 }
 
 .image-view__pic {
@@ -647,7 +652,7 @@ $image-view-picture-nav-gap-y: 1rem;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: $image-view-toolbar-y-pad $main-x-pad;
+  padding: $toolbar-y-pad $main-x-pad;
   background-color: transparentize($page-bg, 0.5);
   height: calc(#{$image-view-picture-nav-size} + 15px * 2);
 }
@@ -700,7 +705,7 @@ $image-view-picture-nav-gap-y: 1rem;
 }
 .image-view__details-head,
 .image-view__details-content {
-  padding: $image-view-toolbar-y-pad $main-x-pad;
+  padding: $toolbar-y-pad $main-x-pad;
 }
 .image-view__details-head {
   text-align: left;
@@ -858,6 +863,9 @@ $drop-target-transition-duration: .2s;
 /*
   Upload widget
 */
+.upload__manager {
+
+}
 
 
 /*

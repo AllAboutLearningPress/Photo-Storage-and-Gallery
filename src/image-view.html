@@ -21,6 +21,41 @@
 
   <body>
     <div class="image-view">
+      <!--
+        WARNING
+
+        It can be required to render sidebar in the opened state on a page render.
+        For that, the `is-open` classname should be added to sidebar element.
+        The problem is that it should NOT be added if sidebar is in "overlay mode"
+        (this is based on CSS media-query).
+
+        3 possible scenarios are as follows (with appropriate solution):
+
+        1. Page is fully rendered server-side: we can't detect media-query server-side and `is-open` classname
+        shouldn't be added. The `Sidebar.js` will handle this and open sidebar as needed after JS initializes.
+        Also, generally `Sidebar.js` handles open/closed state, as well as saving it to localStorage. But it handles
+        it only after it gets initialised, and sometimes it can be unacceptable (though it actually might be acceptable
+        in all cases so this all warning would be useless in that case), i.e. if sidebar should be RENDERED
+        in the open state together with the whole page
+
+        2. Page is fully rendered client-side (i.e. going from gallery to image view): this appears to be our
+        main scenario, in this case the decision to render the classname should be based on a media query.
+        Sidebar instance exposes this as a `sidebar.isOverlaying()` method, so it goes similar to the following:
+        ```
+        const sidebar = new Sidebar('.js-image-details-sidebar');
+        // the sidebar instance localStorage key exposed as `sidebar.storageKey`
+        const savedState = JSON.parse(localStorage.getItem(sidebar.storageKey);
+        const shouldBeOpened = !sidebar.isOverlaying();
+
+        <aside className="{savedState && shouldBeOpened ? 'is-open' : ''} sidebar">
+          ...
+        </aside>
+        ```
+
+        3. Page is re-rendered partially (i.e. going from one image view to another): this case is not a problem
+        because only the sidebar contents gets re-rendered, but not the sidebar itself, so the open/closed state
+        isn't affected
+      -->
       <aside
         id="image-details-sidebar"
         class="js-image-details-sidebar sidebar_always-hideable sidebar_right sidebar image-view__details"
@@ -59,10 +94,9 @@
               <dd>LocationLocationLocationLocationLocationLocationLocationLocationLocation</dd>
               <dt>Licensing and attribution:</dt>
               <dd>
-                Whether the photographer and/or models has signed an agreement with us;
-                Whether we need to give attribution;
-                Whether someone owns the copyright other than us;
-                Whether it is stock photography
+                Whether the photographer and/or models has signed an agreement with us; Whether we
+                need to give attribution; Whether someone owns the copyright other than us; Whether
+                it is stock photography
               </dd>
               <dt><label for="tag-input">Tags:</label></dt>
               <dd>
@@ -202,13 +236,12 @@
             </dl>
           </div>
         </div>
-        <div class="overlaying-sidebar-mq-test-elem"></div>
       </aside>
       <div class="sidebar-backdrop"></div>
       <div class="image-view__picture-area">
-        <div class="image-view__toolbar">
-          <div class="image-view__toolbar-main">
-            <button title="Go back" type="button" class="js-image-view__back btn-subtle btn">
+        <div class="image-view__toolbar toolbar">
+          <div class="toolbar__main">
+            <button title="Go back" type="button" class="js-go-back btn-subtle btn">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -225,9 +258,9 @@
               <span class="visually-hidden">Go back</span>
             </button>
           </div>
-          <div class="image-view__toolbar-aside">
-            <div class="image-view__image-actions">
-              <div class="image-view__image-actions-list">
+          <div class="toolbar__aside">
+            <div class="toolbar__specific-actions">
+              <div class="toolbar__specific-actions-list">
                 <button
                   title="Show details"
                   type="button"
@@ -242,14 +275,20 @@
                     class="bi bi-info-circle"
                     viewBox="0 0 16 16"
                   >
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                    <path
+                      d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+                    />
                     <path
                       d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"
                     />
                   </svg>
                   <span class="visually-hidden">Show details</span>
                 </button>
-                <button title="Share image" type="button" class="js-image-view__share btn-subtle btn">
+                <button
+                  title="Share image"
+                  type="button"
+                  class="js-image-share btn-subtle btn"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -264,7 +303,11 @@
                   </svg>
                   <span class="visually-hidden">Share</span>
                 </button>
-                <button title="Download image" type="button" class="js-image-view__download btn-subtle btn">
+                <button
+                  title="Download image"
+                  type="button"
+                  class="js-image-download btn-subtle btn"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -282,7 +325,11 @@
                   </svg>
                   <span class="visually-hidden">Download</span>
                 </button>
-                <button title="Delete image" type="button" class="js-image-view__delete btn-subtle btn">
+                <button
+                  title="Delete image"
+                  type="button"
+                  class="js-image-delete btn-subtle btn"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -303,7 +350,7 @@
                 </button>
               </div>
             </div>
-            <div class="image-view__main-actions">
+            <div class="toolbar__main-actions">
               <label title="Upload more" class="js-upload button-file btn-subtle btn">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -322,7 +369,12 @@
                     d="M7.646 4.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V14.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3z"
                   ></path>
                 </svg>
-                <input class="js-upload__input button-file__input" type="file" multiple accept="image/jpeg, image/png, image/gif, image/tiff, image/vnd.adobe.photoshop, .jpg, .jpeg, .png, .gif, .tif, .tiff, .psd" />
+                <input
+                  class="js-upload__input button-file__input"
+                  type="file"
+                  multiple
+                  accept="image/jpeg, image/png, image/gif, image/tiff, image/vnd.adobe.photoshop, .jpg, .jpeg, .png, .gif, .tif, .tiff, .psd"
+                />
                 <span class="visually-hidden">Upload more</span>
               </label>
             </div>
@@ -365,23 +417,28 @@
       </div>
     </div>
 
-
     <div class="js-drop-target drop-target">
-      <div class="drop-target__message">
-        Drop anywhere
-      </div>
+      <div class="drop-target__message">Drop anywhere</div>
     </div>
 
     <div aria-live="polite" aria-atomic="true" class="notification-area">
       <div class="js-notification-container notification-area__container toast-container">
         <!-- Put toasts here -->
 
-        <div class="js-invalid-drop-note notification-area__toast toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+        <div
+          class="js-invalid-drop-note notification-area__toast toast align-items-center"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+        >
           <div class="d-flex">
-            <div class="toast-body">
-              Some of the files you dropped aren't allowed
-            </div>
-            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            <div class="toast-body">Some of the file types you dropped aren't allowed</div>
+            <button
+              type="button"
+              class="btn-close me-2 m-auto"
+              data-bs-dismiss="toast"
+              aria-label="Close"
+            ></button>
           </div>
         </div>
       </div>

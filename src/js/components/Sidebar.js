@@ -1,4 +1,5 @@
 import { patchFocus, debounce, addEventListener } from '../util/utils';
+import mq from '../util/mediaQueryList';
 
 /**
  * Toggle sidebar
@@ -6,7 +7,7 @@ import { patchFocus, debounce, addEventListener } from '../util/utils';
 
 const activeKlass = 'is-open';
 const alwaysHideableKlass = 'sidebar_always-hideable';
-const collapsedStateLocalStorageKey = '__unique-photo-gallery-key-for-details-state';
+const collapsedStateLocalStoragePrefix = '__unique-photo-gallery-key-for-details-state';
 
 let sidebarId = 0;
 
@@ -35,6 +36,7 @@ class Sidebar {
     }
 
     this.id = sidebarId += 1;
+    this.storageKey = `${collapsedStateLocalStoragePrefix}_${this.id}`;
     this.options = options;
 
     const that = this;
@@ -43,10 +45,8 @@ class Sidebar {
     this.cleanupFuntions = [];
 
     this.backdrop = this.sidebar.parentNode.querySelector('.sidebar-backdrop');
-    // `overlayingSidebarMqTestElem` is `display: block` when sidebar is in "overlaying" state, which depends on bootstrap CSS media query
-    this.overlayingSidebarMqTestElem = this.sidebar.querySelector(
-      '.overlaying-sidebar-mq-test-elem'
-    );
+
+    this.noOverlayingSidebarMq = matchMedia(mq.md);
 
     /**
      * Toggle visibility of a sidebar (i.e. when it is hidden by default on narrow screen)
@@ -73,6 +73,10 @@ class Sidebar {
 
         that.sidebar._trigger = toggler;
       }, 50);
+
+      if (that.options.saveState) {
+        saveCollapsedState();
+      }
     }
 
     function getCollapsedState() {
@@ -80,14 +84,7 @@ class Sidebar {
     }
 
     function saveCollapsedState() {
-      localStorage.setItem(
-        `${collapsedStateLocalStorageKey}_${that.id}`,
-        JSON.stringify(getCollapsedState())
-      );
-    }
-
-    function isSidebarOverlaying() {
-      return window.getComputedStyle(that.overlayingSidebarMqTestElem, null).display === 'none';
+      localStorage.setItem(that.storageKey, JSON.stringify(getCollapsedState()));
     }
 
     // hide sidebar which wasn't hidden and then bootstrap `md` mq fired up
@@ -96,7 +93,7 @@ class Sidebar {
         return;
       }
 
-      if (that.sidebar.classList.contains(alwaysHideableKlass) && isSidebarOverlaying()) {
+      if (that.sidebar.classList.contains(alwaysHideableKlass) && that.isOverlaying()) {
         that.sidebar.focus();
       } else if (!that.sidebar.classList.contains(alwaysHideableKlass)) {
         toggleSidebar({ force: false });
@@ -129,23 +126,25 @@ class Sidebar {
       addEventListener(window, 'orientationchange', debounce(0, cleanup)),
     ];
 
-    destroyPatchedFocus = patchFocus('sidebarshow', 'sidebarhide', () => isSidebarOverlaying());
+    destroyPatchedFocus = patchFocus('sidebarshow', 'sidebarhide', () => that.isOverlaying());
 
     this.cleanupFuntions.push(destroyPatchedFocus);
 
-    if (this.options.saveState && !isSidebarOverlaying()) {
-      const shouldBeShown = JSON.parse(
-        localStorage.getItem(`${collapsedStateLocalStorageKey}_${this.id}`)
-      );
+    if (this.options.saveState && !that.isOverlaying()) {
+      const shouldBeShown = JSON.parse(localStorage.getItem(that.storageKey));
 
       if (shouldBeShown) {
-        toggleSidebar();
+        toggleSidebar({
+          force: true,
+        });
       }
     }
 
     this.isInited = true;
   }
-  toggle(force) {}
+  isOverlaying() {
+    return !this.noOverlayingSidebarMq.matches;
+  }
   destroy() {
     if (this.isInited) {
       // call any existing cleanup functions and dereference the array
@@ -161,7 +160,6 @@ class Sidebar {
       // dereference DOM nodes
       this.sidebar = null;
       this.backdrop = null;
-      this.overlayingSidebarMqTestElem = null;
 
       this.isInited = false;
     }

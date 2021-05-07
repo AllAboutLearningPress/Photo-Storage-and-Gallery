@@ -156,11 +156,13 @@
               </svg>
               <span class="visually-hidden">Button</span>
             </button>
-            <div class="search-dumb-mq-tester"></div>
           </form>
         </div>
         <div class="header__slot_actions header__slot">
-          <label title="Upload" class="js-upload header__action-btn button-file btn btn-subtle btn-lg">
+          <label
+            title="Upload"
+            class="js-upload header__action-btn button-file btn btn-subtle btn-lg"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="26"
@@ -226,7 +228,6 @@
               </a>
             </div>
           </div>
-          <div class="overlaying-sidebar-mq-test-elem"></div>
         </aside>
         <div class="sidebar-backdrop"></div>
         <main class="main">
@@ -253,17 +254,26 @@
       <div class="js-notification-container notification-area__container toast-container">
         <!-- Put toasts here -->
 
-        <div class="js-invalid-drop-note notification-area__toast toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+        <div
+          class="js-invalid-drop-note notification-area__toast toast align-items-center"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+        >
           <div class="d-flex">
-            <div class="toast-body">
-              Some of the files you dropped aren't allowed
-            </div>
-            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            <div class="toast-body">Some of the file types you dropped aren't allowed</div>
+            <button
+              type="button"
+              class="btn-close me-2 m-auto"
+              data-bs-dismiss="toast"
+              aria-label="Close"
+            ></button>
           </div>
         </div>
       </div>
     </div>
 
+    <div class="js-upload__manager upload__manager"></div>
 
     <script src="js/vendor/pig.min.js"></script>
     <script src="js/bundle.js"></script>

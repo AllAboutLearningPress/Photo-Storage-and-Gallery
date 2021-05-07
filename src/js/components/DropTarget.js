@@ -87,9 +87,9 @@ async function getFile(fileEntry) {
  */
 
 class DropTarget {
-  constructor(dropTargetElem, allowedExtensions = ['*']) {
+  constructor(dropTargetElem, allowedMimeTypes = ['*']) {
     this.dropTarget = dropTargetElem;
-    this.allowedExtensions = allowedExtensions;
+    this.allowedMimeTypes = allowedMimeTypes;
 
     if (!this.dropTarget) {
       return false;
@@ -113,16 +113,16 @@ class DropTarget {
     async function processDroppedFiles(dataTransferItemList) {
       const allItems = await getAllFileEntries(dataTransferItemList);
 
-      // filter allowed files by extension (that's appears to be what imgur is doing; checking MIME type is possible,
-      // but it is an async operation of getting a File object for each entry, maybe it can be not that efficient i.e. for large group of items),
-      // so it appears to better first filter out obviously wrong files entries and then convert them to actual files
-      const allowedItems = allItems
+      // convert file entry to File object, filter allowed files by a MIME type
+      const settledFilePromises = await Promise.allSettled(
+        allItems.map(async (entry) => await getFile(entry))
+      );
+      const allowedItems = settledFilePromises
+        // we're expecting no errors
+        .map((result) => result.value)
         .filter(
-          (item) =>
-            that.allowedExtensions.includes('*') ||
-            that.allowedExtensions.includes(item.name.split('.').pop())
-        )
-        .map(async (entry) => await getFile(entry));
+          (item) => that.allowedMimeTypes.includes('*') || that.allowedMimeTypes.includes(item.type)
+        );
 
       that.dropTarget.dispatchEvent(
         new CustomEvent('items-dropped', {
@@ -231,7 +231,7 @@ class DropTarget {
     this.notificator.destroy();
     this.notificator = null;
 
-    this.allowedExtensions = null;
+    this.allowedMimeTypes = null;
 
     this.isInited = false;
   }
