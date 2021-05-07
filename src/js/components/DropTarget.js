@@ -82,8 +82,8 @@ async function getFile(fileEntry) {
  * - `drop-target-inactive`: the drop target is hidden
  * - `items-dropped`: the items were the drop target, the event passes along the array of items with a type of FileSystemFileEntry
  *
- * For constructor, pass an optional second argument — an array of strings, representing allowed file extensions for the drop,
- * by default it allows all extensions using a single `'*'` string in the array.
+ * For constructor, pass an optional second argument — an array of strings, representing allowed MIME types for the drop,
+ * by default it allows all types using a single `'*'` string in the array.
  */
 
 class DropTarget {
