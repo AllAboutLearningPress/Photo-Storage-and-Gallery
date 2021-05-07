@@ -154,17 +154,11 @@ class Search {
 
   /**
    * Handle a search by provided image.
-   *
-   * We can get either a promise (coming from `processDroppedFiles`, see `js/components/DropTarget.js` for details),
-   * or a File object (coming from a `<input type="file">`).
-   *
-   * To account for that, always use `Promise.resolve(file)` on the argument, to make sure it is always a promise.
-   * So to get a file from an arguments , `await Promise.resolve(file)` can be used.
-   * @param file{File|Promise} - a File object or a promise resolving to it
+   * @param file{File} - a File object
    * @returns {Promise<void>}
    */
-  async handleImageSearch(file) {
-    console.log(await Promise.resolve(file));
+  handleImageSearch(file) {
+    console.log(file);
   }
 
   /**

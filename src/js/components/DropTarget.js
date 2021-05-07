@@ -75,12 +75,12 @@ async function getFile(fileEntry) {
 }
 
 /**
- * Global drop target. Processes drag and drop, dispatches custom event with an array of dropped file entries (see below).
+ * Global drop target. Processes drag and drop, dispatches custom event with an array of dropped File objects (see below).
  *
  * Custom events (which bubble) are triggered at the drop target DOM element:
  * - `drop-target-active`: the drop target is shown and ready for drop, the event passes along the `dataTransfer` object for the `dragenter` event
  * - `drop-target-inactive`: the drop target is hidden
- * - `items-dropped`: the items were the drop target, the event passes along the array of items with a type of FileSystemFileEntry
+ * - `items-dropped`: the items were the dropped at the target, the event passes along the array of File objects
  *
  * For constructor, pass an optional second argument — an array of strings, representing allowed MIME types for the drop,
  * by default it allows all types using a single `'*'` string in the array.
@@ -117,7 +117,7 @@ class DropTarget {
       const settledFilePromises = await Promise.allSettled(
         allItems.map(async (entry) => await getFile(entry))
       );
-      const allowedItems = settledFilePromises
+      const allowedFiles = settledFilePromises
         // we're expecting no errors
         .map((result) => result.value)
         .filter(
@@ -128,13 +128,13 @@ class DropTarget {
         new CustomEvent('items-dropped', {
           bubbles: true,
           detail: {
-            fileArray: allowedItems,
+            fileArray: allowedFiles,
           },
         })
       );
 
       // notify if unsupported files were dropped
-      if (allItems.length !== allowedItems.length) {
+      if (allItems.length !== allowedFiles.length) {
         that.notificator.show('.js-invalid-drop-note');
       }
     }

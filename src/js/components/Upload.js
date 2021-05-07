@@ -46,25 +46,14 @@ class Upload {
 
   /*
    * Handle upload of passed files.
-   *
-   * We can get either an array of promises (coming from `processDroppedFiles`, see `js/components/DropTarget.js` for details),
-   * or File objects (coming from a `<input type="file">`).
-   *
-   * To account for that, always use `Promise.resolve(file)` on array items, to make sure it is always a promise.
-   * So to get any file from arguments array, `await Promise.resolve(file)` can be used.
+   * The method receives an array of File objects as a `filesArray` argument.
    * */
   handleUpload(filesArray) {
     if (!filesArray.length) {
       return;
     }
 
-    const files = [];
-
-    filesArray.forEach(async (filePromise) => {
-      files.push(await Promise.resolve(filePromise));
-    });
-
-    console.log(files);
+    console.log(filesArray);
   }
   destroy() {
     //unbind events
