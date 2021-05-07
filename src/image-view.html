@@ -75,21 +75,139 @@
         </div>
         <div class="sidebar__body scrollbar">
           <div class="image-view__details-content">
+            <!--
+              WARNING
+
+              The HTML structure within `.dlist-flexline` is needed for editable stretchable rows.
+              When such row is needed in the middle of <dl>, <dl> should be split in 2 halves, as shown below.
+            -->
+            <ul class="dlist-flexline nolist">
+              <li>
+                <dl class="dlist-flexline dlist_0 dlist">
+                  <dt class="dlist-flexline__cell">
+                    <label class="me-1" for="title-input">Title:</label>
+                  </dt>
+                  <dd class="dlist-flexline__cell">
+                    <form
+                      class="dlist-flexline__content"
+                      onsubmit="this.elements['title-input'].value && alert(`set title: ${this.elements['title-input'].value}`);return false;"
+                      action="#"
+                    >
+                      <div class="input-group mt-1 mb-1">
+                        <input
+                          id="title-input"
+                          type="text"
+                          class="form-control"
+                          value="My title title title title title"
+                          placeholder="Specify title"
+                          autocomplete="off"
+                        />
+                        <button title="Confirm" class="btn btn-outline-secondary" type="submit">
+                          Ok
+                        </button>
+                      </div>
+                    </form>
+                  </dd>
+                </dl>
+              </li>
+              <li>
+                <dl class="dlist_0 dlist">
+                  <dt class="dlist-flexline__cell">
+                    <label class="me-1" for="editable-input">Editable:</label>
+                  </dt>
+                  <dd class="dlist-flexline__cell">
+                    <form
+                      class="dlist-flexline__content"
+                      onsubmit="this.elements['editable-input'].value && alert(`set editable: ${this.elements['editable-input'].value}`);return false;"
+                      action="#"
+                    >
+                      <div class="input-group mt-1 mb-1">
+                        <input
+                          id="editable-input"
+                          type="text"
+                          class="form-control"
+                          value="My value"
+                          placeholder="Specify value"
+                          autocomplete="off"
+                        />
+                        <button title="Confirm" class="btn btn-outline-secondary" type="submit">
+                          Ok
+                        </button>
+                      </div>
+                    </form>
+                  </dd>
+                </dl>
+              </li>
+            </ul>
             <dl class="dlist_0 dlist">
-              <dt>Title:</dt>
-              <dd>Image</dd>
               <dt>Created:</dt>
               <dd>21.21.21</dd>
               <dt>Uploaded:</dt>
               <dd>21.21.21</dd>
               <dt>Dimensions:</dt>
               <dd>323x233</dd>
+            </dl>
+            <ul class="dlist-flexline nolist">
+              <li>
+                <dl class="dlist-flexline dlist_0 dlist">
+                  <dt class="dlist-flexline__cell">
+                    <label class="me-1" for="test-input">Test:</label>
+                  </dt>
+                  <dd class="dlist-flexline__cell">
+                    <form
+                      class="dlist-flexline__content"
+                      onsubmit="this.elements['test-input'].value && alert(`set test: ${this.elements['test-input'].value}`);return false;"
+                      action="#"
+                    >
+                      <div class="input-group mt-1 mb-1">
+                        <input
+                          id="test-input"
+                          type="text"
+                          class="form-control"
+                          value="My test"
+                          placeholder="Specify it"
+                          autocomplete="off"
+                        />
+                        <button title="Confirm" class="btn btn-outline-secondary" type="submit">
+                          Ok
+                        </button>
+                      </div>
+                    </form>
+                  </dd>
+                </dl>
+              </li>
+            </ul>
+            <dl class="dlist_0 dlist">
               <dt>File size:</dt>
               <dd>1 Mb</dd>
               <dt>Family tree:</dt>
               <dd><a href="#">Show</a></dd>
               <dt>Uploaded by:</dt>
               <dd>username</dd>
+              <dt>
+                <label for="my-input">Use full-length input for long `&lt;dt&gt;`:</label>
+              </dt>
+              <dd>
+                <form
+                  class="dlist-flexline__content"
+                  onsubmit="this.elements['my-input'].value && alert(`set test: ${this.elements['my-input'].value}`);return false;"
+                  action="#"
+                >
+                  <div class="input-group mt-1 mb-1">
+                    <input
+                      id="my-input"
+                      type="text"
+                      class="form-control"
+                      value="My text"
+                      placeholder="Specify it"
+                      autocomplete="off"
+                    />
+                    <button title="Confirm" class="btn btn-outline-secondary" type="submit">
+                      Ok
+                    </button>
+                  </div>
+                </form>
+              </dd>
               <dt>Location map:</dt>
               <dd>LocationLocationLocationLocationLocationLocationLocationLocationLocation</dd>
               <dt>Licensing and attribution:</dt>

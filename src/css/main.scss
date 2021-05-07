@@ -31,6 +31,56 @@ body {
 }
 
 /*
+  Remove list-specific styling
+*/
+.nolist {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+/*
+  Definition list
+*/
+.dlist,
+.dlist > dt,
+.dlist > dd {
+  margin: 0;
+}
+
+.dlist_0 > dt,
+.dlist_0 > dd {
+  display: inline;
+}
+.dlist_0 > dd:after {
+  content: '\A';
+  white-space: pre;
+  display: block;
+  line-height: 5px;
+  height: 5px;
+}
+
+
+/*
+  <dd> which gets stretched to all available space
+*/
+.dlist-flexline .dlist-flexline__cell {
+  display: table-cell;
+}
+dt.dlist-flexline__cell {
+  white-space: nowrap;
+  width: 1%;
+}
+dd.dlist-flexline__cell {
+  width: 100%;
+}
+.dlist-flexline__content {
+  display: inline-flex;
+  width: 100%;
+}
+
+
+/*
     Page wrapper
 */
 .wrapper {
@@ -219,7 +269,6 @@ $header-z-index: 199;
 }
 .search__suggest-content {
   max-height: 200px;
-  overflow-x: auto;
 }
 .is-suggesting .search__suggest {
   display: block;
@@ -297,7 +346,7 @@ $sidebar-animation-duration: 0.2s;
   bottom: 0;
   display: flex;
   flex-direction: column;
-  will-change: transform;
+  will-change: transform, visibility;
   transform: translateX(-100%);
   transition: visibility $sidebar-animation-duration, transform $sidebar-animation-duration;
   outline: none;
@@ -342,7 +391,6 @@ $sidebar-animation-duration: 0.2s;
 
 .sidebar__body {
   flex-grow: 1;
-  overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -751,22 +799,10 @@ html::-webkit-scrollbar-track,
   background: $scrollbar-track-color;
 }
 
-/*
-  Definition list
-*/
-
-.dlist_0 > dt,
-.dlist_0 > dd {
-  display: inline;
+.scrollbar {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
-.dlist_0 > dd:after {
-  content: '\A';
-  white-space: pre;
-  display: block;
-  line-height: 5px;
-  height: 5px;
-}
-
 
 /*
   Tags list
