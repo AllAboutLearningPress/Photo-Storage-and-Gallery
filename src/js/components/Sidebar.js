@@ -71,7 +71,6 @@ class Sidebar {
         scrollableBody.offsetHeight;
         scrollableBody.style.overflow = '';
 
-        isIOSReflown = true;
       }
       function doTransition() {
         that.sidebar.classList.toggle(activeKlass, force);
@@ -93,8 +92,17 @@ class Sidebar {
       }
 
       if (!isIOSReflown) {
-        // run transition on the next event loop tick
-        setTimeout(doTransition, 0);
+        isIOSReflown = true;
+
+        setTimeout(() => {
+          const unbindTransitionend = addEventListener(that.sidebar, 'transitionend', (e) => {
+            that.sidebar.style.visibility = '';
+            unbindTransitionend();
+          });
+
+          // run transition on the next event loop tick
+          doTransition();
+        }, 0);
       } else {
         doTransition();
       }
