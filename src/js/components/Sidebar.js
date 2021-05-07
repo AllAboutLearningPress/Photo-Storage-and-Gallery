@@ -61,22 +61,39 @@ class Sidebar {
         return;
       }
 
-      that.sidebar.classList.toggle(activeKlass, force);
-      that.sidebar.dispatchEvent(
-        new CustomEvent(wasOpened ? 'sidebarhide' : 'sidebarshow', { bubbles: true })
-      );
-      setTimeout(() => {
-        if (resetFocus) {
-          const elementToFocus = wasOpened ? that.sidebar._trigger : that.sidebar;
-          elementToFocus && elementToFocus.focus();
-        }
+      let isIOSReflown = false;
 
-        that.sidebar._trigger = toggler;
-      }, 50);
+      // reflow iphone ios
+      if (!wasOpened && !isIOSReflown) {
+        const scrollableBody = that.sidebar.querySelector('.scrollbar');
 
-      if (that.options.saveState) {
-        saveCollapsedState();
+        that.sidebar.style.visibility = 'visible'
+        scrollableBody.style.overflow = 'hidden';
+        scrollableBody.offsetHeight;
+        scrollableBody.style.overflow = '';
+
+        isIOSReflown = true;
       }
+
+      // run transition on the next event loop tick
+      setTimeout(() => {
+        that.sidebar.classList.toggle(activeKlass, force);
+        that.sidebar.dispatchEvent(
+          new CustomEvent(wasOpened ? 'sidebarhide' : 'sidebarshow', { bubbles: true })
+        );
+        setTimeout(() => {
+          if (resetFocus) {
+            const elementToFocus = wasOpened ? that.sidebar._trigger : that.sidebar;
+            elementToFocus && elementToFocus.focus();
+          }
+
+          that.sidebar._trigger = toggler;
+        }, 50);
+
+        if (that.options.saveState) {
+          saveCollapsedState();
+        }
+      }, 0);
     }
 
     function getCollapsedState() {
