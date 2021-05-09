@@ -15,7 +15,7 @@ class CreatePhotosTable extends Migration
     {
         Schema::create('photos', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('title');
             $table->bigInteger('size')->comment('size in bytes');
             $table->integer('height')->nullable();
             $table->integer('width')->nullable();
@@ -24,7 +24,8 @@ class CreatePhotosTable extends Migration
             $table->foreignId('parent_id')->nullable()->constrained('photos');
             $table->string('file_name');
             $table->boolean('should_process')->default(false);
-            $table->softDeletes();
+            $table->dateTime('time_taken')->nullable();
+            $table->$table->softDeletes();
             $table->timestamps();
         });
     }
