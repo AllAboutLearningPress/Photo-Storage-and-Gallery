@@ -5,6 +5,9 @@ import Search from './components/Search';
 import Upload from './components/Upload';
 import GlobalDropTarget from './components/GlobalDropTarget';
 
+// misc app-wide global code, can be included and forgotten about:
+import './components/global-misc';
+
 // misc things for demo purposes (see docs):
 import './components/tags';
 import './components/editable';
