@@ -60,25 +60,6 @@ class Notificator {
 
     instance && instance.hide();
   }
-  destroy() {
-    //unbind events
-    this.handlers.forEach((fn) => fn && fn());
-
-    // dereference handlers array
-    this.handlers = null;
-
-    // dereference DOM nodes
-    this.upload = null;
-    this.container = null;
-
-    // dispose toasts
-    this.toasts.forEach((toast) => toast.dispose());
-    this.toasts = null;
-
-    instance = null;
-
-    this.isInited = false;
-  }
 }
 
 export default Notificator;

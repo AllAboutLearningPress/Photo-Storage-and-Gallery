@@ -63,10 +63,15 @@ $table-border-color: $contrast1;
 $alert-margin-bottom: 1.2rem;
 
 $toast-background-color: $contrast2;
+$toast-color: $page-text-color;
 
 $toast-header-background-color: $toast-background-color;
 $toast-header-border-color: $contrast1;
 $toast-header-color: transparentize($page-text-color, .3);
+
+$progress-bg: $contrast2;
+$progress-bar-bg: $contrast1;
+$progress-bar-color: $page-text-color;
 
 // 3. Include remainder of required Bootstrap stylesheets
 @import "node_modules/bootstrap/scss/variables";
@@ -188,7 +193,7 @@ textarea:not([disabled]):not([tabindex^="-"]),
 
 // keep link outlines sane
 a[href]:not([tabindex^="-"]):focus-visible {
-  outline-color: $link-color;
+  outline-color: currentColor;
   outline-style: solid;
 }
 

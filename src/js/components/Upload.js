@@ -4,21 +4,20 @@ import allowedMimeTypes from '../util/allowedMimeTypes';
 import SingleImageDropManager from './SingleImageDropManager';
 
 /**
- * Upload
+ * Upload. A singleton
  */
 
-class Upload {
-  constructor(uploadElem) {
-    this.upload = uploadElem;
+let instance = null;
 
-    if (!this.upload) {
-      return;
+class Upload {
+  constructor() {
+    if (instance) {
+      return instance;
     }
 
     const that = this;
 
-    this.fileInput = this.upload.querySelector('.js-upload__input');
-    this.dropManager = new SingleImageDropManager(document.querySelector('.js-drop-manager'));
+    this.dropManager = new SingleImageDropManager();
 
     function handleFileDrop(e) {
       const isUploadDrop =
@@ -30,11 +29,15 @@ class Upload {
     }
 
     this.handlers = [
-      addEventListener(this.fileInput, 'change', (e) => {
-        // filter passed files by MIME type
-        this.handleUpload(
-          [...e.target.files].filter((file) => allowedMimeTypes.includes(file.type))
-        );
+      addEventListener(document, 'change', (e) => {
+        const isUploadChange = e.target.matches('.js-upload__input');
+
+        if (isUploadChange) {
+          // filter passed files by MIME type
+          this.handleUpload(
+            [...e.target.files].filter((file) => allowedMimeTypes.includes(file.type))
+          );
+        }
       }),
       addEventListener(document, 'items-dropped', (e) => {
         handleFileDrop(e);
@@ -54,24 +57,7 @@ class Upload {
     }
 
     console.log(filesArray);
-  }
-  destroy() {
-    //unbind events
-    this.handlers.forEach((fn) => fn && fn());
-
-    // dereference handlers array
-    this.handlers = null;
-
-    // dereference DOM nodes
-    this.upload = null;
-    this.fileInput = null;
-
-    if (this.dropManager) {
-      this.dropManager.destroy();
-      this.dropManager = null;
-    }
-
-    this.isInited = false;
+    alert(`render upload view with ${filesArray.length} file${filesArray.length === 1 ? '' : 's'}`);
   }
 }
 

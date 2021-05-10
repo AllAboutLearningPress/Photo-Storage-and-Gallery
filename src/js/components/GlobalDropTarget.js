@@ -74,8 +74,11 @@ async function getFile(fileEntry) {
   }
 }
 
+let instance = null;
+
 /**
- * Global drop target. Processes drag and drop, dispatches custom event with an array of dropped File objects (see below).
+ * Global drop target and a Singleton.
+ * Processes drag and drop, dispatches custom event with an array of dropped File objects (see below).
  *
  * Custom events (which bubble) are triggered at the drop target DOM element:
  * - `drop-target-active`: the drop target is shown and ready for drop, the event passes along the `dataTransfer` object for the `dragenter` event
@@ -86,14 +89,19 @@ async function getFile(fileEntry) {
  * by default it allows all types using a single `'*'` string in the array.
  */
 
-class DropTarget {
-  constructor(dropTargetElem, allowedMimeTypes = ['*']) {
-    this.dropTarget = dropTargetElem;
-    this.allowedMimeTypes = allowedMimeTypes;
+class GlobalDropTarget {
+  constructor(allowedMimeTypes = ['*']) {
+    if (instance) {
+      return instance;
+    }
+
+    this.dropTarget = document.querySelector('.js-drop-target');
 
     if (!this.dropTarget) {
       return false;
     }
+
+    this.allowedMimeTypes = allowedMimeTypes;
 
     const that = this;
 
@@ -217,24 +225,6 @@ class DropTarget {
 
     this.isInited = true;
   }
-  destroy() {
-    //unbind events
-    this.handlers.forEach((fn) => fn && fn());
-
-    // dereference handlers array
-    this.handlers = null;
-
-    this.dragging = false;
-
-    // dereference DOM nodes
-    this.dropTarget = null;
-    this.notificator.destroy();
-    this.notificator = null;
-
-    this.allowedMimeTypes = null;
-
-    this.isInited = false;
-  }
 }
 
-export default DropTarget;
+export default GlobalDropTarget;

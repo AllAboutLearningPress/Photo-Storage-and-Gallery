@@ -23,15 +23,13 @@ class Search {
 
     this.desktopSearchStyleMq = matchMedia(mq.sm);
 
-    this.dropManager = new SingleImageDropManager(document.querySelector('.js-drop-manager'));
-
     this.header = this.search.closest('.js-search-header');
     this.field = this.search.querySelector('.js-search__field');
     this.input = this.search.querySelector('.js-search__input');
     this.searchImageInput = this.search.querySelector('.js-search__image-input');
     this.suggester = this.search.querySelector('.js-search__suggest');
 
-    this.dropManager = new SingleImageDropManager(document.querySelector('.js-drop-manager'));
+    this.dropManager = new SingleImageDropManager();
 
     function handleFileDrop(e) {
       const isSearchDrop =

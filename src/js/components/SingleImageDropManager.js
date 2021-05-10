@@ -1,6 +1,7 @@
 import { addEventListener, isKeyDown } from '../util/utils';
 import allowedMimeTypes from '../util/allowedMimeTypes';
 
+const managerKlass = 'js-drop-manager';
 const singleImageTransferKlass = 'is-single-image';
 const uploadDecisionKlass = 'is-upload-preferred';
 const decisionKey = 'Shift'; // should be a valid `KeyboardEvent.key` value: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key
@@ -28,15 +29,9 @@ let instance = null;
  * - provide details for the latest single image file drop event
  */
 class SingleImageDropManager {
-  constructor(elem) {
+  constructor() {
     if (instance) {
       return instance;
-    }
-
-    this.dropManager = elem;
-
-    if (!this.dropManager) {
-      return;
     }
 
     this.stats = {
@@ -50,32 +45,41 @@ class SingleImageDropManager {
     let windowFocusHandlers = [];
 
     function toggleSearchAbility(flag) {
-      that.dropManager.classList.toggle(uploadDecisionKlass, flag);
-      that.stats.search = flag;
-      that.stats.upload = !flag;
+      const dropManager = document.querySelector(`.${managerKlass}`);
+
+      if (dropManager) {
+        dropManager.classList.toggle(uploadDecisionKlass, flag);
+        that.stats.search = flag;
+        that.stats.upload = !flag;
+      }
     }
 
     function resetToDefault() {
-      that.dropManager.classList.remove(singleImageTransferKlass);
-      that.dropManager.classList.remove(uploadDecisionKlass);
-      deciderHandlers.forEach((unbind) => unbind());
-      windowFocusHandlers.forEach((unbind) => unbind());
+      const dropManager = document.querySelector(`.${managerKlass}`);
+
+      if (dropManager) {
+        dropManager.classList.remove(singleImageTransferKlass);
+        dropManager.classList.remove(uploadDecisionKlass);
+        deciderHandlers.forEach((unbind) => unbind());
+        windowFocusHandlers.forEach((unbind) => unbind());
+      }
     }
 
     function processDraggedFiles(dataTransfer) {
       const isAllowed = isSingleAllowedImageBeingTransferred(dataTransfer);
       const isBrowserFocused = document.hasFocus();
+      const dropManager = document.querySelector(`.${managerKlass}`);
 
-      if (isAllowed) {
+      if (dropManager && isAllowed) {
         if (isBrowserFocused) {
-          that.dropManager.classList.add(singleImageTransferKlass);
+          dropManager.classList.add(singleImageTransferKlass);
         } else {
           windowFocusHandlers = [
             addEventListener(window, 'focus', (e) => {
-              that.dropManager.classList.add(singleImageTransferKlass);
+              dropManager.classList.add(singleImageTransferKlass);
             }),
             addEventListener(window, 'blur', (e) => {
-              that.dropManager.classList.remove(singleImageTransferKlass);
+              dropManager.classList.remove(singleImageTransferKlass);
             }),
           ];
         }
@@ -115,20 +119,6 @@ class SingleImageDropManager {
   }
   getLatestDropStats() {
     return this.stats;
-  }
-  destroy() {
-    //unbind events
-    this.handlers.forEach((fn) => fn && fn());
-
-    // dereference handlers array
-    this.handlers = null;
-
-    // dereference DOM nodes
-    this.dropManager = null;
-
-    instance = null;
-
-    this.isInited = false;
   }
 }
 

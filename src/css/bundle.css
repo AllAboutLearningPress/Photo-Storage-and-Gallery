@@ -4681,7 +4681,7 @@ textarea.form-control-lg {
   height: 1rem;
   overflow: hidden;
   font-size: 0.75rem;
-  background-color: #e9ecef;
+  background-color: #424242;
   border-radius: 0.25rem;
 }
 
@@ -4690,10 +4690,10 @@ textarea.form-control-lg {
   flex-direction: column;
   justify-content: center;
   overflow: hidden;
-  color: #fff;
+  color: #e2e2e2;
   text-align: center;
   white-space: nowrap;
-  background-color: #bb86fc;
+  background-color: #333333;
   transition: width 0.6s ease;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -5085,6 +5085,7 @@ textarea.form-control-lg {
   width: 350px;
   max-width: 100%;
   font-size: 0.875rem;
+  color: #e2e2e2;
   pointer-events: auto;
   background-color: #424242;
   background-clip: padding-box;
@@ -10820,7 +10821,7 @@ textarea:not([disabled]):not([tabindex^="-"]),
 }
 
 a[href]:not([tabindex^="-"]):focus-visible {
-  outline-color: #bb86fc;
+  outline-color: currentColor;
   outline-style: solid;
 }
 
@@ -10844,6 +10845,10 @@ p:last-child {
 html,
 body {
   height: 100%;
+}
+
+body {
+  overflow-y: scroll;
 }
 
 /*
@@ -10875,27 +10880,6 @@ body {
   display: block;
   line-height: 5px;
   height: 5px;
-}
-
-/*
-  <dd> which gets stretched to all available space
-*/
-.dlist-flexline .dlist-flexline__cell {
-  display: table-cell;
-}
-
-dt.dlist-flexline__cell {
-  white-space: nowrap;
-  width: 1%;
-}
-
-dd.dlist-flexline__cell {
-  width: 100%;
-}
-
-.dlist-flexline__content {
-  display: inline-flex;
-  width: 100%;
 }
 
 /*
@@ -11207,6 +11191,10 @@ dd.dlist-flexline__cell {
   padding-top: calc(74px + 2rem);
 }
 
+.is-uploading .content {
+  padding-bottom: calc(80px + 2rem);
+}
+
 /*
     Sidebar
 */
@@ -11270,7 +11258,6 @@ dd.dlist-flexline__cell {
 
 .sidebar__body {
   flex-grow: 1;
-  -webkit-overflow-scrolling: touch;
 }
 
 .sidebar-backdrop {
@@ -11432,7 +11419,7 @@ dd.dlist-flexline__cell {
   Toolbar for detailed views (image view, family images view)
 */
 .toolbar {
-  position: sticky;
+  position: fixed;
   z-index: 199;
   left: 0;
   right: 0;
@@ -11492,7 +11479,7 @@ dd.dlist-flexline__cell {
 }
 
 .toolbar + .content {
-  padding-top: 0;
+  padding-top: calc(72px + .5rem);
 }
 
 /*
@@ -11642,6 +11629,12 @@ dd.dlist-flexline__cell {
   word-break: break-word;
 }
 
+@media (max-width: 800px) {
+  .is-uploading .image-view__details-content {
+    padding-bottom: calc(80px + 0.907rem);
+  }
+}
+
 .image-view__details-toggle {
   margin-left: -0.5em;
   position: relative;
@@ -11651,28 +11644,44 @@ dd.dlist-flexline__cell {
 /*
   Custom scrollbar
 */
-html,
+html {
+  scrollbar-color: #666 #333333;
+}
+
 .scrollbar {
   scrollbar-color: #666 transparent;
 }
 
+textarea {
+  scrollbar-color: #666 #333333;
+}
+
 html::-webkit-scrollbar,
-.scrollbar::-webkit-scrollbar {
+.scrollbar::-webkit-scrollbar,
+textarea::-webkit-scrollbar {
   width: 16px;
   height: 16px;
 }
 
 html::-webkit-scrollbar-thumb,
-.scrollbar::-webkit-scrollbar-thumb {
+.scrollbar::-webkit-scrollbar-thumb,
+textarea::-webkit-scrollbar-thumb {
   background: #666;
   border-radius: 16px;
   border: 4px solid transparent;
   background-clip: content-box;
 }
 
-html::-webkit-scrollbar-track,
+html::-webkit-scrollbar-track {
+  background: #333333;
+}
+
 .scrollbar::-webkit-scrollbar-track {
   background: transparent;
+}
+
+textarea::-webkit-scrollbar-track {
+  background: #333333;
 }
 
 .scrollbar {
@@ -11683,6 +11692,10 @@ html::-webkit-scrollbar-track,
 /*
   Tags list
 */
+.tags__form {
+  max-width: 400px;
+}
+
 .tags__tag {
   margin-bottom: 0.5em;
 }
@@ -11779,9 +11792,6 @@ html::-webkit-scrollbar-track,
 }
 
 /*
-  Upload widget
-*/
-/*
   Notification area containing toasts
 */
 .notification-area,
@@ -11791,7 +11801,7 @@ html::-webkit-scrollbar-track,
 
 .notification-area {
   position: relative;
-  z-index: 500;
+  z-index: 998;
   pointer-events: none;
 }
 
@@ -11804,4 +11814,180 @@ html::-webkit-scrollbar-track,
 
 .notification-area__toast:not(.fade) {
   display: none;
+}
+
+/*
+  Editable
+*/
+.editable__form,
+.is-editing > .editable__content {
+  display: none;
+}
+
+.is-editing > .editable__form {
+  display: block;
+}
+
+.editable__form,
+.editable__area {
+  margin-bottom: 0.5em;
+}
+
+.editable__content {
+  line-height: 1.5;
+  margin: 0;
+}
+
+.editable__area {
+  resize: none;
+  overflow-y: hidden;
+}
+
+.editable__area.form-control {
+  margin-top: calc((0.375rem + 1px) * -1);
+}
+
+.editable__area.form-control-lg {
+  margin-top: calc((0.5rem + 1px) * -1);
+}
+
+.editable__trigger {
+  position: relative;
+  top: -0.1em;
+}
+
+/*
+  Upload manager
+*/
+.upload-manager {
+  max-width: 2000px;
+}
+
+/*
+  Floating upload bar
+*/
+.upload-bar {
+  position: fixed;
+  z-index: 500;
+  left: 0;
+  bottom: 0;
+  margin: 1rem;
+  padding: 1rem;
+  background-color: #424242;
+  width: 400px;
+  height: 80px;
+  max-width: calc(400px - 2rem);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.25rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+a.upload-bar {
+  color: #e2e2e2;
+  text-decoration: none;
+}
+
+.upload-bar__progress {
+  margin-top: 0.5rem;
+  border: 1px solid #333333;
+}
+
+.upload-bar:hover,
+.upload-bar:focus-visible {
+  background-color: #4c4c4c;
+}
+
+.upload-bar:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.5);
+}
+
+/*
+  File list
+*/
+.file-list__item {
+  margin-bottom: 3rem;
+}
+
+/*
+  File
+*/
+.file {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.file__thumb {
+  position: relative;
+  margin-right: 1.5rem;
+  margin-bottom: 1.5rem;
+  max-width: 100%;
+}
+
+.file__pic {
+  width: 200px;
+  max-width: 100%;
+  padding-top: 100%;
+  height: 0;
+  background-size: contain;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  border: 1px solid #424242;
+  border-radius: 0.25rem;
+}
+
+.file__delete {
+  position: absolute;
+  left: 1px;
+  top: 1px;
+  background-color: #212121;
+}
+
+.file__delete:hover,
+.file__delete:focus-visible {
+  background-color: #2e2e2e;
+}
+
+.file__details {
+  flex-grow: 1;
+  flex-basis: 400px;
+}
+
+.file__progress {
+  height: 6px;
+  margin-bottom: 1rem;
+}
+
+.file__header {
+  margin-bottom: 2rem;
+}
+
+.file__title {
+  margin-bottom: 0.6rem;
+}
+
+.file__note {
+  margin-bottom: 1em;
+  margin-right: 0.5em;
+}
+
+/*
+  Increase touch hit area for links
+*/
+.link-action {
+  position: relative;
+  z-index: 0;
+}
+
+.link-action::after {
+  content: "";
+  position: absolute;
+  left: -0.5em;
+  right: -0.5em;
+  top: -0.7em;
+  bottom: -0.7em;
+  z-index: -1;
 }

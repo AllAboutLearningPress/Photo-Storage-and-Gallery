@@ -4,8 +4,15 @@ $sidebar-width: 216px;
 $sidebar-gap: 1.1rem;
 $sidebar-left-pad: 1.3rem;
 
+$upload-bar-height: 80px;
+$upload-bar-width: 400px;
+
+$notification-bg: $toast-background-color;
+
 $main-x-pad: 1rem;
 $main-y-pad: 2rem;
+
+$notification-screen-gap: 1rem;
 
 // Reuse `.form-control` focus styles from `bootstrap/scss/forms/_form-control.scss`
 @mixin bootstrap-focus() {
@@ -28,6 +35,9 @@ $main-y-pad: 2rem;
 html,
 body {
   height: 100%;
+}
+body {
+  overflow-y: scroll;
 }
 
 /*
@@ -58,25 +68,6 @@ body {
   display: block;
   line-height: 5px;
   height: 5px;
-}
-
-
-/*
-  <dd> which gets stretched to all available space
-*/
-.dlist-flexline .dlist-flexline__cell {
-  display: table-cell;
-}
-dt.dlist-flexline__cell {
-  white-space: nowrap;
-  width: 1%;
-}
-dd.dlist-flexline__cell {
-  width: 100%;
-}
-.dlist-flexline__content {
-  display: inline-flex;
-  width: 100%;
 }
 
 
@@ -328,6 +319,10 @@ $header-z-index: 199;
 .header + .content {
   padding-top: calc(#{$header-height} + #{$main-y-pad});
 }
+.is-uploading .content {
+  padding-bottom: calc(#{$upload-bar-height} + #{$main-y-pad});
+
+}
 
 /*
     Sidebar
@@ -391,7 +386,6 @@ $sidebar-animation-duration: 0.2s;
 
 .sidebar__body {
   flex-grow: 1;
-  -webkit-overflow-scrolling: touch;
 }
 
 .sidebar-backdrop {
@@ -562,7 +556,7 @@ $toolbar-shrink-bp: 450px;
 $toolbar-action-sections-gap: .5rem;
 
 .toolbar {
-  position: sticky;
+  position: fixed;
   z-index: $header-z-index;
   left: 0;
   right: 0;
@@ -616,7 +610,7 @@ $toolbar-action-sections-gap: .5rem;
 }
 
 .toolbar + .content {
-  padding-top: 0;
+  padding-top: calc(#{$toolbar-height} + .5rem);
 }
 
 /*
@@ -764,6 +758,11 @@ $image-view-picture-nav-gap-y: 1rem;
   word-wrap: break-word;
   word-break: break-word;
 }
+.is-uploading .image-view__details-content {
+  @media (max-width: #{$image-view-sidebar-width + $upload-bar-width}) {
+    padding-bottom: calc(#{$upload-bar-height} + #{$toolbar-y-pad});
+  }
+}
 .image-view__details-toggle {
   margin-left: -$btn-close-padding-x;
   position: relative;
@@ -776,28 +775,49 @@ $image-view-picture-nav-gap-y: 1rem;
 
 $scrollbar-size: 16px;
 $scrollbar-track-color: transparent;
+$scrollbar-textarea-track-color: $contrast1;
 $scrollbar-thumb-color: #666;
 
-html,
+// ff styles
+html {
+  scrollbar-color: $scrollbar-thumb-color $contrast1;
+}
 .scrollbar {
   scrollbar-color: $scrollbar-thumb-color $scrollbar-track-color;
 }
+textarea {
+  scrollbar-color: $scrollbar-thumb-color $scrollbar-textarea-track-color;
+}
+
+// webkit styles
 html::-webkit-scrollbar,
-.scrollbar::-webkit-scrollbar {
+.scrollbar::-webkit-scrollbar,
+textarea::-webkit-scrollbar {
   width: $scrollbar-size;
   height: $scrollbar-size;
 }
 html::-webkit-scrollbar-thumb,
-.scrollbar::-webkit-scrollbar-thumb {
+.scrollbar::-webkit-scrollbar-thumb,
+textarea::-webkit-scrollbar-thumb {
   background: $scrollbar-thumb-color;
   border-radius: $scrollbar-size;
   border: 4px solid transparent;
   background-clip: content-box;
 }
-html::-webkit-scrollbar-track,
+html::-webkit-scrollbar-track {
+  background: $contrast1;
+}
 .scrollbar::-webkit-scrollbar-track {
   background: $scrollbar-track-color;
 }
+textarea::-webkit-scrollbar-track {
+  background: $scrollbar-textarea-track-color;
+}
+//
+//textarea::-webkit-resizer {
+//  background-color: $scrollbar-textarea-track-color;
+//}
+
 
 .scrollbar {
   overflow: auto;
@@ -808,6 +828,9 @@ html::-webkit-scrollbar-track,
   Tags list
 */
 
+.tags__form {
+  max-width: 400px;
+}
 .tags__tag {
   margin-bottom: .5em;
 }
@@ -896,13 +919,6 @@ $drop-target-transition-duration: .2s;
   font-size: .65em;
 }
 
-/*
-  Upload widget
-*/
-.upload__manager {
-
-}
-
 
 /*
   Notification area containing toasts
@@ -913,16 +929,190 @@ $drop-target-transition-duration: .2s;
 }
 .notification-area {
   position: relative;
-  z-index: 500;
+  z-index: 998;
   pointer-events: none;
 }
 .notification-area__container {
   position: fixed;
   right: 0;
   top: 0;
-  padding: 1rem;
+  padding: $notification-screen-gap;
 }
 // keep bootstrap toast hidden until they gets initialised
 .notification-area__toast:not(.fade) {
   display: none;
+}
+
+/*
+  Editable
+*/
+
+.editable__form,
+.is-editing > .editable__content {
+  display: none;
+}
+.is-editing > .editable__form {
+  display: block;
+}
+.editable__form,
+.editable__area {
+  margin-bottom: .5em;
+}
+.editable__content {
+  line-height: $line-height-base;
+  margin: 0;
+}
+.editable__area {
+  resize: none;
+  overflow-y: hidden;
+}
+.editable__area.form-control {
+  margin-top: calc((#{$input-padding-y} + #{$input-border-width}) * -1);
+}
+.editable__area.form-control-lg {
+  margin-top: calc((#{$input-padding-y-lg} + #{$input-border-width}) * -1);
+}
+.editable__trigger {
+  position: relative;
+  top: -.1em;
+  //padding: $btn-padding-y-lg $btn-padding-y-lg;
+}
+
+/*
+  Upload manager
+*/
+.upload-manager {
+  max-width: 2000px;
+}
+
+/*
+  Floating upload bar
+*/
+
+.upload-bar {
+  position: fixed;
+  z-index: 500;
+  left: 0;
+  bottom: 0;
+  margin: $notification-screen-gap;
+  padding: 1rem;
+  background-color: $notification-bg;
+  width: $upload-bar-width;
+  height: $upload-bar-height;
+  max-width: calc(#{$upload-bar-width} - #{$notification-screen-gap * 2});
+  //font-size: 1.1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  border: $toast-border-width solid $toast-border-color;
+  border-radius: $toast-border-radius;
+  box-shadow: $toast-box-shadow;
+}
+a.upload-bar {
+  color: $toast-color;
+  text-decoration: none;
+}
+.upload-bar__progress {
+  margin-top: .5rem;
+  border: 1px solid $progress-bar-bg;
+}
+.upload-bar:hover,
+.upload-bar:focus-visible {
+  background-color: lighten($notification-bg, 4%);
+}
+.upload-bar:focus-visible {
+  outline: 0;
+  box-shadow: $input-btn-focus-box-shadow;
+}
+
+
+
+/*
+  File list
+*/
+.file-list__item {
+  margin-bottom: 3rem;
+}
+
+/*
+  File
+*/
+
+$file-thumb-size: 200px;
+$file-thumb-gap: 1.5rem;
+$file-thumb-border-width: 1px;
+
+.file {
+  display: flex;
+  flex-wrap: wrap;
+  //gap: $file-thumb-gap;
+}
+.file__thumb {
+  position: relative;
+  // use `gao` on `.file` when browser support increases
+  margin-right: $file-thumb-gap;
+  margin-bottom: $file-thumb-gap;
+  max-width: 100%;
+}
+.file__pic {
+  // keep it square
+  width: $file-thumb-size;
+  max-width: 100%;
+  padding-top: 100%;
+  height: 0;
+
+  // position background image
+  background-size: contain;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+
+  // allow total thumb dimension to bee comprehended
+  border: $file-thumb-border-width solid $contrast2;
+  border-radius: $btn-border-radius;
+}
+.file__delete {
+  position: absolute;
+  left: $file-thumb-border-width;
+  top: $file-thumb-border-width;
+  background-color: $page-bg;
+}
+.file__delete:hover,
+.file__delete:focus-visible {
+  background-color: lighten($page-bg, 5%);
+}
+.file__details {
+  flex-grow: 1;
+  flex-basis: 400px;
+}
+.file__progress {
+  height: 6px;
+  margin-bottom: 1rem;
+}
+.file__header {
+  margin-bottom: 2rem;
+}
+.file__title {
+  margin-bottom: .6rem;
+}
+.file__note {
+  margin-bottom: 1em;
+  margin-right: .5em;
+}
+
+/*
+  Increase touch hit area for links
+*/
+.link-action {
+  position: relative;
+  z-index: 0;
+}
+.link-action::after {
+  content: '';
+  position: absolute;
+  left: -.5em;
+  right: -.5em;
+  top: -.7em;
+  bottom: -.7em;
+  z-index: -1;
 }
