@@ -76,6 +76,8 @@ async function getFile(fileEntry) {
 
 let instance = null;
 
+let isMouseDown = false;
+
 /**
  * Global drop target and a Singleton.
  * Processes drag and drop, dispatches custom event with an array of dropped File objects (see below).
@@ -152,11 +154,26 @@ class GlobalDropTarget {
     }
 
     this.handlers = [
+      addEventListener(document, 'mousedown', (e) => {
+        isMouseDown = true;
+      }),
+      addEventListener(document, 'mouseup', (e) => {
+        isMouseDown = false;
+      }),
       addEventListener(document, 'dragover', (e) => {
+        if (isMouseDown) {
+          return;
+        }
+
         e.preventDefault();
         e.dataTransfer.dropEffect = 'copy';
+        console.log('dragover', e);
       }),
       addEventListener(document, 'dragenter', (e) => {
+        if (isMouseDown) {
+          return;
+        }
+
         e.preventDefault();
 
         if (count === 0) {
@@ -172,11 +189,18 @@ class GlobalDropTarget {
               })
             );
           }
+
+          console.log('dragenter', e);
+
         }
 
         count += 1;
       }),
       addEventListener(document, 'dragleave', (e) => {
+        if (isMouseDown) {
+          return;
+        }
+
         e.preventDefault();
 
         cancelImmediate = setImmediate(() => {
@@ -192,10 +216,17 @@ class GlobalDropTarget {
                 })
               );
             }
+
+            console.log('dragleave', e);
+
           }
         });
       }),
       addEventListener(document, 'drop', (e) => {
+        if (isMouseDown) {
+          return;
+        }
+
         e.preventDefault();
 
         cancelImmediate();
