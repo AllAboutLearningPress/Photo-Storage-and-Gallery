@@ -167,7 +167,6 @@ class GlobalDropTarget {
 
         e.preventDefault();
         e.dataTransfer.dropEffect = 'copy';
-        console.log('dragover', e);
       }),
       addEventListener(document, 'dragenter', (e) => {
         if (isMouseDown) {
@@ -189,9 +188,6 @@ class GlobalDropTarget {
               })
             );
           }
-
-          console.log('dragenter', e);
-
         }
 
         count += 1;
@@ -216,9 +212,6 @@ class GlobalDropTarget {
                 })
               );
             }
-
-            console.log('dragleave', e);
-
           }
         });
       }),
