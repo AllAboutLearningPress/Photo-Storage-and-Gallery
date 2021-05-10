@@ -10921,11 +10921,11 @@ body {
 
 .header__slot_logo {
   padding-left: 1.3rem;
-  margin-left: -1.3rem;
+  margin-left: -1rem;
 }
 @media (min-width: 768px) {
   .header__slot_logo {
-    width: calc(216px + 1.1rem + 1rem);
+    width: calc(216px + 1rem);
     flex: 0 0 auto;
   }
 }
@@ -10936,8 +10936,8 @@ body {
 }
 @media (min-width: 576px) {
   .header__slot_search {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 1em;
+    padding-right: 1em;
   }
 }
 

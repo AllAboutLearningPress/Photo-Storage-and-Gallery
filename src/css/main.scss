@@ -84,6 +84,7 @@ body {
 */
 $header-height: 74px;
 $header-z-index: 199;
+$header-search-slot-gap: 1em;
 
 .header {
   position: fixed;
@@ -110,10 +111,10 @@ $header-z-index: 199;
 }
 .header__slot_logo {
   padding-left: $sidebar-left-pad;
-  margin-left: -$sidebar-left-pad;
+  margin-left: -$main-x-pad;
 
   @include media-breakpoint-up(md) {
-    width: calc(#{$sidebar-width} + #{$sidebar-gap} + #{$main-x-pad});
+    width: calc(#{$sidebar-width} + #{$main-x-pad});
     flex: 0 0 auto;
   }
 }
@@ -122,8 +123,8 @@ $header-z-index: 199;
   flex-grow: 1;
 
   @include media-breakpoint-up(sm) {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: $header-search-slot-gap;
+    padding-right: $header-search-slot-gap;
   }
 }
 .header__slot_actions {
