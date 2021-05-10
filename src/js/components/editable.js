@@ -48,6 +48,8 @@ document.addEventListener('submit', (e) => {
   let textarea;
   let newValue;
 
+  e.preventDefault();
+
   if (editableForm) {
     container = editableForm.closest(`.${editableContainerKlass}`);
     textarea = container.querySelector(`.${textareaKlass}`);
