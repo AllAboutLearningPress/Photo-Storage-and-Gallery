@@ -10925,7 +10925,7 @@ body {
 }
 @media (min-width: 768px) {
   .header__slot_logo {
-    width: calc(216px + 1rem);
+    width: calc(216px + 1.1rem);
     flex: 0 0 auto;
   }
 }

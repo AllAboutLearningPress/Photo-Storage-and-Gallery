@@ -114,7 +114,7 @@ $header-search-slot-gap: 1em;
   margin-left: -$main-x-pad;
 
   @include media-breakpoint-up(md) {
-    width: calc(#{$sidebar-width} + #{$main-x-pad});
+    width: calc(#{$sidebar-width} + #{$sidebar-gap});
     flex: 0 0 auto;
   }
 }
