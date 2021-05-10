@@ -10779,6 +10779,10 @@ video[controls]:not([tabindex^="-"]):focus:not(:focus-visible),
   box-shadow: none !important;
 }
 
+.btn-check:focus:not(:focus-visible) + .btn {
+  box-shadow: none !important;
+}
+
 /*
   Define generic transition for all focusable elements
 */

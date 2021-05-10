@@ -171,6 +171,11 @@ video[controls]:not([tabindex^="-"]):focus:not(:focus-visible),
   box-shadow: none !important;
 }
 
+// For toggle buttons (https://getbootstrap.com/docs/5.0/forms/checks-radios/#toggle-buttons) only show focus styles on `:focus-visible`
+.btn-check:focus:not(:focus-visible) + .btn {
+  box-shadow: none !important;
+}
+
 /*
   Define generic transition for all focusable elements
 */
