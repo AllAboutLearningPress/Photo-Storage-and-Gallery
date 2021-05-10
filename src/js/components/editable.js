@@ -16,7 +16,6 @@ function resize(tx) {
 }
 
 document.addEventListener('mousedown', (e) => {
-
   const editableValue = e.target.closest('.js-editable__val');
   const editableTrigger = e.target.closest('.js-editable__trigger');
   let container;
@@ -24,20 +23,21 @@ document.addEventListener('mousedown', (e) => {
   let clickedThing = editableValue || editableTrigger;
 
   if (clickedThing) {
-
     container = clickedThing.closest(`.${editableContainerKlass}`);
     textarea = container.querySelector(`.${textareaKlass}`);
 
     /*
-    * `<textarea>` somehow gets focused out on any mousedown,
-    * so without `setTimeout` the whole thing "closes" immediately after the opening
-    * */
+     * `<textarea>` somehow gets focused out on any mousedown,
+     * so without `setTimeout` the whole thing "closes" immediately after the opening
+     * */
     setTimeout(() => {
       container.classList.add(editingKlass);
       container.querySelector(`.${textareaKlass}`).disabled = false;
       resize(textarea);
       textarea.focus();
-      textarea.select();
+
+      // allow android chrome to lag, and then actually do select text
+      setTimeout(() => textarea.select(), 0);
     }, 0);
   }
 });
