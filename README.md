@@ -112,6 +112,10 @@ Currently, upload just listens to event from `GlobalDropTarget` for dropped item
 
 `<datalist>` is used for a basic autocomplete functionality in a tag input (see https://github.com/AllAboutLearningPress/Photo-Storage-and-Gallery/issues/6#issuecomment-834731964). Dynamically populating a `<datalist>` with a fetched tags on input change is causing problems in iOS (at least), so that it might not be possible to do it reliably, and preloaded `<datalist>` might be the only option here. This requires further investigation
 
+### Header UI for selected images
+
+`.js-selected-toolbar` element is located at pages where images can be selected. When images are selected/deselected — add/remove a `is-visible` classname on this element. "toggle header" links are located at the top of such pages for demo purposes.
+
 ### Login page
 
 JS for login page in separated to its own file (`login.js`), though there's currently no JS there.

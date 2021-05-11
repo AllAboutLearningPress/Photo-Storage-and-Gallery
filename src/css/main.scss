@@ -1,5 +1,13 @@
 @import 'customised-bootstrap';
 
+:root {
+  --main-x-pad: .62rem;
+
+  @include media-breakpoint-up(sm) {
+    --main-x-pad: 1rem;
+  }
+}
+
 $sidebar-width: 216px;
 $sidebar-gap: 1.1rem;
 $sidebar-left-pad: 1.3rem;
@@ -9,10 +17,12 @@ $upload-bar-width: 400px;
 
 $notification-bg: $toast-background-color;
 
-$main-x-pad: 1rem;
+$main-x-pad: var(--main-x-pad);
 $main-y-pad: 2rem;
 
 $notification-screen-gap: 1rem;
+
+$toolbar-roomy-bp: 490px;
 
 // base our z-indexes on the bootstrap, see `bootstrap/scss/_variables.scss` for the info on z-indexes
 $bootstrap-highest-z-index: $zindex-tooltip;
@@ -22,6 +32,9 @@ $notificator-z-index: $bootstrap-highest-z-index + 10; // ..as well as notificat
 // sidebar should prevail over site content and over its backdrop
 $sidebar-z-index: 210;
 $sidebar-backdrop-z-index: 200;
+
+// selected toolbar should prevail over header
+$selected-toolbar-z-index: 191;
 
 // header should prevail over upload bar (search suggestions should be always visible)
 $header-z-index: 190;
@@ -105,18 +118,24 @@ input[type='time'] {
   Header
 */
 $header-height: 74px;
+$header-y-pad: 0.9rem;
 $header-search-slot-gap: 1em;
 
-.header {
+@mixin main-header-styles {
   position: fixed;
   left: 0;
   top: 0;
   right: 0;
   height: $header-height;
-  z-index: $header-z-index;
   background: $page-bg;
-  padding: 0.9rem $main-x-pad;
+  padding: $header-y-pad $main-x-pad;
   border-bottom: 1px solid $contrast1;
+}
+
+.header {
+  @include main-header-styles;
+
+  z-index: $header-z-index;
   display: flex;
   flex-wrap: wrap;
 }
@@ -150,6 +169,11 @@ $header-search-slot-gap: 1em;
 }
 .header__slot_actions {
   margin-left: auto;
+  margin-right: -$main-x-pad;
+
+  @media (min-width: $toolbar-roomy-bp) {
+    margin-right: 0;
+  }
 }
 
 .header__action-btn__txt {
@@ -601,9 +625,8 @@ $sidebar-animation-duration: 0.2s;
   Toolbar for detailed views (image view, family images view)
 */
 
-$toolbar-height: 72px;
-$toolbar-y-pad: .907rem;
-$toolbar-roomy-bp: 490px;
+$toolbar-height: $header-height;
+$toolbar-y-pad: $header-y-pad;
 $toolbar-show-specific-actions-bp: 440px;
 $toolbar-action-sections-gap: .5rem;
 
@@ -681,7 +704,7 @@ $toolbar-action-sections-gap: .5rem;
 }
 
 .toolbar + .content {
-  padding-top: calc(#{$toolbar-height} + .5rem);
+  padding-top: calc(#{$toolbar-height} + 1rem);
 }
 
 /*
@@ -696,6 +719,45 @@ $toolbar-action-sections-gap: .5rem;
 .toggler:checked ~ .toolbar__specific-actions-more,
 .toggler:checked + label .toggler__icon-close {
   display: inline;
+}
+
+/*
+  Selected items toolbar
+*/
+$selected-toolbar-transition-duration: .2s;
+
+.selected-toolbar {
+  @include main-header-styles;
+
+  z-index: $selected-toolbar-z-index;
+  transform: translateY(-100%);
+  transition: visibility $sidebar-animation-duration, transform $selected-toolbar-transition-duration;
+  will-change: transform, visibility;
+  visibility: hidden;
+}
+.selected-toolbar.is-visible {
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.selected-toolbar__unselect.btn-lg {
+  padding-top: .25rem;
+  padding-bottom: .25rem;
+}
+.selected-toolbar__unselect > .bi {
+  margin-top: -.22em;
+}
+
+
+.selected-toolbar + .header,
+.selected-toolbar + .toolbar {
+  visibility: visible;
+  transition: visibility $sidebar-animation-duration;
+  will-change: visibility;
+}
+.selected-toolbar.is-visible + .header,
+.selected-toolbar.is-visible + .toolbar {
+  visibility: hidden;
 }
 
 /*
@@ -1208,11 +1270,13 @@ $file-thumb-border-width: 1px;
 .filter__toggle:checked ~ .filter__fields {
   display: block;
 }
-.filter__header {
-  display: inline;
-  margin: 0;
+.filter__toggle-label > .bi {
   position: relative;
-  bottom: -.35rem;
+  top: -.3rem;
+  margin-right: .4rem;
+}
+.filter__header {
+  font-size: 1.5rem;
 }
 
 .filter__param {
