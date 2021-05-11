@@ -10860,6 +10860,14 @@ body {
 }
 
 /*
+  Reset date inputs in iOS
+*/
+input[type=date],
+input[type=time] {
+  -webkit-appearance: none;
+}
+
+/*
   Definition list
 */
 .dlist,
@@ -11531,18 +11539,26 @@ body {
   }
 }
 
-.toolbar__specific-actions-toggle-icon-close,
-.toolbar__specific-actions-toggle:checked + label .toolbar__specific-actions-toggle-icon-open {
-  display: none;
-}
-
-.toolbar__specific-actions-toggle:checked ~ .toolbar__specific-actions-more,
-.toolbar__specific-actions-toggle:checked + label .toolbar__specific-actions-toggle-icon-close {
+.toggler:checked ~ .toolbar__specific-actions-more {
   display: inline;
 }
 
 .toolbar + .content {
   padding-top: calc(72px + .5rem);
+}
+
+/*
+  Toggler.
+  (a self-toggling "button" based on a checkbox)
+*/
+.toggler__icon-close,
+.toggler:checked + label .toggler__icon-open {
+  display: none;
+}
+
+.toggler:checked ~ .toolbar__specific-actions-more,
+.toggler:checked + label .toggler__icon-close {
+  display: inline;
 }
 
 /*
@@ -12050,6 +12066,30 @@ a.upload-bar {
   top: -0.7em;
   bottom: -0.7em;
   z-index: -1;
+}
+
+/*
+  Filter
+*/
+.filter__fields {
+  display: none;
+  padding-top: 1rem;
+}
+
+.filter__toggle:checked ~ .filter__fields {
+  display: block;
+}
+
+.filter__header {
+  display: inline;
+  margin: 0;
+  position: relative;
+  bottom: -0.35rem;
+}
+
+.filter__param {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #424242;
 }
 
 /*
