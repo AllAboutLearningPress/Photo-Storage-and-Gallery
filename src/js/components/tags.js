@@ -12,9 +12,20 @@ document.addEventListener('click', (e) => {
     alert('delete tag');
   }
 });
-//
-// document.querySelector('#tag-input').addEventListener('input', (e) => {
-//   setTimeout(() => {
-//     document.querySelector('#tag-list').innerHTML = '<option value="San Francisco">';
-//   }, 2000);
-// });
+
+const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+document.addEventListener('input', (e) => {
+  const tagInput = e.target.closest('.js-tags__input');
+
+  if (tagInput) {
+    setTimeout(() => {
+      document.querySelector('#tag-list').innerHTML = '<option value="Zoo">';
+
+      if (isSafari) {
+        tagInput.blur();
+        tagInput.focus();
+      }
+    }, 2000);
+  }
+});

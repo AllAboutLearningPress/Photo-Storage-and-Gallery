@@ -10903,7 +10903,7 @@ body {
   top: 0;
   right: 0;
   height: 74px;
-  z-index: 199;
+  z-index: 1999;
   background: #212121;
   padding: 0.9rem 1rem;
   border-bottom: 1px solid #333333;
@@ -11424,7 +11424,7 @@ body {
 */
 .toolbar {
   position: fixed;
-  z-index: 199;
+  z-index: 1999;
   left: 0;
   right: 0;
   top: 0;

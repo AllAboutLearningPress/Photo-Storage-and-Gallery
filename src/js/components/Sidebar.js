@@ -70,7 +70,6 @@ class Sidebar {
         scrollableBody.style.overflow = 'hidden';
         scrollableBody.offsetHeight;
         scrollableBody.style.overflow = '';
-
       }
       function doTransition() {
         that.sidebar.classList.toggle(activeKlass, force);
@@ -106,7 +105,6 @@ class Sidebar {
       } else {
         doTransition();
       }
-
     }
 
     function getCollapsedState() {
@@ -123,7 +121,11 @@ class Sidebar {
         return;
       }
 
-      if (that.sidebar.classList.contains(alwaysHideableKlass) && that.isOverlaying()) {
+      if (
+        that.sidebar.classList.contains(alwaysHideableKlass) &&
+        that.isOverlaying() &&
+        !that.sidebar.contains(document.activeElement)
+      ) {
         that.sidebar.focus();
       } else if (!that.sidebar.classList.contains(alwaysHideableKlass)) {
         toggleSidebar({ force: false });
