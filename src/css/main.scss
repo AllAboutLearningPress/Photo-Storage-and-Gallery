@@ -150,10 +150,11 @@ $header-search-slot-gap: 1em;
   z-index: 0;
 }
 .header__slot_logo {
-  padding-left: $sidebar-left-pad;
-  margin-left: -$main-x-pad;
+  padding-left: $main-x-pad;
+  margin-left: calc(-1 * #{$main-x-pad});
 
   @include media-breakpoint-up(md) {
+    padding-left: $sidebar-left-pad;
     width: calc(#{$sidebar-width} + #{$sidebar-gap});
     flex: 0 0 auto;
   }
@@ -169,7 +170,7 @@ $header-search-slot-gap: 1em;
 }
 .header__slot_actions {
   margin-left: auto;
-  margin-right: -$main-x-pad;
+  margin-right: calc(-1 * #{$main-x-pad});
 
   @media (min-width: $toolbar-roomy-bp) {
     margin-right: 0;
@@ -649,7 +650,7 @@ $toolbar-action-sections-gap: .5rem;
   flex-grow: 0;
 }
 .toolbar__main {
-  margin-left: -$main-x-pad;
+  margin-left: calc(-1 * #{$main-x-pad});
 
   @media (min-width: $toolbar-roomy-bp) {
     margin-left: 0;
@@ -661,7 +662,7 @@ $toolbar-action-sections-gap: .5rem;
   margin-left: auto;
   white-space: nowrap;
 
-  margin-right: -$main-x-pad;
+  margin-right: calc(-1 * #{$main-x-pad});
 
   @media (min-width: $toolbar-roomy-bp) {
     margin-right: 0;
