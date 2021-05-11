@@ -114,7 +114,7 @@ Currently, upload just listens to event from `GlobalDropTarget` for dropped item
 
 ### Header UI for selected images
 
-`.js-selected-toolbar` element is located at pages where images can be selected. When images are selected/deselected — add/remove a `is-visible` classname on this element. "toggle header" links are located at the top of such pages for demo purposes.
+`.js-selected-toolbar` element is located at pages where images can be selected. When images are selected/deselected — an `is-visible` classname should be added/removed for this element. "toggle header" links are located at the top of such pages for demo purposes.
 
 ### Login page
 

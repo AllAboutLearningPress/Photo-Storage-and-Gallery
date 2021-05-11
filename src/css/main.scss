@@ -18,7 +18,7 @@ $upload-bar-width: 400px;
 $notification-bg: $toast-background-color;
 
 $main-x-pad: var(--main-x-pad);
-$main-y-pad: 1.5rem;
+$main-y-pad: 1.3rem;
 
 $notification-screen-gap: 1rem;
 
@@ -707,7 +707,11 @@ $toolbar-action-sections-gap: .5rem;
 }
 
 .toolbar + .content {
-  padding-top: calc(#{$toolbar-height} + 1rem);
+  padding-top: calc(#{$toolbar-height} + .5rem);
+
+  @include media-breakpoint-up(md) {
+    padding-top: calc(#{$toolbar-height} + 1rem);
+  }
 }
 
 /*

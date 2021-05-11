@@ -11241,15 +11241,15 @@ input[type=time] {
    Content
 */
 .content {
-  padding: 1.5rem var(--main-x-pad);
+  padding: 1.3rem var(--main-x-pad);
 }
 
 .header + .content {
-  padding-top: calc(74px + 1.5rem);
+  padding-top: calc(74px + 1.3rem);
 }
 
 .is-uploading .content {
-  padding-bottom: calc(80px + 1.5rem);
+  padding-bottom: calc(80px + 1.3rem);
 }
 
 /*
@@ -11285,7 +11285,7 @@ input[type=time] {
     visibility: visible;
     transform: translateX(0);
     transition: none;
-    top: calc(74px + 1.5rem);
+    top: calc(74px + 1.3rem);
     background: none;
     box-shadow: none;
   }
@@ -11562,7 +11562,12 @@ input[type=time] {
 }
 
 .toolbar + .content {
-  padding-top: calc(74px + 1rem);
+  padding-top: calc(74px + .5rem);
+}
+@media (min-width: 768px) {
+  .toolbar + .content {
+    padding-top: calc(74px + 1rem);
+  }
 }
 
 /*
@@ -12165,7 +12170,7 @@ a.upload-bar {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1.5rem var(--main-x-pad);
+  padding: 1.3rem var(--main-x-pad);
 }
 
 .login__form {
