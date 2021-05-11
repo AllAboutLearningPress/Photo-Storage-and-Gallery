@@ -72,6 +72,7 @@ $toast-header-color: transparentize($page-text-color, .3);
 $progress-bg: $contrast2;
 $progress-bar-bg: $contrast1;
 $progress-bar-color: $page-text-color;
+$progress-bar-transition: none;
 
 // 3. Include remainder of required Bootstrap stylesheets
 @import "node_modules/bootstrap/scss/variables";

@@ -2,6 +2,7 @@ import { debounce, addEventListener } from '../util/utils';
 import mq from '../util/mediaQueryList';
 
 import SingleImageDropManager from './SingleImageDropManager';
+import allowedMimeTypes from '../util/allowedMimeTypes';
 
 /**
  * Search bar
@@ -9,6 +10,7 @@ import SingleImageDropManager from './SingleImageDropManager';
 const activeKlass = 'is-searchable';
 const suggestingKlass = 'is-suggesting';
 const highlightedSuggestionKlass = 'is-highlighted';
+const imageSearchingKLass = 'is-searching-by-image';
 const noTransitionKlass = 'has-no-transition';
 
 class Search {
@@ -28,6 +30,9 @@ class Search {
     this.input = this.search.querySelector('.js-search__input');
     this.searchImageInput = this.search.querySelector('.js-search__image-input');
     this.suggester = this.search.querySelector('.js-search__suggest');
+    this.imageProgressbar = this.search.querySelector('.js-search__image-progress-bar');
+
+    this.defaultPlaceholderText = this.input.placeholder;
 
     this.dropManager = new SingleImageDropManager();
 
@@ -134,6 +139,12 @@ class Search {
       addEventListener(document, 'items-dropped', (e) => {
         handleFileDrop(e);
       }),
+      addEventListener(this.searchImageInput, 'change', (e) => {
+        this.handleImageSearch(
+          // filter not allowed MIME types
+          [...e.target.files].filter((file) => allowedMimeTypes.includes(file.type))[0]
+        );
+      }),
       addEventListener(
         window,
         'resize',
@@ -149,14 +160,44 @@ class Search {
     this.isInited = true;
   }
 
-
   /**
    * Handle a search by provided image.
    * @param file{File} - a File object
    * @returns {Promise<void>}
    */
   handleImageSearch(file) {
-    console.log(file);
+    // required code
+    if (!file) {
+      return;
+    }
+
+    // required code
+    this.search.classList.add(imageSearchingKLass);
+    this.input.placeholder = 'Image is uploading...';
+
+    const that = this;
+
+    // dumb demo code
+    function renderProgress(progress) {
+      that.imageProgressbar.style.width = `${progress}%`;
+      that.imageProgressbar.setAttribute('aria-valuenow', progress);
+
+      if (progress < 100) {
+        requestAnimationFrame(() => {
+          renderProgress(progress + 1);
+        });
+      } else {
+        // required code for recovering UI to initial state
+        that.search.classList.remove(imageSearchingKLass);
+        that.input.placeholder = that.defaultPlaceholderText;
+
+        // dumb demo code
+        alert('show search results');
+      }
+    }
+
+    // dumb demo code
+    renderProgress(0);
   }
 
   /**
@@ -262,6 +303,7 @@ class Search {
       this.input = null;
       this.searchImageInput = null;
       this.suggester = null;
+      this.imageProgressbar = null;
 
       this.dropManager.destroy();
       this.dropManager = null;
