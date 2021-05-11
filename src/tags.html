@@ -226,12 +226,12 @@
           </div>
           <div class="sidebar__body scrollbar">
             <div class="navigation list-group list-group-flush">
-              <span class="active navigation__item list-group-item" aria-current="true">
+              <a href="#" class="navigation__item list-group-item">
                 My photos
-              </span>
-              <a href="#" class="navigation__item list-group-item list-group-item-action">
-                Popular tags
               </a>
+              <span aria-current="true" class="active navigation__item list-group-item list-group-item-action">
+                Popular tags
+              </span>
               <a href="#" class="navigation__item list-group-item list-group-item-action">
                 Trash
               </a>
@@ -246,8 +246,66 @@
         </aside>
         <div class="sidebar-backdrop"></div>
         <main class="main">
-          <div id="pig" class="gallery mb-4"></div>
-          <button type="button" class="btn btn-lg btn-primary">Load more</button>
+          <h2 class="fw-light mb-4">Popular tags:</h2>
+          <div class="mb-3 tags">
+            <a class="tags__tag tag btn btn-secondary" href="#">
+              Tag
+            </a>
+            <a class="tags__tag tag btn btn-secondary" href="#">
+              Some tag
+            </a>
+            <a class="tags__tag tag btn btn-secondary" href="#">
+              Another tag
+            </a>
+            <a class="tags__tag tag btn btn-secondary" href="#">
+              Tag
+            </a>
+            <a class="tags__tag tag btn btn-secondary" href="#">
+              My test tag
+            </a>
+            <a class="tags__tag tag btn btn-secondary" href="#">
+              Tag
+            </a>
+            <a class="tags__tag tag btn btn-secondary" href="#">
+              Tag
+            </a>
+            <a class="tags__tag tag btn btn-secondary" href="#">
+              Some tag
+            </a>
+            <a class="tags__tag tag btn btn-secondary" href="#">
+              Another tag
+            </a>
+            <a class="tags__tag tag btn btn-secondary" href="#">
+              Tag
+            </a>
+            <a class="tags__tag tag btn btn-secondary" href="#">
+              My test tag
+            </a>
+            <a class="tags__tag tag btn btn-secondary" href="#">
+              Tag
+            </a>
+            <a class="tags__tag tag btn btn-secondary" href="#">
+              Tag
+            </a>
+            <a class="tags__tag tag btn btn-secondary" href="#">
+              Some tag
+            </a>
+            <a class="tags__tag tag btn btn-secondary" href="#">
+              Another tag
+            </a>
+            <a class="tags__tag tag btn btn-secondary" href="#">
+              Tag
+            </a>
+            <a class="tags__tag tag btn btn-secondary" href="#">
+              My test tag
+            </a>
+            <a class="tags__tag tag btn btn-secondary" href="#">
+              Tag
+            </a>
+          </div>
+          <button type="button" class="btn btn-outline-primary">
+            Load more
+          </button>
         </main>
       </div>
     </div>
@@ -307,197 +365,5 @@
 
     <script src="js/vendor/pig.min.js"></script>
     <script src="js/bundle.js"></script>
-    <script>
-      const imageData = [
-        { filename: '100', aspectRatio: 1.777 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '500', aspectRatio: 1 },
-        { filename: '400', aspectRatio: 2.4 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '500', aspectRatio: 1 },
-        { filename: '400', aspectRatio: 2.4 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '100', aspectRatio: 1.777 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '500', aspectRatio: 1 },
-        { filename: '400', aspectRatio: 2.4 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '500', aspectRatio: 1 },
-        { filename: '400', aspectRatio: 2.4 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '100', aspectRatio: 1.777 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '500', aspectRatio: 1 },
-        { filename: '400', aspectRatio: 2.4 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '500', aspectRatio: 1 },
-        { filename: '400', aspectRatio: 2.4 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '100', aspectRatio: 1.777 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '500', aspectRatio: 1 },
-        { filename: '400', aspectRatio: 2.4 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '500', aspectRatio: 1 },
-        { filename: '400', aspectRatio: 2.4 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '100', aspectRatio: 1.777 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '500', aspectRatio: 1 },
-        { filename: '400', aspectRatio: 2.4 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '500', aspectRatio: 1 },
-        { filename: '400', aspectRatio: 2.4 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '100', aspectRatio: 1.777 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '500', aspectRatio: 1 },
-        { filename: '400', aspectRatio: 2.4 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '500', aspectRatio: 1 },
-        { filename: '400', aspectRatio: 2.4 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '100', aspectRatio: 1.777 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '500', aspectRatio: 1 },
-        { filename: '400', aspectRatio: 2.4 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '500', aspectRatio: 1 },
-        { filename: '400', aspectRatio: 2.4 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '100', aspectRatio: 1.777 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '500', aspectRatio: 1 },
-        { filename: '400', aspectRatio: 2.4 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '500', aspectRatio: 1 },
-        { filename: '400', aspectRatio: 2.4 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '100', aspectRatio: 1.777 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '500', aspectRatio: 1 },
-        { filename: '400', aspectRatio: 2.4 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '500', aspectRatio: 1 },
-        { filename: '400', aspectRatio: 2.4 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '100', aspectRatio: 1.777 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '500', aspectRatio: 1 },
-        { filename: '400', aspectRatio: 2.4 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '500', aspectRatio: 1 },
-        { filename: '400', aspectRatio: 2.4 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '100', aspectRatio: 1.777 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '500', aspectRatio: 1 },
-        { filename: '400', aspectRatio: 2.4 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '500', aspectRatio: 1 },
-        { filename: '400', aspectRatio: 2.4 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '100', aspectRatio: 1.777 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '500', aspectRatio: 1 },
-        { filename: '400', aspectRatio: 2.4 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '500', aspectRatio: 1 },
-        { filename: '400', aspectRatio: 2.4 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '100', aspectRatio: 1.777 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '400', aspectRatio: 1.777 },
-        { filename: '150', aspectRatio: 1.777 },
-        { filename: '500', aspectRatio: 1 },
-        { filename: '400', aspectRatio: 2.4 },
-        { filename: '200', aspectRatio: 1.5 },
-        { filename: '400', aspectRatio: 1.777 },
-      ];
-
-      const options = {
-        urlForSize: function (filename, size) {
-          return `//placekitten.com/${size}/${filename}`;
-        },
-        onClickHandler(filename) {
-          alert(`select ${filename}`);
-        },
-        figureTagName: 'a',
-      };
-
-      const pig = new Pig(imageData, options).enable();
-
-      // WARNING: this is required to fix `pigjs` bug, use after each `Pig` initialisation
-      window.dispatchEvent(new Event('resize'));
-    </script>
   </body>
 </html>

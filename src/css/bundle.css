@@ -11773,11 +11773,14 @@ textarea::-webkit-scrollbar-track {
 
 .tag {
   position: relative;
-  padding-right: calc(1em + 0.25rem + 1em + 0.25em);
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
   text-align: left;
+}
+
+.tag_deletable {
+  padding-right: calc(1em + 0.25rem + 1em + 0.25em);
 }
 
 .tag__delete {

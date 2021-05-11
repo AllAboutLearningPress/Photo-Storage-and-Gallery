@@ -903,11 +903,13 @@ $tag-delete-gap-x: .25em;
 }
 .tag {
   position: relative;
-  padding-right: calc(#{$btn-close-width} + #{$input-btn-focus-width} + #{$btn-close-padding-x * 2} + #{$tag-delete-gap-x});
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
   text-align: left;
+}
+.tag_deletable {
+  padding-right: calc(#{$btn-close-width} + #{$input-btn-focus-width} + #{$btn-close-padding-x * 2} + #{$tag-delete-gap-x});
 }
 .tag__delete {
   position: absolute;
