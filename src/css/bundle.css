@@ -10898,7 +10898,7 @@ body {
   top: 0;
   right: 0;
   height: 74px;
-  z-index: 1999;
+  z-index: 190;
   background: #212121;
   padding: 0.9rem 1rem;
   border-bottom: 1px solid #333333;
@@ -11236,7 +11236,7 @@ body {
   width: 216px;
   max-width: 100%;
   position: fixed;
-  z-index: 201;
+  z-index: 210;
   left: 0;
   top: 0;
   bottom: 0;
@@ -11453,7 +11453,7 @@ body {
 */
 .toolbar {
   position: fixed;
-  z-index: 1999;
+  z-index: 190;
   left: 0;
   right: 0;
   top: 0;
@@ -11692,12 +11692,6 @@ body {
   word-break: break-word;
 }
 
-@media (max-width: 800px) {
-  .is-uploading .image-view__details-content {
-    padding-bottom: calc(80px + 0.907rem);
-  }
-}
-
 .image-view__details-toggle {
   margin-left: -0.5em;
   position: relative;
@@ -11815,7 +11809,7 @@ textarea::-webkit-scrollbar-track {
   top: 0;
   right: 0;
   bottom: 0;
-  z-index: 2999;
+  z-index: 1100;
   background-color: rgba(33, 33, 33, 0.95);
   opacity: 0;
   visibility: hidden;
@@ -11867,7 +11861,7 @@ textarea::-webkit-scrollbar-track {
 
 .notification-area {
   position: relative;
-  z-index: 998;
+  z-index: 1090;
   pointer-events: none;
 }
 
@@ -11934,7 +11928,7 @@ textarea::-webkit-scrollbar-track {
 */
 .upload-bar {
   position: fixed;
-  z-index: 500;
+  z-index: 180;
   left: 0;
   bottom: 0;
   margin: 1rem;

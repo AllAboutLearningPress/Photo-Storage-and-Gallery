@@ -14,6 +14,20 @@ $main-y-pad: 2rem;
 
 $notification-screen-gap: 1rem;
 
+// base our z-indexes on the bootstrap, see `bootstrap/scss/_variables.scss` for the info on z-indexes
+$bootstrap-highest-z-index: $zindex-tooltip;
+$drop-target-z-index: $bootstrap-highest-z-index + 20;  // global drop target should prevail
+$notificator-z-index: $bootstrap-highest-z-index + 10; // ..as well as notificator
+
+// sidebar should prevail over site content and over its backdrop
+$sidebar-z-index: 210;
+$sidebar-backdrop-z-index: 200;
+
+// header should prevail over upload bar (search suggestions should be always visible)
+$header-z-index: 190;
+$upload-bar-z-index: 180;
+
+
 // Reuse `.form-control` focus styles from `bootstrap/scss/forms/_form-control.scss`
 @mixin bootstrap-focus() {
   color: $input-focus-color;
@@ -83,7 +97,6 @@ body {
   Header
 */
 $header-height: 74px;
-$header-z-index: 1999;
 $header-search-slot-gap: 1em;
 
 .header {
@@ -365,7 +378,7 @@ $sidebar-animation-duration: 0.2s;
   width: $sidebar-width;
   max-width: 100%;
   position: fixed;
-  z-index: 201;
+  z-index: $sidebar-z-index;
   left: 0;
   top: 0;
   bottom: 0;
@@ -420,7 +433,7 @@ $sidebar-animation-duration: 0.2s;
 
 .sidebar-backdrop {
   position: fixed;
-  z-index: 200;
+  z-index: $sidebar-backdrop-z-index;
   left: 0;
   top: 0;
   bottom: 0;
@@ -815,11 +828,6 @@ $image-view-picture-nav-gap-y: 1rem;
   word-wrap: break-word;
   word-break: break-word;
 }
-.is-uploading .image-view__details-content {
-  @media (max-width: #{$image-view-sidebar-width + $upload-bar-width}) {
-    padding-bottom: calc(#{$upload-bar-height} + #{$toolbar-y-pad});
-  }
-}
 .image-view__details-toggle {
   margin-left: -$btn-close-padding-x;
   position: relative;
@@ -939,7 +947,7 @@ $drop-target-transition-duration: .2s;
   top: 0;
   right: 0;
   bottom: 0;
-  z-index: 2999;
+  z-index: $drop-target-z-index;
   background-color: transparentize($dark, .05);
   opacity: 0;
   visibility: hidden;
@@ -988,7 +996,7 @@ $drop-target-transition-duration: .2s;
 }
 .notification-area {
   position: relative;
-  z-index: 998;
+  z-index: $notificator-z-index;
   pointer-events: none;
 }
 .notification-area__container {
@@ -1050,7 +1058,7 @@ $drop-target-transition-duration: .2s;
 
 .upload-bar {
   position: fixed;
-  z-index: 500;
+  z-index: $upload-bar-z-index;
   left: 0;
   bottom: 0;
   margin: $notification-screen-gap;
