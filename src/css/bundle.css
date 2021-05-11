@@ -10839,7 +10839,7 @@ p:last-child {
 }
 
 :root {
-  --main-x-pad: .62rem;
+  --main-x-pad: .8rem;
 }
 @media (min-width: 576px) {
   :root {
@@ -11241,15 +11241,15 @@ input[type=time] {
    Content
 */
 .content {
-  padding: 2rem var(--main-x-pad);
+  padding: 1.5rem var(--main-x-pad);
 }
 
 .header + .content {
-  padding-top: calc(74px + 2rem);
+  padding-top: calc(74px + 1.5rem);
 }
 
 .is-uploading .content {
-  padding-bottom: calc(80px + 2rem);
+  padding-bottom: calc(80px + 1.5rem);
 }
 
 /*
@@ -11285,7 +11285,7 @@ input[type=time] {
     visibility: visible;
     transform: translateX(0);
     transition: none;
-    top: calc(74px + 2rem);
+    top: calc(74px + 1.5rem);
     background: none;
     box-shadow: none;
   }
@@ -11299,9 +11299,11 @@ input[type=time] {
 .sidebar__head {
   padding: 1rem 0.5rem;
   text-align: right;
+  min-height: 74px;
 }
 @media (min-width: 768px) {
   .sidebar__head {
+    min-height: 0;
     padding-top: 0;
     padding-bottom: 0;
   }
@@ -11772,7 +11774,7 @@ input[type=time] {
 .image-view__details-toggle {
   margin-left: -0.5em;
   position: relative;
-  top: -0.25em;
+  top: -0.1em;
 }
 
 /*
@@ -12148,11 +12150,10 @@ a.upload-bar {
 }
 
 .filter__header {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
 }
 
 .filter__param {
-  padding-bottom: 1rem;
   border-bottom: 1px solid #424242;
 }
 
@@ -12164,7 +12165,7 @@ a.upload-bar {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 2rem var(--main-x-pad);
+  padding: 1.5rem var(--main-x-pad);
 }
 
 .login__form {

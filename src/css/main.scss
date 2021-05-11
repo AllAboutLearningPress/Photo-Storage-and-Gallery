@@ -1,7 +1,7 @@
 @import 'customised-bootstrap';
 
 :root {
-  --main-x-pad: .62rem;
+  --main-x-pad: .8rem;
 
   @include media-breakpoint-up(sm) {
     --main-x-pad: 1rem;
@@ -18,7 +18,7 @@ $upload-bar-width: 400px;
 $notification-bg: $toast-background-color;
 
 $main-x-pad: var(--main-x-pad);
-$main-y-pad: 2rem;
+$main-y-pad: 1.5rem;
 
 $notification-screen-gap: 1rem;
 
@@ -447,8 +447,10 @@ $sidebar-animation-duration: 0.2s;
 .sidebar__head {
   padding: 1rem 0.5rem;
   text-align: right;
+  min-height: $header-height;
 
   @include media-breakpoint-up(md) {
+    min-height: 0;
     padding-top: 0;
     padding-bottom: 0;
   }
@@ -909,7 +911,7 @@ $image-view-picture-nav-gap-y: 1rem;
 .image-view__details-toggle {
   margin-left: -$btn-close-padding-x;
   position: relative;
-  top: -.25em;
+  top: -.1em;
 }
 
 /*
@@ -1277,11 +1279,10 @@ $file-thumb-border-width: 1px;
   margin-right: .4rem;
 }
 .filter__header {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
 }
 
 .filter__param {
-  padding-bottom: 1rem;
   border-bottom: 1px solid $contrast2;
 }
 
