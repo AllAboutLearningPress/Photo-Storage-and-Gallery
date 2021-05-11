@@ -13,8 +13,8 @@ document.addEventListener('click', (e) => {
   }
 });
 
-const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
+// dumb demo code
 document.addEventListener('input', (e) => {
   const tagInput = e.target.closest('.js-tags__input');
 
@@ -22,7 +22,7 @@ document.addEventListener('input', (e) => {
     setTimeout(() => {
       document.querySelector('#tag-list').innerHTML = '<option value="Zoo">';
 
-      if (isSafari) {
+      if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
         tagInput.blur();
         tagInput.focus();
       }
