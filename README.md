@@ -10,22 +10,6 @@ Download repository, install project dependencies running `npm i` in the command
 
 See code (html/js), and comments
 
-### "Uploading" state
-
-When uploading is happening, `<body>` should have `is-uploading` classname
-
-### Progressbar
-
-Project uses bootstrap progressbar: https://getbootstrap.com/docs/5.0/components/progress/. The progressbar changes state by assigning attributes to the `.progress-bar`. By default it has CSS transition set to a `width` style property. This means that when you set a new `width`, it will visually change with a transition. This can be used to animate progressbar. 
-
-But in this project I disabled this transition (see `$progress-bar-transition: none;` in `customised-bootstrap.scss`), so that the animation needs to be done via JS (i,e, using `requestAnimaitonFrame`).
-
-Any approach (transition or JS) can suffice, just covering the details.
-
-### Search-by-image uploading UI
-
-See `handleImageSearch()` in `Search.js`. Much of code in this method is just for the demo, but some code is required (follow code comments).
-
 ### JS components initialisation regarding client-side page renders
 
 Singletons, which should be instantiated once for the app lifecycle and kept across page renders:
@@ -44,6 +28,23 @@ Following files are mostly for demo purposes and should be later replaced/incorp
 
 - `editable.js`
 - `tags.js`
+
+
+### "Uploading" state
+
+When uploading is happening, `<body>` should have `is-uploading` classname
+
+### Progressbar
+
+Project uses bootstrap progressbar: https://getbootstrap.com/docs/5.0/components/progress/. The progressbar changes state by assigning attributes to the `.progress-bar`. By default it has CSS transition set to a `width` style property. This means that when you set a new `width`, it will visually change with a transition. This can be used to animate progressbar. 
+
+But in this project I disabled this transition (see `$progress-bar-transition: none;` in `customised-bootstrap.scss`), so that the animation needs to be done via JS (i,e, using `requestAnimaitonFrame`).
+
+Any approach (transition or JS) can suffice, just covering the details.
+
+### Search-by-image uploading UI
+
+See `handleImageSearch()` in `Search.js`. Much of code in this method is just for the demo, but some code is required (follow code comments).
 
 ### Notifications
 
@@ -110,3 +111,7 @@ Currently, upload just listens to event from `GlobalDropTarget` for dropped item
 ### Tags
 
 `<datalist>` is used for a basic autocomplete functionality in a tag input (see https://github.com/AllAboutLearningPress/Photo-Storage-and-Gallery/issues/6#issuecomment-834731964). Dynamically populating a `<datalist>` with a fetched tags on input change is causing problems in iOS (at least), so that it might not be possible to do it reliably, and preloaded `<datalist>` might be the only option here. This requires further investigation
+
+### Login page
+
+JS for login page in separated to its own file (`login.js`), though there's currently no JS there.

@@ -1182,3 +1182,21 @@ $file-thumb-border-width: 1px;
   bottom: -.7em;
   z-index: -1;
 }
+
+/*
+  Login page
+*/
+.login {
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: $main-y-pad $main-x-pad;
+}
+.login__form {
+  width: 300px;
+  max-width: 100%;
+}
+.login__submit-btn {
+  width: 100%;
+}
