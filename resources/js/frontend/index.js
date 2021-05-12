@@ -17,7 +17,7 @@ const globalDropTarget = new GlobalDropTarget(allowedMimeTypes);
 const upload = new Upload(document.querySelector('.js-upload'));
 
 // main page widgets
-const contentSidebar = new Sidebar(document.querySelector('.js-content-sidebar'));
+//const contentSidebar = new Sidebar(document.querySelector('.js-content-sidebar'));
 const search = new Search(document.querySelector('.js-search'));
 
 // image view widgets

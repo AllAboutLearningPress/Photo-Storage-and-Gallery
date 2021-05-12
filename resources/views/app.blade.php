@@ -16,7 +16,7 @@
 
         <!-- Scripts -->
         <script src="/js/vendor/pig.min.js"></script>
-        <script src="/js/frontend/bundle.js"></script>
+
         @routes
         <script src="{{ mix('js/app.js') }}" defer></script>
     </head>
@@ -24,6 +24,7 @@
 
     <body class="is-uploading">
         @inertia
+        <script src="/js/frontend/bundle.js"></script>
     </body>
 
 </html>

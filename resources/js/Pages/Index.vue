@@ -74,53 +74,7 @@
         </div>
         <Header></Header>
         <div class="content">
-            <aside
-                id="content-sidebar"
-                class="js-content-sidebar sidebar"
-                tabindex="-1"
-                aria-labelledby="sidebar"
-            >
-                <div class="sidebar__head">
-                    <button
-                        title="Close menu"
-                        type="button"
-                        class="js-sidebar-toggle sidebar__close btn-subtle btn-lg btn-close"
-                        data-sidebar="#content-sidebar"
-                        aria-label="Close"
-                    >
-                        <span class="visually-hidden">Close menu</span>
-                    </button>
-                </div>
-                <div class="sidebar__body scrollbar">
-                    <div class="navigation list-group list-group-flush">
-                        <span
-                            class="active navigation__item list-group-item"
-                            aria-current="true"
-                        >
-                            My photos
-                        </span>
-                        <a
-                            href="#"
-                            class="navigation__item list-group-item list-group-item-action"
-                        >
-                            Popular tags
-                        </a>
-                        <a
-                            href="#"
-                            class="navigation__item list-group-item list-group-item-action"
-                        >
-                            Trash
-                        </a>
-                        <a
-                            href="/accounts/logout"
-                            class="navigation__item list-group-item list-group-item-action"
-                        >
-                            Logout
-                        </a>
-                    </div>
-                </div>
-            </aside>
-            <div class="sidebar-backdrop"></div>
+            <side-bar></side-bar>
             <main class="main">
                 <form class="mb-3 js-filter filter" action="#">
                     <input
@@ -257,10 +211,12 @@
 <script>
 import MainLayout from "../Layouts/MainLayout.vue";
 import Header from "../Components/Header.vue";
+import SideBar from "../Components/SideBar.vue";
 export default {
     components: {
         MainLayout,
         Header,
+        SideBar,
     },
     props: {
         photos: Array,
