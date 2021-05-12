@@ -144,5 +144,6 @@
 </template>
 
 <script>
+// form should add class is-suggesting to show suggestions
 export default {};
 </script>
