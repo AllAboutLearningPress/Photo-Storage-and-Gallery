@@ -19,9 +19,9 @@ class IndexController extends Controller
 
         $photos =  Photo::limit(5)->get();
         // //dd($photos);
-        // return Inertia::render('Index', [
-        //     'photos' => $this->add_temp_url($photos)
-        // ]);
+        return Inertia::render('Index', [
+            // 'photos' => $this->add_temp_url($photos)
+        ]);
         return view('index');
     }
 
