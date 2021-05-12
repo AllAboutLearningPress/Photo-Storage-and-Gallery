@@ -29,9 +29,9 @@ use Inertia\Inertia;
 //     ]);
 // });
 
-
+Route::get("/", [IndexController::class, 'index'])->name('index');
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-    Route::get("/", [IndexController::class, 'index'])->name('index');
+
     Route::post("/load-more", [IndexController::class, 'load_more'])->name('index.load_more');
 
     /* Routes related to uploading files */

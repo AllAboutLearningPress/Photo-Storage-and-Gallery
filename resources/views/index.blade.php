@@ -268,8 +268,8 @@
             </div>
         </a>
 
-        <script src="js/vendor/pig.min.js"></script>
-        <script src="js/bundle.js"></script>
+        <script src="js/vendor/pig.min.js" type="text/javascript"></script>
+        {{-- <script src="/js/frontend/bundle.js" type="text/javascript"></script> --}}
         <script>
             const imageData = [
         { filename: '100', aspectRatio: 1.777 },
@@ -457,7 +457,7 @@
         figureTagName: 'a',
       };
 
-      const pig = new Pig(imageData, options).enable();
+      const pig = new window.Pig(imageData, options).enable();
 
       // WARNING: this is required to fix `pigjs` bug, use after each `Pig` initialisation
       window.dispatchEvent(new Event('resize'));
