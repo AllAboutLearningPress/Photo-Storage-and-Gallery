@@ -1,0 +1,1309 @@
+@import 'customised-bootstrap';
+
+:root {
+  --main-x-pad: .8rem;
+
+  @include media-breakpoint-up(sm) {
+    --main-x-pad: 1rem;
+  }
+}
+
+$sidebar-width: 216px;
+$sidebar-gap: 1.1rem;
+$sidebar-left-pad: 1.3rem;
+
+$upload-bar-height: 80px;
+$upload-bar-width: 400px;
+
+$notification-bg: $toast-background-color;
+
+$main-x-pad: var(--main-x-pad);
+$main-y-pad: 1.3rem;
+
+$notification-screen-gap: 1rem;
+
+$toolbar-roomy-bp: 490px;
+
+// base our z-indexes on the bootstrap, see `bootstrap/scss/_variables.scss` for the info on z-indexes
+$bootstrap-highest-z-index: $zindex-tooltip;
+$drop-target-z-index: $bootstrap-highest-z-index + 20;  // global drop target should prevail
+$notificator-z-index: $bootstrap-highest-z-index + 10; // ..as well as notificator
+
+// sidebar should prevail over site content and over its backdrop
+$sidebar-z-index: 210;
+$sidebar-backdrop-z-index: 200;
+
+// selected toolbar should prevail over header
+$selected-toolbar-z-index: 191;
+
+// header should prevail over upload bar (search suggestions should be always visible)
+$header-z-index: 190;
+$upload-bar-z-index: 180;
+
+
+// Reuse `.form-control` focus styles from `bootstrap/scss/forms/_form-control.scss`
+@mixin bootstrap-focus() {
+  color: $input-focus-color;
+  background-color: $input-focus-bg;
+  border-color: $input-focus-border-color;
+  outline: 0;
+
+  @if $enable-shadows {
+    @include box-shadow($input-box-shadow, $input-focus-box-shadow);
+  } @else {
+    // Avoid using mixin so we can pass custom focus shadow properly
+    box-shadow: $input-focus-box-shadow;
+  }
+}
+
+/*
+    Basic
+*/
+html,
+body {
+  height: 100%;
+}
+body {
+  overflow-y: scroll;
+}
+
+/*
+  Remove list-specific styling
+*/
+.nolist {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+/*
+  Reset date inputs in iOS
+*/
+input[type='date'],
+input[type='time'] {
+  -webkit-appearance: none;
+}
+
+/*
+  Definition list
+*/
+.dlist,
+.dlist > dt,
+.dlist > dd {
+  margin: 0;
+}
+
+.dlist_0 > dt,
+.dlist_0 > dd {
+  display: inline;
+}
+.dlist_0 > dd:after {
+  content: '\A';
+  white-space: pre;
+  display: block;
+  line-height: 5px;
+  height: 5px;
+}
+
+
+/*
+    Page wrapper
+*/
+.wrapper {
+  min-height: 100%;
+  overflow: hidden;
+}
+
+/*
+  Header
+*/
+$header-height: 74px;
+$header-y-pad: 0.9rem;
+$header-search-slot-gap: 1em;
+
+@mixin main-header-styles {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  height: $header-height;
+  background: $page-bg;
+  padding: $header-y-pad $main-x-pad;
+  border-bottom: 1px solid $contrast1;
+}
+
+.header {
+  @include main-header-styles;
+
+  z-index: $header-z-index;
+  display: flex;
+  flex-wrap: wrap;
+}
+.header__slot_logo,
+.header__slot_actions {
+  flex-grow: 0;
+  white-space: nowrap;
+}
+.is-searchable .header__slot_logo,
+.is-searchable .header__slot_actions {
+  position: absolute;
+  z-index: 0;
+}
+.header__slot_logo {
+  padding-left: $main-x-pad;
+  margin-left: calc(-1 * #{$main-x-pad});
+
+  @include media-breakpoint-up(md) {
+    padding-left: $sidebar-left-pad;
+    width: calc(#{$sidebar-width} + #{$sidebar-gap});
+    flex: 0 0 auto;
+  }
+}
+.header__slot_search {
+  max-width: 720px;
+  flex-grow: 1;
+
+  @include media-breakpoint-up(sm) {
+    padding-left: $header-search-slot-gap;
+    padding-right: $header-search-slot-gap;
+  }
+}
+.header__slot_actions {
+  margin-left: auto;
+  margin-right: calc(-1 * #{$main-x-pad});
+
+  @media (min-width: $toolbar-roomy-bp) {
+    margin-right: 0;
+  }
+}
+
+.header__action-btn__txt {
+  display: none;
+
+  @include media-breakpoint-up(lg) {
+    display: inline;
+  }
+}
+
+.header__open-sidebar {
+  margin-top: -0.15em;
+  margin-left: -$btn-close-padding-x;
+
+  @include media-breakpoint-up(md) {
+    display: none;
+  }
+}
+
+/*
+  Search
+*/
+
+.search {
+  text-align: right;
+
+  @include media-breakpoint-up(xs) {
+    position: static;
+  }
+}
+
+.search__image-progress {
+  height: 3px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  background-color: transparent;
+  display: none;
+}
+.search__image-progress > .progress-bar {
+  background-color: $primary-color;
+}
+.is-searching-by-image .search__image-progress {
+  display: flex;
+}
+
+.search__field {
+  display: none;
+  text-align: left;
+  position: relative;
+  z-index: 2;
+
+  @include media-breakpoint-up(sm) {
+    display: block;
+  }
+}
+.is-searchable .search__field {
+  display: block;
+}
+.search__field-show {
+  position: relative;
+  @include media-breakpoint-up(sm) {
+    display: none;
+  }
+}
+.search__field-show > svg.bi {
+  position: relative;
+  top: -0.15em;
+}
+.is-searchable .search__field-show {
+  @include visually-hidden();
+  @include visually-hidden-focusable();
+}
+
+.search__field-image-search-spinner {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  margin-left: calc(#{-$spinner-width-sm} - 4px);
+  margin-top: calc((#{-$spinner-height-sm} / 2) - 2px);
+}
+.is-searching-by-image .search__field-image-search-spinner {
+  display: block;
+}
+
+.search__infield-action {
+  position: absolute;
+  top: 0;
+  z-index: 10;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  border-color: transparent;
+}
+.search__infield-action_hide {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+
+  @include media-breakpoint-up(sm) {
+    display: none;
+  }
+}
+.is-suggesting .search__infield-action_hide {
+  border-bottom-left-radius: 0;
+}
+
+.search__infield-action > svg.bi {
+  position: relative;
+  top: -0.15em;
+}
+
+.search__infield-action_image-search {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  right: 0;
+}
+
+.search__input {
+  padding-left: calc(3rem + 0.2em);
+  padding-right: calc(3rem + 0.2em);
+
+  @include media-breakpoint-up(sm) {
+    padding-left: $input-padding-x-lg;
+  }
+}
+
+// match specificity from `custom-bootstrap.scss`
+.search__input:not([type=hidden]):not([type=radio]):not([disabled]):not([tabindex^="-"]),
+.search__field-show.has-no-transition:not([disabled]):not([tabindex^="-"]) {
+  @include media-breakpoint-down(sm) {
+    transition: none;
+  }
+}
+.is-suggesting .search__input {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-color: $input-focus-border-color;
+}
+.search__field:focus-within .search__input {
+  @include bootstrap-focus();
+}
+
+.search__suggest,
+.search__suggest::after {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-bottom-left-radius: $input-border-radius-lg;
+  border-bottom-right-radius: $input-border-radius-lg;
+}
+.search__suggest {
+  display: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  top: 100%;
+  background-color: $input-focus-bg;
+}
+.search__suggest-content {
+  max-height: 200px;
+}
+.is-suggesting .search__suggest {
+  display: block;
+}
+.search__suggest::after {
+  content: '';
+  z-index: -1;
+  bottom: 0;
+  top: calc(2 * #{$input-btn-focus-width});
+  transition: $input-transition;
+}
+.search__field:focus-within .search__suggest::after {
+  box-shadow: $input-focus-box-shadow;
+}
+
+.search__suggest-item,
+.search__suggest-item:hover,
+.search__suggest-item:focus,
+.search__suggest-item.is-highlighted {
+  color: $page-text-color;
+}
+.search__suggest-item {
+  border-color: $contrast1;
+  padding-left: $input-padding-x-lg;
+  padding-right: $input-padding-x-lg;
+  background-color: transparent;
+}
+
+.search__suggest-item:hover,
+.search__suggest-item:focus,
+.search__suggest-item.is-highlighted {
+  background-color: $contrast1;
+}
+
+.search__suggest-item:focus-visible {
+  outline: 0;
+  box-shadow: $input-btn-focus-box-shadow;
+}
+
+/*
+  File input as a button
+*/
+.button-file:focus-within {
+  box-shadow: $btn-focus-box-shadow;
+}
+.button-file__input {
+  @include visually-hidden();
+  @include visually-hidden-focusable();
+}
+
+/*
+   Content
+*/
+.content {
+  padding: $main-y-pad $main-x-pad;
+}
+.header + .content {
+  padding-top: calc(#{$header-height} + #{$main-y-pad});
+}
+.is-uploading .content {
+  padding-bottom: calc(#{$upload-bar-height} + #{$main-y-pad});
+
+}
+
+/*
+    Sidebar
+*/
+
+$sidebar-animation-duration: 0.2s;
+
+.sidebar {
+  background: $contrast1;
+  width: $sidebar-width;
+  max-width: 100%;
+  position: fixed;
+  z-index: $sidebar-z-index;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  will-change: transform, visibility;
+  transform: translateX(-100%);
+  transition: visibility $sidebar-animation-duration, transform $sidebar-animation-duration;
+  outline: none;
+  box-shadow: 0 0.5rem 1rem rgba($black, 0.9);
+  visibility: hidden;
+}
+.sidebar_right {
+  left: auto;
+  right: 0;
+  transform: translateX(100%);
+}
+.sidebar:not(.sidebar_always-hideable) {
+  @include media-breakpoint-up(md) {
+    visibility: visible;
+    transform: translateX(0);
+    transition: none;
+    top: calc(#{$header-height} + #{$main-y-pad});
+    background: none;
+    box-shadow: none;
+  }
+}
+.sidebar.is-open {
+  visibility: visible;
+  transform: translateX(0);
+}
+
+.sidebar__head {
+  padding: 1rem 0.5rem;
+  text-align: right;
+  min-height: $header-height;
+
+  @include media-breakpoint-up(md) {
+    min-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+.sidebar__close {
+  @include media-breakpoint-up(md) {
+    display: none;
+  }
+}
+
+.sidebar__body {
+  flex-grow: 1;
+}
+
+.sidebar-backdrop {
+  position: fixed;
+  z-index: $sidebar-backdrop-z-index;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, $modal-backdrop-opacity);
+  pointer-events: none;
+  opacity: 0;
+  will-change: opacity;
+  transition: opacity $sidebar-animation-duration;
+}
+.sidebar.is-open ~ .sidebar-backdrop {
+  opacity: 1;
+  pointer-events: auto;
+
+  @include media-breakpoint-up(md) {
+    display: none;
+  }
+}
+
+/*
+    Logo
+*/
+.logo {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+
+  @include media-breakpoint-up(md) {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-left: -1rem;
+  }
+}
+/*
+    Navigation
+*/
+.navigation__item,
+.navigation__item:hover,
+.navigation__item:focus {
+  color: $page-text-color;
+}
+
+.navigation__item {
+  background-color: transparent;
+  border: none;
+  padding: 0.5rem 2rem 0.5rem $sidebar-left-pad;
+  font-size: 1.2rem;
+}
+
+.navigation__item:not(.active):hover,
+.navigation__item:not(.active):focus {
+  background-color: $page-bg;
+
+  @include media-breakpoint-up(md) {
+    background-color: $contrast1;
+  }
+}
+
+.navigation__item:focus-visible {
+  outline: 0;
+  box-shadow: $input-btn-focus-box-shadow;
+}
+
+.navigation__item.active,
+.navigation__item.active:hover,
+.navigation__item.active:focus {
+  color: #000;
+}
+
+/*
+    Main page content
+*/
+.main {
+  position: relative;
+  margin-left: 0;
+
+  @include media-breakpoint-up(md) {
+    margin-left: calc(#{$sidebar-width} + #{$sidebar-gap});
+  }
+}
+
+/*
+    Menu button
+*/
+.btn-menu {
+  box-sizing: content-box;
+  width: $btn-close-width;
+  height: $btn-close-height;
+  padding: $btn-close-padding-y $btn-close-padding-x;
+  color: $btn-close-color;
+  background: transparent
+    escape-svg(
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#{$btn-close-color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>')
+    )
+    50% 50% no-repeat; // include transparent for button elements
+  border: 0; // for button elements
+  @include border-radius();
+  opacity: $btn-close-opacity;
+
+  // Override <a>'s hover style
+  &:hover,
+  &:focus {
+    color: $btn-close-color;
+    text-decoration: none;
+    opacity: $btn-close-hover-opacity;
+  }
+
+  &:focus-visible {
+    outline: 0;
+    box-shadow: $btn-close-focus-shadow;
+    opacity: $btn-close-focus-opacity;
+  }
+
+  &:disabled,
+  &.disabled {
+    pointer-events: none;
+    user-select: none;
+    opacity: $btn-close-disabled-opacity;
+  }
+}
+
+/*
+  Improve touch hit area for standalone checkboxes/radios.
+  For this `.form-check` element should be a `<label>`
+*/
+.form-check_standalone {
+  position: relative;
+  display: inline-block;
+  padding: 0;
+  min-height: 0;
+  margin: 0;
+  vertical-align: baseline;
+}
+.form-check_standalone::before {
+  content: '';
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  left: 50%;
+  // .25em is default bootstrap margin-top for `.form-check-input` which allows vertical aligning with text
+  top: calc(50% + (0.25em / 2));
+  transform: translate(-50%, -50%);
+}
+.form-check_standalone > .form-check-input {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/*
+  Gallery
+*/
+
+.pig-figure {
+  background-color: $contrast1 !important;
+}
+
+/*
+  Toolbar for detailed views (image view, family images view)
+*/
+
+$toolbar-height: $header-height;
+$toolbar-y-pad: $header-y-pad;
+$toolbar-show-specific-actions-bp: 440px;
+$toolbar-action-sections-gap: .5rem;
+
+.toolbar {
+  position: fixed;
+  z-index: $header-z-index;
+  left: 0;
+  right: 0;
+  top: 0;
+  display: flex;
+  flex-grow: 0;
+  height: $toolbar-height;
+  padding: $toolbar-y-pad $main-x-pad;
+  background: $page-bg;
+  white-space: nowrap;
+}
+
+.toolbar__main,
+.toolbar__aside {
+  flex-grow: 0;
+}
+.toolbar__main {
+  margin-left: calc(-1 * #{$main-x-pad});
+
+  @media (min-width: $toolbar-roomy-bp) {
+    margin-left: 0;
+  }
+}
+.toolbar__aside {
+  display: flex;
+  flex-wrap: nowrap;
+  margin-left: auto;
+  white-space: nowrap;
+
+  margin-right: calc(-1 * #{$main-x-pad});
+
+  @media (min-width: $toolbar-roomy-bp) {
+    margin-right: 0;
+  }
+}
+
+.toolbar__specific-actions {
+  padding-right: $toolbar-action-sections-gap / 2.5;
+
+  @media (min-width: $toolbar-roomy-bp) {
+    padding-right: $toolbar-action-sections-gap;
+  }
+}
+.toolbar__main-actions {
+  border-left: 1px solid $contrast2;
+  padding-left: $toolbar-action-sections-gap / 2.5;
+
+  @media (min-width: $toolbar-roomy-bp) {
+    padding-left: $toolbar-action-sections-gap;
+  }
+}
+
+.toolbar__specific-actions-more {
+  display: none;
+
+  @media (min-width: $toolbar-show-specific-actions-bp) {
+    display: inline;
+  }
+}
+.toolbar__specific-actions-toggle,
+.toolbar__specific-actions-toggle + label {
+  display: inline-block;
+
+  @media (min-width: $toolbar-show-specific-actions-bp) {
+    display: none;
+  }
+}
+.toggler:checked ~ .toolbar__specific-actions-more {
+  display: inline;
+}
+
+.toolbar + .content {
+  padding-top: calc(#{$toolbar-height} + .5rem);
+
+  @include media-breakpoint-up(md) {
+    padding-top: calc(#{$toolbar-height} + 1rem);
+  }
+}
+
+/*
+  Toggler.
+  (a self-toggling "button" based on a checkbox)
+*/
+.toggler__icon-close,
+.toggler:checked + label .toggler__icon-open {
+  display: none;
+}
+
+.toggler:checked ~ .toolbar__specific-actions-more,
+.toggler:checked + label .toggler__icon-close {
+  display: inline;
+}
+
+/*
+  Selected items toolbar
+*/
+$selected-toolbar-transition-duration: .2s;
+
+.selected-toolbar {
+  @include main-header-styles;
+
+  z-index: $selected-toolbar-z-index;
+  transform: translateY(-100%);
+  transition: visibility $sidebar-animation-duration, transform $selected-toolbar-transition-duration;
+  will-change: transform, visibility;
+  visibility: hidden;
+}
+.selected-toolbar.is-visible {
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.selected-toolbar__unselect.btn-lg {
+  padding-top: .25rem;
+  padding-bottom: .25rem;
+}
+.selected-toolbar__unselect > .bi {
+  margin-top: -.22em;
+}
+
+
+.selected-toolbar + .header,
+.selected-toolbar + .toolbar {
+  visibility: visible;
+  transition: visibility $sidebar-animation-duration;
+  will-change: visibility;
+}
+.selected-toolbar.is-visible + .header,
+.selected-toolbar.is-visible + .toolbar {
+  visibility: hidden;
+}
+
+/*
+  Image view
+*/
+
+$image-view-sidebar-width: 400px;
+
+.image-view {
+  height: 100%;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.image-view__picture-area {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transition: right $sidebar-animation-duration;
+  will-change: right;
+}
+.image-view__details.is-open ~ .image-view__picture-area {
+  @include media-breakpoint-up(md) {
+    right: $image-view-sidebar-width;
+  }
+}
+
+.image-view__toolbar {
+  position: absolute;
+  z-index: 2;
+  background-color: transparentize($page-bg, 0.5);
+}
+
+.image-view__pic {
+  z-index: 0;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  position: relative;
+  height: 0;
+  max-width: 100%;
+}
+.image-view__img,
+.image-view__picture-nav {
+  position: absolute;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+.image-view__img {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+$image-view-picture-nav-size: 36px;
+$image-view-picture-nav-color: $page-text-color;
+$image-view-picture-nav-gap-y: 1rem;
+
+.image-view__picture-nav {
+  z-index: 1;
+  top: 100px;
+  bottom: 0;
+  width: 50%;
+  outline: none !important;
+}
+.image-view__picture-nav::before,
+.image-view__picture-nav::after {
+  content: '';
+  position: absolute;
+}
+.image-view__picture-nav::before {
+  z-index: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: $toolbar-y-pad $main-x-pad;
+  background-color: transparentize($page-bg, 0.5);
+  height: calc(#{$image-view-picture-nav-size} + 15px * 2);
+}
+.image-view__picture-nav::after {
+  z-index: 1;
+  width: $image-view-picture-nav-size;
+  height: $image-view-picture-nav-size;
+  bottom: $image-view-picture-nav-gap-y;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: cover;
+
+  border-radius: $input-border-radius;
+}
+.image-view__picture-nav:hover::after {
+  background-color: $btn-hover-subtle-bg;
+}
+.image-view__picture-nav:focus-visible::after {
+  box-shadow: $input-focus-box-shadow;
+}
+
+.image-view__picture-nav-prev::after {
+  right: $image-view-picture-nav-gap-y;
+  background-image: escape-svg(
+    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="#{$image-view-picture-nav-color}" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16"> <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm11.5 5.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"/></svg>')
+  );
+}
+.image-view__picture-nav-next::after {
+  left: $image-view-picture-nav-gap-y;
+  background-image: escape-svg(
+    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="#{$image-view-picture-nav-color}" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16"> <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/></svg>')
+  );
+}
+
+.image-view__picture-nav-prev {
+  left: 0;
+}
+.image-view__picture-nav-next {
+  right: 0;
+}
+
+.image-view__picture-nav:hover,
+.image-view__picture-nav:focus-visible {
+  outline: none;
+}
+
+.image-view__details {
+  width: $image-view-sidebar-width;
+  font-size: $font-size-lg;
+}
+.image-view__details-head,
+.image-view__details-content {
+  padding: $toolbar-y-pad $main-x-pad;
+}
+.image-view__details-head {
+  text-align: left;
+  border-bottom: 1px solid $contrast2;
+}
+.image-view__details-content {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+.image-view__details-toggle {
+  margin-left: -$btn-close-padding-x;
+  position: relative;
+  top: -.1em;
+}
+
+/*
+  Custom scrollbar
+*/
+
+$scrollbar-size: 16px;
+$scrollbar-track-color: transparent;
+$scrollbar-textarea-track-color: $contrast1;
+$scrollbar-thumb-color: #666;
+
+// ff styles
+html {
+  scrollbar-color: $scrollbar-thumb-color $contrast1;
+}
+.scrollbar {
+  scrollbar-color: $scrollbar-thumb-color $scrollbar-track-color;
+}
+textarea {
+  scrollbar-color: $scrollbar-thumb-color $scrollbar-textarea-track-color;
+}
+
+// webkit styles
+html::-webkit-scrollbar,
+.scrollbar::-webkit-scrollbar,
+textarea::-webkit-scrollbar {
+  width: $scrollbar-size;
+  height: $scrollbar-size;
+}
+html::-webkit-scrollbar-thumb,
+.scrollbar::-webkit-scrollbar-thumb,
+textarea::-webkit-scrollbar-thumb {
+  background: $scrollbar-thumb-color;
+  border-radius: $scrollbar-size;
+  border: 4px solid transparent;
+  background-clip: content-box;
+}
+html::-webkit-scrollbar-track {
+  background: $contrast1;
+}
+.scrollbar::-webkit-scrollbar-track {
+  background: $scrollbar-track-color;
+}
+textarea::-webkit-scrollbar-track {
+  background: $scrollbar-textarea-track-color;
+}
+//
+//textarea::-webkit-resizer {
+//  background-color: $scrollbar-textarea-track-color;
+//}
+
+
+.scrollbar {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/*
+  Tags list
+*/
+
+.tags__form {
+  max-width: 400px;
+}
+.tags__tag {
+  margin-bottom: .5em;
+}
+
+/*
+  Tag
+*/
+$tag-delete-gap-x: .25em;
+
+.tag,
+.tag__delete {
+  border-radius: 1.6em;
+}
+.tag {
+  position: relative;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  text-align: left;
+}
+.tag_deletable {
+  padding-right: calc(#{$btn-close-width} + #{$input-btn-focus-width} + #{$btn-close-padding-x * 2} + #{$tag-delete-gap-x});
+}
+.tag__delete {
+  position: absolute;
+  right: $tag-delete-gap-x;
+  top: 50%;
+  transform: translateY(-50%);
+  will-change: filter;
+  filter: invert(100%);
+}
+.tag__delete:hover,
+.tag__delete:focus-visible {
+  filter: invert(0);
+}
+// make selector more specific to overwrite generic focusable elements styles (see `css/customised-bootstrap.scss`)
+.tag .tag__delete.btn-close {
+  @include transition($btn-transition, filter .15s);
+}
+
+/*
+  Fullscreen drop target
+*/
+$drop-target-transition-duration: .2s;
+
+.drop-target {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: $drop-target-z-index;
+  background-color: transparentize($dark, .05);
+  opacity: 0;
+  visibility: hidden;
+  will-change: opacity;
+}
+.drop-target.is-active {
+  visibility: visible;
+  opacity: 1;
+  transition: visibility $drop-target-transition-duration, opacity $drop-target-transition-duration;
+}
+.drop-target__message {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 1200px;
+  max-width: 100%;
+  padding: 1em;
+  font-size: 3rem;
+  text-align: center;
+}
+
+/*
+  Drop manager
+*/
+.drop-manager:not(.is-single-image) .drop-manager__note,
+.drop-manager__note_upload,
+.drop-manager.is-upload-preferred .drop-manager__note_search {
+  display: none;
+}
+.drop-manager.is-upload-preferred .drop-manager__note_upload {
+  display: block;
+}
+
+.drop-manager__note {
+  font-size: .65em;
+}
+
+
+/*
+  Notification area containing toasts
+*/
+.notification-area,
+.notification-area__container {
+  pointer-events: none;
+}
+.notification-area {
+  position: relative;
+  z-index: $notificator-z-index;
+  pointer-events: none;
+}
+.notification-area__container {
+  position: fixed;
+  right: 0;
+  top: 0;
+  padding: $notification-screen-gap;
+}
+// keep bootstrap toast hidden until they gets initialised
+.notification-area__toast:not(.fade) {
+  display: none;
+}
+
+/*
+  Editable
+*/
+
+.editable__form,
+.is-editing > .editable__content {
+  display: none;
+}
+.is-editing > .editable__form {
+  display: block;
+}
+.editable__form,
+.editable__area {
+  margin-bottom: .5em;
+}
+.editable__content {
+  line-height: $line-height-base;
+  margin: 0;
+}
+.editable__area {
+  resize: none;
+  overflow-y: hidden;
+}
+.editable__area.form-control {
+  margin-top: calc((#{$input-padding-y} + #{$input-border-width}) * -1);
+}
+.editable__area.form-control-lg {
+  margin-top: calc((#{$input-padding-y-lg} + #{$input-border-width}) * -1);
+}
+.editable__trigger {
+  position: relative;
+  top: -.1em;
+  //padding: $btn-padding-y-lg $btn-padding-y-lg;
+}
+
+/*
+  Upload manager
+*/
+.upload-manager {
+  max-width: 2000px;
+}
+
+/*
+  Floating upload bar
+*/
+
+.upload-bar {
+  position: fixed;
+  z-index: $upload-bar-z-index;
+  left: 0;
+  bottom: 0;
+  margin: $notification-screen-gap;
+  padding: 1rem;
+  background-color: $notification-bg;
+  width: $upload-bar-width;
+  height: $upload-bar-height;
+  max-width: calc(100% - #{$notification-screen-gap * 2});
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  border: $toast-border-width solid $toast-border-color;
+  border-radius: $toast-border-radius;
+  box-shadow: $toast-box-shadow;
+}
+a.upload-bar {
+  color: $toast-color;
+  text-decoration: none;
+}
+.upload-bar__progress {
+  margin-top: .5rem;
+  border: 1px solid $progress-bar-bg;
+}
+.upload-bar:hover,
+.upload-bar:focus-visible {
+  background-color: lighten($notification-bg, 4%);
+}
+.upload-bar:focus-visible {
+  outline: 0;
+  box-shadow: $input-btn-focus-box-shadow;
+}
+
+
+
+/*
+  File list
+*/
+.file-list__item {
+  margin-bottom: 3rem;
+}
+
+/*
+  File
+*/
+
+$file-thumb-size: 200px;
+$file-thumb-gap: 1.5rem;
+$file-thumb-border-width: 1px;
+
+.file {
+  display: flex;
+  flex-wrap: wrap;
+  //gap: $file-thumb-gap;
+}
+.file__thumb {
+  position: relative;
+  // use `gao` on `.file` when browser support increases
+  margin-right: $file-thumb-gap;
+  margin-bottom: $file-thumb-gap;
+  max-width: 100%;
+}
+.file__pic {
+  // keep it square
+  width: $file-thumb-size;
+  max-width: 100%;
+  padding-top: 100%;
+  height: 0;
+
+  // position background image
+  background-size: contain;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+
+  // allow total thumb dimension to bee comprehended
+  border: $file-thumb-border-width solid $contrast2;
+  border-radius: $btn-border-radius;
+}
+.file__delete {
+  position: absolute;
+  left: $file-thumb-border-width;
+  top: $file-thumb-border-width;
+  background-color: $page-bg;
+}
+.file__delete:hover,
+.file__delete:focus-visible {
+  background-color: lighten($page-bg, 5%);
+}
+.file__details {
+  flex-grow: 1;
+  flex-basis: 400px;
+}
+.file__progress {
+  height: 6px;
+  margin-bottom: 1rem;
+}
+.file__header {
+  margin-bottom: 2rem;
+}
+.file__title {
+  margin-bottom: .6rem;
+}
+.file__note {
+  margin-bottom: 1em;
+  margin-right: .5em;
+}
+
+/*
+  Increase touch hit area for links
+*/
+.link-action {
+  position: relative;
+  z-index: 0;
+}
+.link-action::after {
+  content: '';
+  position: absolute;
+  left: -.5em;
+  right: -.5em;
+  top: -.7em;
+  bottom: -.7em;
+  z-index: -1;
+}
+
+/*
+  Filter
+*/
+.filter__fields {
+  display: none;
+  padding-top: 1rem;
+}
+.filter__toggle:checked ~ .filter__fields {
+  display: block;
+}
+.filter__toggle-label > .bi {
+  position: relative;
+  top: -.3rem;
+  margin-right: .4rem;
+}
+.filter__header {
+  font-size: 1.3rem;
+}
+
+.filter__param {
+  border-bottom: 1px solid $contrast2;
+}
+
+/*
+  Login page
+*/
+.login {
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: $main-y-pad $main-x-pad;
+}
+.login__form {
+  width: 300px;
+  max-width: 100%;
+}
+.login__submit-btn {
+  width: 100%;
+}

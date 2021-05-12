@@ -12,10 +12,12 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js').vue()
+    .js('resources/js/vendor/pig.min.js', 'public/js/vendor/pig.min.js')
     .postCss('resources/css/app.css', 'public/css', [
         require('postcss-import'),
         require('tailwindcss'),
     ])
+    .sass('resources/sass/main.scss', 'public/css/bundle.css')
     .webpackConfig(require('./webpack.config'));
 
 if (mix.inProduction()) {
