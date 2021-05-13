@@ -11273,6 +11273,11 @@ input[type=time] {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.9);
   visibility: hidden;
 }
+@media (min-width: 768px) {
+  .sidebar {
+    z-index: 1;
+  }
+}
 
 .sidebar_right {
   left: auto;
@@ -11331,6 +11336,11 @@ input[type=time] {
   opacity: 0;
   will-change: opacity;
   transition: opacity 0.2s;
+}
+@media (min-width: 768px) {
+  .sidebar-backdrop {
+    z-index: 0;
+  }
 }
 
 .sidebar.is-open ~ .sidebar-backdrop {

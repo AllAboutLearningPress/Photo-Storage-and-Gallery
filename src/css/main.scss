@@ -423,6 +423,10 @@ $sidebar-animation-duration: 0.2s;
   outline: none;
   box-shadow: 0 0.5rem 1rem rgba($black, 0.9);
   visibility: hidden;
+
+  @include media-breakpoint-up(md) {
+    z-index: 1;
+  }
 }
 .sidebar_right {
   left: auto;
@@ -478,6 +482,10 @@ $sidebar-animation-duration: 0.2s;
   opacity: 0;
   will-change: opacity;
   transition: opacity $sidebar-animation-duration;
+
+  @include media-breakpoint-up(md) {
+    z-index: 0;
+  }
 }
 .sidebar.is-open ~ .sidebar-backdrop {
   opacity: 1;
