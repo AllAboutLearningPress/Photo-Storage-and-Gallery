@@ -26,7 +26,7 @@ export default {
         this.uploadBar = document.querySelector(
             ".upload-bar__progress .progress-bar"
         );
-        window.requestAnimationFrame(this.updateUploadBar);
+        // window.requestAnimationFrame(this.updateUploadBar);
     },
     methods: {
         updateUploadBar(timestamp) {
