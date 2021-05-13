@@ -144,6 +144,10 @@
 </template>
 
 <script>
-// form should add class is-suggesting to show suggestions
-export default {};
+import Search from "../frontend/components/Search.js";
+export default {
+    mounted: () => {
+        const search = new Search(document.querySelector(".js-search"));
+    },
+};
 </script>

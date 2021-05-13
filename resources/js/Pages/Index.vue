@@ -189,20 +189,7 @@
             </div>
         </div>
     </div>
-
-    <a href="#" class="js-upload-bar upload-bar">
-        Uploading 9243 photos (1h 53m remaining)
-        <div class="upload-bar__progress progress">
-            <div
-                class="progress-bar"
-                role="progressbar"
-                style="width: 25%"
-                aria-valuenow="25"
-                aria-valuemin="0"
-                aria-valuemax="100"
-            ></div>
-        </div>
-    </a>
+    <upload-progress-bar></upload-progress-bar>
 </template>
 
 <style lang='scss'>
@@ -212,11 +199,14 @@
 import MainLayout from "../Layouts/MainLayout.vue";
 import Header from "../Components/Header.vue";
 import SideBar from "../Components/SideBar.vue";
+import GlobalDropTarget from "../frontend/components/GlobalDropTarget.js";
+import UploadProgressBar from "../Components/UploadProgressBar.vue";
 export default {
     components: {
         MainLayout,
         Header,
         SideBar,
+        UploadProgressBar,
     },
     props: {
         photos: Array,
@@ -227,6 +217,15 @@ export default {
         };
     },
     mounted() {
+        const allowedMimeTypes = [
+            "image/jpeg",
+            "image/png",
+            "image/gif",
+            "image/tiff",
+            "image/vnd.adobe.photoshop",
+        ];
+
+        const globalDropTarget = new GlobalDropTarget(allowedMimeTypes);
         // this.scroll();
         const imageData = [
             { filename: "100", aspectRatio: 1.777 },
