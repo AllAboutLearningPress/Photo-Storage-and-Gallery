@@ -119,3 +119,7 @@ Currently, upload just listens to event from `GlobalDropTarget` for dropped item
 ### Login page
 
 JS for login page in separated to its own file (`login.js`), though there's currently no JS there.
+
+### Side-by-side image comparision
+
+It uses a lib called `img-comparison-slider`, which when bundled with webpack generates 2 additional chunks. 1 of them is actually used and gets loaded dynamically. This is a side effect of how the lib is written and might be fixed in the lib in a future (I reported the issue). Generally it's not much of a problem, just note that these additional chunks need to be present
