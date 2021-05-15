@@ -12,6 +12,9 @@ import './components/global-misc';
 import './components/tags';
 import './components/editable';
 
+// for image compare page
+import './components/image-compare';
+
 // generic things
 const globalDropTarget = new GlobalDropTarget(allowedMimeTypes);
 const upload = new Upload(document.querySelector('.js-upload'));
