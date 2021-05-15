@@ -21,7 +21,7 @@
   },
   "scripts": {
     "css-compile": "sass --load-path=node_modules --style compressed --source-map --embed-sources --no-error-css src/css/:src/css/",
-    "bundle": "webpack",
+    "bundle": "webpack --mode=production",
     "watch": "webpack --watch --progress"
   }
 }
