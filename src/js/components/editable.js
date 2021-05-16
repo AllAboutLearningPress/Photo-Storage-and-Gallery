@@ -15,7 +15,7 @@ function resize(tx) {
   tx.style.height = tx.scrollHeight + 'px';
 }
 
-document.addEventListener('mousedown', (e) => {
+function openEditor(e) {
   const editableValue = e.target.closest('.js-editable__val');
   const editableTrigger = e.target.closest('.js-editable__trigger');
   let container;
@@ -39,6 +39,14 @@ document.addEventListener('mousedown', (e) => {
       // allow android chrome to lag, and then actually do select text
       setTimeout(() => textarea.select(), 0);
     }, 0);
+  }
+}
+
+document.addEventListener('mousedown', openEditor);
+document.addEventListener('click', (e) => {
+  // open editor if this is a keyboard "click"
+  if (e.detail === 0) {
+    openEditor(e);
   }
 });
 
