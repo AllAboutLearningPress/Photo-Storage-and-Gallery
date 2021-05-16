@@ -10,7 +10,7 @@ const formKlass = 'js-editable__form';
 const textareaKlass = 'js-editable__area';
 const confirmKlass = 'js-editable__confirm';
 
-function resize(tx) {
+function resizeTextarea(tx) {
   tx.style.height = 'auto';
   tx.style.height = tx.scrollHeight + 'px';
 }
@@ -33,13 +33,21 @@ function openEditor(e) {
     setTimeout(() => {
       container.classList.add(editingKlass);
       container.querySelector(`.${textareaKlass}`).disabled = false;
-      resize(textarea);
+      resizeTextarea(textarea);
       textarea.focus();
 
       // allow android chrome to lag, and then actually do select text
       setTimeout(() => textarea.select(), 0);
     }, 0);
   }
+}
+
+function closeEditor(container) {
+  const textarea = container.querySelector(`.${textareaKlass}`);
+
+  container.classList.remove(editingKlass);
+  textarea.disabled = true;
+  textarea.value = textarea.dataset.latestValue || textarea.defaultValue;
 }
 
 document.addEventListener('mousedown', openEditor);
@@ -75,7 +83,7 @@ document.addEventListener('submit', (e) => {
 document.addEventListener('input', (e) => {
   const tx = e.target.matches(`.${textareaKlass}`) && e.target;
 
-  tx && resize(tx);
+  tx && resizeTextarea(tx);
 });
 
 let isEditableConfirmMousePressed;
@@ -104,31 +112,26 @@ document.addEventListener(
 );
 document.addEventListener('focusout', (e) => {
   const actionEntitiesSelector = `.${textareaKlass}, .${confirmKlass}`;
-  let container;
-  let textarea;
 
   if (
     e.target.matches(actionEntitiesSelector) &&
     (!e.relatedTarget || !e.relatedTarget.matches(actionEntitiesSelector)) &&
     !isEditableConfirmMousePressed
   ) {
-    container = e.target.closest(`.${editableContainerKlass}`);
-    textarea = container.querySelector(`.${textareaKlass}`);
-
-    container.classList.remove(editingKlass);
-    container.querySelector(`.${textareaKlass}`).disabled = true;
-    textarea.value = textarea.dataset.latestValue || textarea.defaultValue;
+    closeEditor(e.target.closest(`.${editableContainerKlass}`));
   }
 });
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
-    [].slice
-      .call(document.querySelectorAll(`.${editableContainerKlass}.${editingKlass}`))
-      .forEach((elem) => {
-        const textarea = elem.querySelector(`.${textareaKlass}`);
+    const openedEditors = [].slice.call(
+      document.querySelectorAll(`.${editableContainerKlass}.${editingKlass}`)
+    );
 
-        elem.classList.remove(editingKlass);
-        textarea.value = textarea.dataset.latestValue || textarea.defaultValue;
-      });
+    openedEditors.forEach(closeEditor);
+
+    if (openedEditors.length) {
+      // don't allow anything else to fire up on this escape keydown
+      e.stopImmediatePropagation();
+    }
   }
 });
