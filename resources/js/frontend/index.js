@@ -2,7 +2,7 @@ import allowedMimeTypes from './util/allowedMimeTypes';
 
 import Sidebar from './components/Sidebar';
 import Search from './components/Search';
-import Upload from './components/Upload';
+//import Upload from './components/Upload';
 import GlobalDropTarget from './components/GlobalDropTarget';
 
 // misc app-wide global code, can be included and forgotten about:

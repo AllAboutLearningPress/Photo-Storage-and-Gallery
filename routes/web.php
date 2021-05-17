@@ -29,13 +29,14 @@ use Inertia\Inertia;
 //     ]);
 // });
 
-Route::get("/", [IndexController::class, 'index'])->name('index');
-Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get("/", [IndexController::class, 'index'])->name('index');
     Route::post("/load-more", [IndexController::class, 'load_more'])->name('index.load_more');
 
     /* Routes related to uploading files */
-    Route::get("/upload", [UploadController::class, 'create'])->name('uploads.index');
+
+    Route::get("/upload", [UploadController::class, 'index'])->name('uploads.index');
     Route::post("/store", [UploadController::class, 'store'])->name('uploads.store');
     Route::post("/store-file", [UploadController::class, 'store_file'])->name('uploads.store_file');
 
