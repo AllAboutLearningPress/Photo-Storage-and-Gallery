@@ -41,9 +41,62 @@ export default {
             maxUploadCount: 4,
             uploadCount: 0,
             fileCount: 0,
+            allowedMimeTypes: [
+                "image/jpeg",
+                "image/png",
+                "image/gif",
+                "image/tiff",
+                "image/vnd.adobe.photoshop",
+            ],
         };
     },
+    created() {
+        this.dropManager = new SingleImageDropManager();
+    },
+    mounted() {
+        document.addEventListener("change", (e) => {
+            const isUploadChange = e.target.matches(".js-upload__input");
+
+            if (isUploadChange) {
+                // filter passed files by MIME type
+                this.handleUpload(
+                    [...e.target.files].filter((file) =>
+                        this.allowedMimeTypes.includes(file.type)
+                    )
+                );
+            }
+        });
+        document.addEventListener("items-dropped", () =>
+            console.log("uplaoding")
+        );
+    },
     methods: {
+        handleFileDrop(e) {
+            const isUploadDrop =
+                !that.dropManager.isInited ||
+                that.dropManager.getLatestDropStats().upload;
+
+            if (isUploadDrop) {
+                that.handleUpload(e.detail.fileArray);
+            }
+        },
+        /*
+         * Handle upload of passed files.
+         * The method receives an array of File objects as a `filesArray` argument.
+         * */
+        handleUpload(filesArray) {
+            if (!filesArray.length) {
+                return;
+            }
+
+            console.log(filesArray);
+            alert(
+                `render upload view with ${filesArray.length} file${
+                    filesArray.length === 1 ? "" : "s"
+                }`
+            );
+        },
+
         /**
          * Gets called when user selects the files
          * It previews the file list
