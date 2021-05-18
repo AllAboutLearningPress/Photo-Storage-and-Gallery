@@ -148,6 +148,11 @@ export default {
     },
     props: {
         photos: Array,
+        photo: Object,
+        jetstream: Object,
+        user: Object,
+        errorBags: Array,
+        errors: Object,
     },
     data() {
         return {
