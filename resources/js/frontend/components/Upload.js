@@ -28,16 +28,16 @@ class Upload {
         }
 
         this.handlers = [
-            // addEventListener(document, 'change', (e) => {
-            //     const isUploadChange = e.target.matches('.js-upload__input');
+            addEventListener(document, 'change', (e) => {
+                const isUploadChange = e.target.matches('.js-upload__input');
 
-            //     if (isUploadChange) {
-            //         // filter passed files by MIME type
-            //         this.handleUpload(
-            //             [...e.target.files].filter((file) => allowedMimeTypes.includes(file.type))
-            //         );
-            //     }
-            // }),
+                if (isUploadChange) {
+                    // filter passed files by MIME type
+                    this.handleUpload(
+                        [...e.target.files].filter((file) => allowedMimeTypes.includes(file.type))
+                    );
+                }
+            }),
             addEventListener(document, 'items-dropped', (e) => {
                 handleFileDrop(e);
             }),

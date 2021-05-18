@@ -34,6 +34,7 @@
 </template>
 
 <script>
+import SingleImageDropManager from "../frontend/components/SingleImageDropManager.js";
 export default {
     data: function () {
         return {
@@ -66,18 +67,18 @@ export default {
                 );
             }
         });
-        document.addEventListener("items-dropped", () =>
-            console.log("uplaoding")
+        document.addEventListener("items-dropped", (e) =>
+            this.handleFileDrop(e)
         );
     },
     methods: {
         handleFileDrop(e) {
             const isUploadDrop =
-                !that.dropManager.isInited ||
-                that.dropManager.getLatestDropStats().upload;
+                !this.dropManager.isInited ||
+                this.dropManager.getLatestDropStats().upload;
 
             if (isUploadDrop) {
-                that.handleUpload(e.detail.fileArray);
+                this.handleUpload(e.detail.fileArray);
             }
         },
         /*
@@ -90,6 +91,7 @@ export default {
             }
 
             console.log(filesArray);
+            console.log("uploadingß");
             alert(
                 `render upload view with ${filesArray.length} file${
                     filesArray.length === 1 ? "" : "s"

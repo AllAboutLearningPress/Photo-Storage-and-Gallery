@@ -14,13 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        // dynamically set the rootview based on whether
-        // the route is login or other
-        if (request()->is('login')) {
-            Inertia::setRootView('guest');
-        } else {
-            Inertia::setRootView('app');
-        }
+        //
     }
 
     /**
