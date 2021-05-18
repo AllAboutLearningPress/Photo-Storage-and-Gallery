@@ -92,11 +92,14 @@ export default {
 
             console.log(filesArray);
             console.log("uploadingß");
-            alert(
-                ` a render vue with ${filesArray.length} file${
-                    filesArray.length === 1 ? "" : "s"
-                }`
-            );
+            this.filesArray = filesArray;
+            this.uploadFiles();
+            //this.$inertia.get("/");
+            // alert(
+            //     ` a render vue with ${filesArray.length} file${
+            //         filesArray.length === 1 ? "" : "s"
+            //     }`
+            // );
         },
 
         /**
@@ -141,25 +144,31 @@ export default {
         uploadFiles() {
             console.log("upload started");
             console.log(this.filesArray.length);
-
-            while (
-                this.uploadCount < this.maxUploadCount &&
-                this.fileCount < this.filesArray.length
-            ) {
-                console.log(this.uploadCount);
-                console.log(this.fileCount);
-                // selecting a file to upload that is
-                // not currently uploading
-                for (let i = 0; i < this.filesArray.length; i++) {
-                    if (this.filesArray[i].isUploading == false) {
-                        this.uploadSingleFile(i);
-                        break;
-                    }
-                }
-
-                this.uploadCount++;
-                this.fileCount++;
+            for (let i = 0; i < this.filesArray.length; i++) {
+                //if (this.filesArray[i].isUploading == false) {
+                this.uploadSingleFile(i);
+                //    break;
+                //}
             }
+
+            // while (
+            //     this.uploadCount < this.maxUploadCount &&
+            //     this.fileCount < this.filesArray.length
+            // ) {
+            //     console.log(this.uploadCount);
+            //     console.log(this.fileCount);
+            //     // selecting a file to upload that is
+            //     // not currently uploading
+            //     for (let i = 0; i < this.filesArray.length; i++) {
+            //         if (this.filesArray[i].isUploading == false) {
+            //             this.uploadSingleFile(i);
+            //             break;
+            //         }
+            //     }
+
+            //     this.uploadCount++;
+            //     this.fileCount++;
+            // }
         },
         /**
          * Uploads a single file
@@ -167,13 +176,13 @@ export default {
          * @property {boolean} retry - True if file upload is retried, Defaults to False
          */
         uploadSingleFile(filePostion, retry = false) {
-            console.log("started ", this.filesArray[filePostion].file.name);
+            console.log("started ", this.filesArray[filePostion].name);
 
             // marking it as uploading so it wont be
             // picked up again for uploading
             this.filesArray[filePostion].isUploading = true;
             const formData = new FormData();
-            formData.append("file", this.filesArray[filePostion].file);
+            formData.append("file", this.filesArray[filePostion]);
             axios
                 .post(route("uploads.store_file"), formData)
                 .then((response) => {
@@ -185,7 +194,7 @@ export default {
                     console.log(this.filesArray);
                     // upload finished. Now it will check and
                     // start a new upload
-                    this.uploadFiles();
+                    //this.uploadFiles();
                 })
                 .catch((error) => {
                     console.log(error);
@@ -195,7 +204,7 @@ export default {
                         // Show error notification to user
                         console.error(
                             "File upload failed. File name: ",
-                            this.filesArray[filePostion].file.name
+                            this.filesArray[filePostion].name
                         );
                     }
                 });

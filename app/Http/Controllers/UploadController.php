@@ -69,8 +69,9 @@ class UploadController extends Controller
      */
     public function store_file(Request $request)
     {
+
         $data = $request->validate([
-            'file' => 'required|mimes:jpg,jpeg,png,zip,psd|max:2048',
+            'file' => 'required|mimes:jpg,jpeg,png,zip,psd',
             'name' => 'string'
         ]);
         // generating a random string and getting the first 8 characters of the random
