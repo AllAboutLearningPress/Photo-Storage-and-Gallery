@@ -34,15 +34,15 @@ class Search {
 
         this.defaultPlaceholderText = this.input.placeholder;
 
-        this.dropManager = new SingleImageDropManager();
+        // this.dropManager = new SingleImageDropManager();
 
-        function handleFileDrop(e) {
-            const isSearchDrop = !that.dropManager.isInited || that.dropManager.getLatestDropStats().search;
+        // function handleFileDrop(e) {
+        //     const isSearchDrop = !that.dropManager.isInited || that.dropManager.getLatestDropStats().search;
 
-            if (isSearchDrop) {
-                that.handleImageSearch(e.detail.fileArray[0]);
-            }
-        }
+        //     if (isSearchDrop) {
+        //         that.handleImageSearch(e.detail.fileArray[0]);
+        //     }
+        // }
 
         this.handlers = [
             addEventListener(this.header, 'click', (e) => {
@@ -135,9 +135,9 @@ class Search {
                     }
                 }
             }),
-            addEventListener(document, 'items-dropped', (e) => {
-                handleFileDrop(e);
-            }),
+            // addEventListener(document, 'items-dropped', (e) => {
+            //     handleFileDrop(e);
+            // }),
             addEventListener(this.searchImageInput, 'change', (e) => {
                 this.handleImageSearch(
                     // filter not allowed MIME types

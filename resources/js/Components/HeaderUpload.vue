@@ -93,7 +93,7 @@ export default {
             console.log(filesArray);
             console.log("uploadingß");
             alert(
-                `render upload view with ${filesArray.length} file${
+                ` a render vue with ${filesArray.length} file${
                     filesArray.length === 1 ? "" : "s"
                 }`
             );

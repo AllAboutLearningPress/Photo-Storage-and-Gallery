@@ -145,9 +145,36 @@
 
 <script>
 import Search from "../frontend/components/Search.js";
+import SingleImageDropManager from "../frontend/components/SingleImageDropManager.js";
 export default {
-    mounted: () => {
+    data() {
+        return {
+            dropManager: null,
+            val: "sdfsd",
+        };
+    },
+    created() {
+        this.dropManager = new SingleImageDropManager();
+    },
+    mounted() {
+        // this will be fully moved to vue
         const search = new Search(document.querySelector(".js-search"));
+
+        // listen to items-dropped event
+        document.addEventListener("items-dropped", this.handleFileDrop);
+    },
+    methods: {
+        handleFileDrop(e) {
+            console.log(e);
+            const isSearchDrop =
+                !this.dropManager.isInited ||
+                this.dropManager.getLatestDropStats().search;
+
+            if (isSearchDrop) {
+                //that.handleImageSearch(e.detail.fileArray[0]);
+                alert("got files for search");
+            }
+        },
     },
 };
 </script>
