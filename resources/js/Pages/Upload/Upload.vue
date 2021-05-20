@@ -14,6 +14,7 @@
                     v-for="file in uploadingFiles"
                     :key="file.id"
                     class="file-list__item"
+                    v-on:uploading="showUploads"
                 >
                     <div class="file">
                         <div class="file__thumb">
@@ -512,11 +513,29 @@ import UploadToolbar from "./Components/UploadToolbar.vue";
 import { usePage } from "@inertiajs/inertia-vue3";
 export default {
     components: { MainLayout, UploadToolbar },
-    props: ["uploadingFiles"],
+
     created() {
-        this.$emit("upload-view-created");
+        // this event is dispatched by HeaderUpload.vue
+        // containing the filesArray to show the user
+        // for editing
+        document.addEventListener("uploading-files", this.showUploads);
+
+        // letting the parent window know that upload
+        // view is ready for data
+        let event = new Event("upload-view-created");
+        document.dispatchEvent(event);
     },
-    data() {},
+    data() {
+        return {
+            uploadingFiles: [],
+        };
+    },
     mounted() {},
+    methods: {
+        showUploads(e) {
+            console.log("received");
+            this.uploadingFiles = e;
+        },
+    },
 };
 </script>
