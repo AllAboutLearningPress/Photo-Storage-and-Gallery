@@ -70,8 +70,15 @@ export default {
         document.addEventListener("items-dropped", (e) =>
             this.handleFileDrop(e)
         );
+        document.addEventListener(
+            "upload-view-created",
+            this.passDataToUploadView
+        );
     },
     methods: {
+        passDataToUploadView(event) {
+            console.log("upload view created received");
+        },
         handleFileDrop(e) {
             const isUploadDrop =
                 !this.dropManager.isInited ||
@@ -92,8 +99,8 @@ export default {
 
             console.log(filesArray);
             console.log("uploadingß");
-            this.filesArray = filesArray;
-            this.uploadFiles();
+            //this.filesArray = filesArray;
+            //this.uploadFiles();
             this.$inertia.get("/upload");
             // alert(
             //     ` a render vue with ${filesArray.length} file${
