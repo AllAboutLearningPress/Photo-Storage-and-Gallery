@@ -65,7 +65,7 @@ export default {
         const contentSidebar = new Sidebar(
             document.querySelector(".js-content-sidebar")
         );
-        console.log(contentSidebar);
+        //console.log(contentSidebar);
     },
 };
 </script>

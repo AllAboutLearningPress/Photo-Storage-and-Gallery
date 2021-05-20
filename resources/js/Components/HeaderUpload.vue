@@ -70,10 +70,6 @@ export default {
         document.addEventListener("items-dropped", (e) =>
             this.handleFileDrop(e)
         );
-        document.addEventListener(
-            "upload-view-created",
-            this.passDataToUploadView
-        );
     },
     methods: {
         passDataToUploadView(event) {
@@ -98,15 +94,13 @@ export default {
             }
 
             console.log(filesArray);
-            console.log("uploadingß");
-            //this.filesArray = filesArray;
-            //this.uploadFiles();
+            console.log("uploading");
+
             this.$inertia.get("/upload");
-            // alert(
-            //     ` a render vue with ${filesArray.length} file${
-            //         filesArray.length === 1 ? "" : "s"
-            //     }`
-            // );
+            document.addEventListener("upload-view-created", () => {
+                let event = new Event("uploading-files", filesArray);
+                document.dispatchEvent(event);
+            });
         },
 
         /**
