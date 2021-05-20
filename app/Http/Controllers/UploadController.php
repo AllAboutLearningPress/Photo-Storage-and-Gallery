@@ -18,7 +18,7 @@ class UploadController extends Controller
      */
     public function index()
     {
-        Inertia::render('Upload');
+        return Inertia::render('Upload');
     }
     /**
      * Show the form for creating a new resource.

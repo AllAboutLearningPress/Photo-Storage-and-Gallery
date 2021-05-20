@@ -94,7 +94,7 @@ export default {
             console.log("uploadingß");
             this.filesArray = filesArray;
             this.uploadFiles();
-            //this.$inertia.get("/");
+            this.$inertia.get("/upload");
             // alert(
             //     ` a render vue with ${filesArray.length} file${
             //         filesArray.length === 1 ? "" : "s"
