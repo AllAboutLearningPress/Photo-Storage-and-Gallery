@@ -25,7 +25,7 @@ class CreatePhotosTable extends Migration
             $table->string('file_name');
             $table->boolean('should_process')->default(false);
             $table->dateTime('time_taken')->nullable();
-            $table->$table->softDeletes();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
