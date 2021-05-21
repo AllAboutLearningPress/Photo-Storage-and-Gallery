@@ -38,7 +38,9 @@ import SingleImageDropManager from "../frontend/components/SingleImageDropManage
 export default {
     data: function () {
         return {
-            filesArray: [],
+            filesArray: [
+                { file: File, title: String, serverId: BigInt, tags: [] },
+            ],
             maxUploadCount: 4,
             uploadCount: 0,
             fileCount: 0,
@@ -55,6 +57,8 @@ export default {
         this.dropManager = new SingleImageDropManager();
     },
     mounted() {
+        // event gets triggerd when new files are dragged
+        // or selected by user
         document.addEventListener("change", (e) => {
             const isUploadChange = e.target.matches(".js-upload__input");
 
@@ -67,6 +71,9 @@ export default {
                 );
             }
         });
+
+        // This event is triggered by Upload.js to
+        // pass files with allowed
         document.addEventListener("items-dropped", (e) =>
             this.handleFileDrop(e)
         );
@@ -89,17 +96,26 @@ export default {
          * The method receives an array of File objects as a `filesArray` argument.
          * */
         handleUpload(filesArray) {
-            if (!filesArray.length) {
-                return;
-            }
-
-            console.log(filesArray);
             console.log("uploading");
-
+            console.log("files available: ", filesArray.length);
+            let fileCount = this.filesArray.length - 1;
+            filesArray.forEach((file) => {
+                this.filesArray[this.fileCount] = {
+                    file: file,
+                    title: file.name,
+                    serverId: null,
+                    tags: [],
+                };
+            });
             this.$inertia.get("/upload");
             document.addEventListener("upload-view-created", () => {
-                let event = new Event("uploading-files", filesArray);
-                document.dispatchEvent(event);
+                document.dispatchEvent(
+                    new CustomEvent("uploading-files", {
+                        detail: {
+                            filesArray: this.filesArray,
+                        },
+                    })
+                );
             });
         },
 

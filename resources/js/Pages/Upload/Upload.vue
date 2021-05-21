@@ -534,6 +534,7 @@ export default {
     methods: {
         showUploads(e) {
             console.log("received");
+            console.log(e);
             this.uploadingFiles = e;
         },
     },
