@@ -94,4 +94,9 @@ class TagController extends Controller
         return Tag::where('name', 'LIKE', $partial_name . '%')
             ->select('id', 'name', 'slug')->limit(5)->get();
     }
+
+    public function getTags($request)
+    {
+        return Tag::cursorPaginate(500);
+    }
 }

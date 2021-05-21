@@ -39,7 +39,13 @@ export default {
     data: function () {
         return {
             filesArray: [
-                { file: File, title: String, serverId: BigInt, tags: [] },
+                {
+                    file: File,
+                    title: String,
+                    serverId: BigInt,
+                    hasDuplicate: false,
+                    tags: [],
+                },
             ],
             maxUploadCount: 4,
             uploadCount: 0,
@@ -105,6 +111,7 @@ export default {
                     title: file.name,
                     serverId: null,
                     tags: [],
+                    hasDuplicate: false,
                 };
             });
             this.$inertia.get("/upload");

@@ -48,10 +48,7 @@
                                 <div class="js-editable editable file__title">
                                     <h3 class="editable__content fs-4 fw-light">
                                         <span class="js-editable__val">
-                                            My title title title title title
-                                            title title title title title title
-                                            title title title title title title
-                                            title title title
+                                            {{ file.title }}
                                         </span>
                                         <button
                                             type="button"
@@ -99,9 +96,16 @@ My title title title title title title title title title title title title title
                                         >Choose a family?</a
                                     >
                                     <a
+                                        v-if="file.hasDuplicate"
                                         class="file__note btn btn-outline-warning"
                                         href="#"
                                         >Compare duplicate</a
+                                    >
+                                    <a
+                                        v-else
+                                        class="file__note btn btn-outline-warning"
+                                        href="#"
+                                        >Checking for duplicate</a
                                     >
                                 </div>
                             </div>
@@ -535,7 +539,7 @@ export default {
         showUploads(e) {
             console.log("received");
             console.log(e);
-            this.uploadingFiles = e;
+            this.uploadingFiles = e.detail.filesArray;
         },
     },
 };
