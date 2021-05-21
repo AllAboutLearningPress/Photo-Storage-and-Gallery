@@ -18,12 +18,13 @@
         </div>
         <div class="sidebar__body scrollbar">
             <div class="navigation list-group list-group-flush">
-                <span
+                <inertia-link
+                    href="/"
                     class="active navigation__item list-group-item"
                     aria-current="true"
                 >
                     My photos
-                </span>
+                </inertia-link>
                 <a
                     href="#"
                     class="navigation__item list-group-item list-group-item-action"
