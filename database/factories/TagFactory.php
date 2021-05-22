@@ -21,10 +21,12 @@ class TagFactory extends Factory
      */
     public function definition()
     {
+        // this function is not suitable for generating large number
+        // of demo tags. But we should be good for 200-300
         $name = $this->faker->unique()->city();
         return [
             'name' => $name,
-            'slug' => str_replace(" ", "_", $name),
+            'slug' => str_replace(" ", "_", $name) . rand(1, 99999999),
         ];
     }
 }

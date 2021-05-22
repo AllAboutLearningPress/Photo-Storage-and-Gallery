@@ -34,6 +34,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import SingleImageDropManager from "../frontend/components/SingleImageDropManager.js";
 export default {
     data: function () {
@@ -61,6 +62,14 @@ export default {
     },
     created() {
         this.dropManager = new SingleImageDropManager();
+        axios
+            .get(route("tags.get_tags"))
+            .then((resp) => {
+                console.log(resp);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     },
     mounted() {
         // event gets triggerd when new files are dragged

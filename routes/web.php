@@ -45,7 +45,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     /* Routes related to tags */
     Route::get("tags/search-by-partial")->name('tags.search_partial');
+    Route::get('tags/get-tags', [TagController::class, 'getTags'])->name('tags.get_tags');
     Route::resource('tags', TagController::class);
+
 
     Route::get("/dashboard", function () {
         return Inertia::render('Dashboard');
