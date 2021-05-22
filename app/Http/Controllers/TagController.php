@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tag;
+use DB;
 use Illuminate\Http\Request;
 
 class TagController extends Controller
@@ -95,8 +96,9 @@ class TagController extends Controller
             ->select('id', 'name', 'slug')->limit(5)->get();
     }
 
-    public function getTags($request)
+    public function getTags(Request $request)
     {
-        return Tag::cursorPaginate(500);
+        dd(DB::table('tags')->orderBy('id')->cursorPaginate(100)->toArray());
+        return Tag::cursorPaginate(100);
     }
 }
