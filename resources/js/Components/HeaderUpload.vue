@@ -48,6 +48,7 @@ export default {
                     tags: [],
                 },
             ],
+            tags: [],
             maxUploadCount: 4,
             uploadCount: 0,
             fileCount: 0,
@@ -62,14 +63,9 @@ export default {
     },
     created() {
         this.dropManager = new SingleImageDropManager();
-        axios
-            .get(route("tags.get_tags"))
-            .then((resp) => {
-                console.log(resp);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+
+        // fetch tags lazily from server
+        this.fetchTags(route("tags.get_tags"));
     },
     mounted() {
         // event gets triggerd when new files are dragged
@@ -94,6 +90,26 @@ export default {
         );
     },
     methods: {
+        fetchTags(url) {
+            axios
+                .get(url)
+                .then((resp) => {
+                    this.tags.push(...resp.data.data);
+
+                    // checking if there is more tags to fetch
+                    // if there are more tags then server will
+                    // return the next url to fetch data
+                    if (resp.data.next_page_url) {
+                        this.fetchTags(resp.data.next_page_url);
+                    } else {
+                        console.log(this.tags.length);
+                        console.log("All tags fetched");
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
         passDataToUploadView(event) {
             console.log("upload view created received");
         },
