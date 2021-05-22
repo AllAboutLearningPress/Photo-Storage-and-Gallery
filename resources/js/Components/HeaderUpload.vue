@@ -145,6 +145,7 @@ export default {
                     new CustomEvent("uploading-files", {
                         detail: {
                             filesArray: this.filesArray,
+                            tags: this.tags,
                         },
                     })
                 );
