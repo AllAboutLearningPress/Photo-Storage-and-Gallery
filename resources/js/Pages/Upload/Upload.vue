@@ -154,7 +154,7 @@ My title title title title title title title title title title title title title
                                             </button>
                                         </object>
                                     </a>
-                                    <a
+                                    <!-- <a
                                         class="tags__tag tag tag_deletable btn btn-secondary"
                                         href="#"
                                     >
@@ -262,7 +262,7 @@ My title title title title title title title title title title title title title
                                                 >
                                             </button>
                                         </object>
-                                    </a>
+                                    </a> -->
                                 </div>
                             </div>
                         </div>
@@ -490,8 +490,8 @@ My title</textarea
 
     <datalist id="tag-list">
         <!-- preloaded minimal list -->
-        <option value="San Francisco"></option>
-        <option value="New York"></option>
+        <option v-for="tag in tags" :key="tag.id" :value="tag.name"></option>
+        <!-- <option value="New York"></option>
         <option value="Seattle"></option>
         <option value="Los Angeles"></option>
         <option value="Chicago"></option>
@@ -504,7 +504,7 @@ My title</textarea
         <option value="Cleveland"></option>
         <option value="Bakersfield"></option>
         <option value="Wichita"></option>
-        <option value="Toledo"></option>
+        <option value="Toledo"></option> -->
     </datalist>
 </template>
 
@@ -522,6 +522,7 @@ export default {
         // this event is dispatched by HeaderUpload.vue
         // containing the filesArray to show the user
         // for editing
+        // this event listener will be moved to a specific componenet later
         document.addEventListener("uploading-files", this.showUploads);
 
         // letting the parent window know that upload
@@ -532,14 +533,15 @@ export default {
     data() {
         return {
             uploadingFiles: [],
+            tags: [],
         };
     },
     mounted() {},
     methods: {
         showUploads(e) {
             console.log("received");
-            console.log(e);
             this.uploadingFiles = e.detail.filesArray;
+            this.tags = e.detail.tags;
         },
     },
 };
