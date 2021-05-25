@@ -13,7 +13,8 @@ class Photo extends Model
     protected $fillable = [
         'name', 'size', 'height',
         'width', 'parent_id', 'user_id',
-        'file_type', 'file_name', 'should_process'
+        'file_type', 'file_name', 'should_process',
+        'token'
     ];
     /**
      * The tags that belong to this photo

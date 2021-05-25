@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Photo;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -18,7 +19,13 @@ class UploadController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Upload/Upload');
+        return Inertia::render(
+            'Upload/Upload',
+            [
+                // lazy load tags on reload
+                'tags' => Inertia::lazy(fn () => Tag::select('id', 'name', 'slug')->get())
+            ]
+        );
     }
     /**
      * Show the form for creating a new resource.
@@ -72,6 +79,7 @@ class UploadController extends Controller
 
         $data = $request->validate([
             'file' => 'required|mimes:jpg,jpeg,png,zip,psd',
+            'token' => 'required|string',
             'name' => 'string'
         ]);
         // generating a random string and getting the first 8 characters of the random
@@ -79,7 +87,7 @@ class UploadController extends Controller
         // removed from filename
         $fileName = bin2hex(random_bytes(32)) . '.' . $data['file']->getClientOriginalExtension(); //
         $imgsize = getimagesize($data['file']->getPathName());
-        $data['file']->storeAs("full_size/", $fileName, 's3');
+        $data['file']->storeAs("full_size/", $fileName, 'local');
         // adding the photo entry
         $photoId = Photo::create([
             'name' => $data['file']->getClientOriginalName(),

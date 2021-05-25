@@ -46,6 +46,7 @@ export default {
                     serverId: BigInt,
                     hasDuplicate: false,
                     tags: [],
+                    token: String, // this token will be used to uniquely identify this file
                 },
             ],
             tags: [],
@@ -59,6 +60,7 @@ export default {
                 "image/tiff",
                 "image/vnd.adobe.photoshop",
             ],
+            cancelTokens: [],
         };
     },
     created() {
@@ -137,15 +139,22 @@ export default {
                     serverId: null,
                     tags: [],
                     hasDuplicate: false,
+                    token: this.randHexToken(128),
                 };
             });
+            // start uploading
+            this.uploadFiles();
+
+            // show the upload details
             this.$inertia.get("/upload");
+
+            // pass the files array to /upload page
             document.addEventListener("upload-view-created", () => {
                 document.dispatchEvent(
                     new CustomEvent("uploading-files", {
                         detail: {
                             filesArray: this.filesArray,
-                            tags: this.tags,
+                            //tags: this.tags,
                         },
                     })
                 );
@@ -156,34 +165,34 @@ export default {
          * Gets called when user selects the files
          * It previews the file list
          */
-        previewFiles(event) {
-            console.log(event);
-            console.log(this.filesArray);
-            Array.from(event.target.files).forEach((file) => {
-                let fileAlreadyExist = false;
-                for (let i = 0; i < this.filesArray.length; i++) {
-                    if (
-                        this.filesArray[i].file.name == file.name &&
-                        this.filesArray[i].file.size == file.size &&
-                        this.filesArray[i].file.type == file.type
-                    ) {
-                        // this file is already in the list and
-                        console.log("file already exists");
-                        return;
-                    }
-                }
-                this.filesArray.push({
-                    file: file,
-                    id: null,
-                    isUploading: false,
-                });
-            });
+        // previewFiles(event) {
+        //     console.log(event);
+        //     console.log(this.filesArray);
+        //     Array.from(event.target.files).forEach((file) => {
+        //         let fileAlreadyExist = false;
+        //         for (let i = 0; i < this.filesArray.length; i++) {
+        //             if (
+        //                 this.filesArray[i].file.name == file.name &&
+        //                 this.filesArray[i].file.size == file.size &&
+        //                 this.filesArray[i].file.type == file.type
+        //             ) {
+        //                 // this file is already in the list and
+        //                 console.log("file already exists");
+        //                 return;
+        //             }
+        //         }
+        //         this.filesArray.push({
+        //             file: file,
+        //             id: null,
+        //             isUploading: false,
+        //         });
+        //     });
 
-            console.log(this.filesArray);
+        //     console.log(this.filesArray);
 
-            // start file uploading
-            this.uploadFiles();
-        },
+        //     // start file uploading
+        //     this.uploadFiles();
+        // },
 
         /**
          * this will start 4 simultaneous file upload
@@ -232,16 +241,46 @@ export default {
             // picked up again for uploading
             this.filesArray[filePostion].isUploading = true;
             const formData = new FormData();
-            formData.append("file", this.filesArray[filePostion]);
+            formData.append("file", this.filesArray[filePostion].file);
+            formData.append("token", this.filesArray[filePostion].token);
+
+            // setting a cancel token for this upload
+            // This will be used to cancel a file upload
+            // Considering the file names will be unique
+            // for now. It would be replaced by an id later
+            this.cancelTokens[
+                this.filesArray[filePostion.name]
+            ] = axios.CancelToken.source();
+
+            // uploading the file
             axios
-                .post(route("uploads.store_file"), formData)
+                .post(route("uploads.store_file"), formData, {
+                    cancelToken: this.cancelTokens[
+                        this.filesArray[filePostion.name]
+                    ],
+                })
                 .then((response) => {
                     console.log(response);
                     this.uploadCount--;
 
                     // server returns the stored file id
-                    this.filesArray[filePostion].id = response.data;
+                    this.filesArray[filePostion].serverId = response.data;
                     console.log(this.filesArray);
+
+                    // dispatching event for /upload page
+                    // If the upload details page is open
+                    // then it will use this data to process
+                    // user updated details
+
+                    document.dispatchEvent(
+                        new CustomEvent("file-uploaded", {
+                            detail: {
+                                name: this.filesArray[filePostion].token,
+                                serverId: response.data,
+                            },
+                        })
+                    );
+
                     // upload finished. Now it will check and
                     // start a new upload
                     //this.uploadFiles();
@@ -272,6 +311,26 @@ export default {
                     this.filesArray.splice(i, 1);
                 }
             }
+        },
+
+        /**
+         * Retuns a cryptographically random token
+         * see more at https://stackoverflow.com/a/40031979
+         * @property {string} length - Length of random token
+         * @returns {string}
+         */
+        randHexToken(length = 32) {
+            // token shouldn't be more than 255 characters(assuming 8 bits for a character)
+            if (length >= 255) {
+                length = 255;
+            }
+            let buffer = new Int8Array(length);
+            window.crypto.getRandomValues(buffer);
+
+            // convert array buffer to hex string
+            return [...new Uint8Array(buffer)]
+                .map((x) => x.toString(16).padStart(2, "0"))
+                .join("");
         },
     },
 };

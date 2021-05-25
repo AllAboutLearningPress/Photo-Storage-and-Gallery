@@ -4,7 +4,11 @@
         <h2 class="fw-light mb-5">
             Uploading 3 pictures, please take a moment to add details, or keep
             using a site
-            <button type="button" class="btn btn-outline-danger">
+            <button
+                v-on:click="cancelUpload"
+                type="button"
+                class="btn btn-outline-danger"
+            >
                 Cancel upload
             </button>
         </h2>
@@ -344,7 +348,7 @@ My title</textarea
                                 </div>
                             </div>
                             <div class="js-tags tags">
-                                <form
+                                <div
                                     class="js-tags__form tags__form"
                                     onsubmit="this.elements['tag-input1'].value && alert(`add tag: ${this.elements['tag-input1'].value}`);return false;"
                                     action="#"
@@ -363,11 +367,12 @@ My title</textarea
                                             title="Add tag"
                                             class="btn btn-lg btn-outline-secondary"
                                             type="submit"
+                                            v-on:click="addTag"
                                         >
                                             Add
                                         </button>
                                     </div>
-                                </form>
+                                </div>
 
                                 <div class="js-tags__list tags__list"></div>
                             </div>
@@ -489,22 +494,7 @@ My title</textarea
     </main-layout>
 
     <datalist id="tag-list">
-        <!-- preloaded minimal list -->
         <option v-for="tag in tags" :key="tag.id" :value="tag.name"></option>
-        <!-- <option value="New York"></option>
-        <option value="Seattle"></option>
-        <option value="Los Angeles"></option>
-        <option value="Chicago"></option>
-        <option value="Dallas"></option>
-        <option value="San Diego"></option>
-        <option value="San Antonio"></option>
-        <option value="Memphis"></option>
-        <option value="Aurora"></option>
-        <option value="Anaheim"></option>
-        <option value="Cleveland"></option>
-        <option value="Bakersfield"></option>
-        <option value="Wichita"></option>
-        <option value="Toledo"></option> -->
     </datalist>
 </template>
 
@@ -515,20 +505,31 @@ My title</textarea
 import MainLayout from "../../Layouts/MainLayout.vue";
 import UploadToolbar from "./Components/UploadToolbar.vue";
 import { usePage } from "@inertiajs/inertia-vue3";
+import { Inertia } from "@inertiajs/inertia";
 export default {
     components: { MainLayout, UploadToolbar },
-
+    props: ["tags"],
     created() {
         // this event is dispatched by HeaderUpload.vue
         // containing the filesArray to show the user
         // for editing
         // this event listener will be moved to a specific componenet later
         document.addEventListener("uploading-files", this.showUploads);
-
+        document.addEventListener("file-uploaded", this.fileUploaded);
         // letting the parent window know that upload
         // view is ready for data
         let event = new Event("upload-view-created");
         document.dispatchEvent(event);
+        // console.log(this.tags);
+        // Inertia.reload({ only: ["tags"] }).then(() => {
+        //     this.$forceUpdate();
+        //     console.log(this.tags);
+        // });
+
+        // console.log(this.tags);
+
+        // fetch tags lazily from server
+        this.fetchTags(route("tags.get_tags"));
     },
     data() {
         return {
@@ -538,10 +539,54 @@ export default {
     },
     mounted() {},
     methods: {
+        /*
+        Fetches the tags from server in chunks.
+        Server returns 100 tags at each request then
+        It is all loaded to the datalist element.
+        We need to replace the logic if the tags list is
+        Very long. That would create memory issues.
+        */
+        fetchTags(url) {
+            axios
+                .get(url)
+                .then((resp) => {
+                    this.tags.push(...resp.data.data);
+
+                    // checking if there is more tags to fetch
+                    // if there are more tags then server will
+                    // return the next url to fetch data
+                    if (resp.data.next_page_url) {
+                        this.fetchTags(resp.data.next_page_url);
+                    } else {
+                        console.log(this.tags.length);
+                        console.log("All tags fetched");
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        },
         showUploads(e) {
             console.log("received");
             this.uploadingFiles = e.detail.filesArray;
-            this.tags = e.detail.tags;
+            //this.tags = e.detail.tags;
+        },
+        addTag(e) {
+            console.log("tag added");
+            console.log(e);
+            const tagInput = e.target.parentElement.querySelector("input");
+            console.log(tagInput.value);
+        },
+        cancelUpload() {
+            console.log(this.tags);
+        },
+
+        // When a file is uploaded by HeaderUpload
+        // It will dispatch an event. And this componenet
+        // Will listen for that event to update data in
+        // This page
+        fileUploaded(e) {
+            console.log(e);
         },
     },
 };
