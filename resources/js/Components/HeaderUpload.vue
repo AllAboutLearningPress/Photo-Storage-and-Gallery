@@ -47,12 +47,14 @@ export default {
                     hasDuplicate: false,
                     tags: [],
                     token: String, // this token will be used to uniquely identify this file
+                    id: BigInt,
                 },
             ],
             tags: [],
             maxUploadCount: 4,
             uploadCount: 0,
             fileCount: 0,
+            fileIndex: 0,
             allowedMimeTypes: [
                 "image/jpeg",
                 "image/png",
@@ -140,8 +142,10 @@ export default {
                     tags: [],
                     hasDuplicate: false,
                     token: this.randHexToken(128),
+                    id: this.fileIndex,
                 };
             });
+            this.fileIndex++;
             // start uploading
             this.uploadFiles();
 
