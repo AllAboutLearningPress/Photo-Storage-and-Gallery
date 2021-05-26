@@ -20,12 +20,14 @@
                     class="file-list__item"
                     v-on:uploading="showUploads"
                 >
-                    <div class="file">
+                    <div class="file" :id="'file' + file.id">
                         <div class="file__thumb">
                             <div
-                                style="
-                                    background-image: url('http://placekitten.com/200/200');
-                                "
+                                :style="`background-image: url('${
+                                    file.thumbnail_link
+                                        ? file.thumbnail_link
+                                        : spinner
+                                }')`"
                                 class="file__pic"
                             ></div>
                             <button
@@ -277,7 +279,7 @@ My title title title title title title title title title title title title title
                         <div class="file__thumb">
                             <div
                                 style="
-                                    background-image: url('http://placekitten.com/100/200');
+                                    background-image: url('/images/spinner.svg');
                                 "
                                 class="file__pic"
                             ></div>
@@ -379,116 +381,6 @@ My title</textarea
                         </div>
                     </div>
                 </li>
-                <!-- <li class="file-list__item">
-                        <div class="file">
-                            <div class="file__thumb">
-                                <div
-                                    style="
-                                        background-image: url('http://placekitten.com/200/100');
-                                    "
-                                    class="file__pic"
-                                ></div>
-                                <button
-                                    title="Remove file"
-                                    type="button"
-                                    class="js-file__delete file__delete btn-close btn-lg"
-                                    aria-label="Remove file"
-                                >
-                                    <span class="visually-hidden"
-                                        >Remove file</span
-                                    >
-                                </button>
-                            </div>
-                            <div class="file__details">
-                                <div class="file__progress progress">
-                                    <div
-                                        class="progress-bar"
-                                        role="progressbar"
-                                        style="width: 25%"
-                                        aria-valuenow="25"
-                                        aria-valuemin="0"
-                                        aria-valuemax="100"
-                                    ></div>
-                                </div>
-                                <div class="file__header">
-                                    <div class="js-editable editable">
-                                        <h3
-                                            class="editable__content fs-4 fw-light"
-                                        >
-                                            <span class="js-editable__val">
-                                                My title
-                                            </span>
-                                            <button
-                                                type="button"
-                                                title="Edit"
-                                                class="js-editable__trigger editable__trigger d-inline-flex btn btn-subtle btn-lg"
-                                                aria-label="Edit"
-                                            >
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    width="20"
-                                                    height="20"
-                                                    fill="currentColor"
-                                                    class="bi bi-pen"
-                                                    viewBox="0 0 16 16"
-                                                >
-                                                    <path
-                                                        d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </h3>
-                                        <form
-                                            class="js-editable__form editable__form"
-                                            action="#"
-                                        >
-                                            <textarea
-                                                disabled
-                                                placeholder="Write here"
-                                                class="js-editable__area editable__area fs-4 fw-light form-control form-control-lg form-control-plaintext"
-                                            >
-My title</textarea
-                                            >
-                                            <button
-                                                type="submit"
-                                                class="js-editable__confirm btn btn-outline-secondary"
-                                            >
-                                                Ok
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                                <div class="js-tags tags">
-                                    <form
-                                        class="js-tags__form tags__form"
-                                        onsubmit="this.elements['tag-input2'].value && alert(`add tag: ${this.elements['tag-input2'].value}`);return false;"
-                                        action="#"
-                                    >
-                                        <div class="input-group mt-1 mb-3">
-                                            <input
-                                                id="tag-input2"
-                                                name="tag-input"
-                                                list="tag-list"
-                                                class="js-tags__input form-control form-control-lg"
-                                                type="text"
-                                                placeholder="Specify tag"
-                                                autocomplete="off"
-                                            />
-                                            <button
-                                                title="Add tag"
-                                                class="btn btn-lg btn-outline-secondary"
-                                                type="submit"
-                                            >
-                                                Add
-                                            </button>
-                                        </div>
-                                    </form>
-
-                                    <div class="js-tags__list tags__list"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </li> -->
             </ul>
         </div>
     </main-layout>
@@ -516,25 +408,36 @@ export default {
         // this event listener will be moved to a specific componenet later
         document.addEventListener("uploading-files", this.showUploads);
         document.addEventListener("file-uploaded", this.fileUploaded);
-        // letting the parent window know that upload
-        // view is ready for data
-        let event = new Event("upload-view-created");
-        document.dispatchEvent(event);
-        // console.log(this.tags);
-        // Inertia.reload({ only: ["tags"] }).then(() => {
-        //     this.$forceUpdate();
-        //     console.log(this.tags);
-        // });
-
-        // console.log(this.tags);
 
         // fetch tags lazily from server
         this.fetchTags(route("tags.get_tags"));
+        this.uploadingFiles = [
+            {
+                id: 0,
+                title: "test file",
+                tags: [],
+                //thumbnail_link: "http://placekitten.com/200/100",
+            },
+        ];
+
+        // for testing file uploaded event
+        setTimeout(() => {
+            document.dispatchEvent(
+                new CustomEvent("file-uploaded", {
+                    detail: {
+                        id: 0,
+                        thumbnail_link: "http://placekitten.com/200/100",
+                        serverId: 223,
+                    },
+                })
+            );
+        }, 3000);
     },
     data() {
         return {
             uploadingFiles: [],
             tags: [],
+            spinner: "/images/spinner.svg",
         };
     },
     mounted() {},
@@ -586,7 +489,18 @@ export default {
         // Will listen for that event to update data in
         // This page
         fileUploaded(e) {
-            console.log(e);
+            console.log(this.uploadingFiles[0]);
+            for (let i = 0; i < this.uploadingFiles.length; i++) {
+                if (this.uploadingFiles[i].id == e.detail.id) {
+                    this.uploadingFiles[i].serverId = e.detail.serverId;
+                    this.uploadingFiles[i].thumbnail_link =
+                        e.detail.thumbnail_link;
+                }
+            }
+        },
+
+        saveTag(e) {
+            console.log("tag saved");
         },
     },
 };
