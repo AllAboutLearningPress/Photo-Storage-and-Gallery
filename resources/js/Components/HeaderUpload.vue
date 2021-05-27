@@ -69,7 +69,7 @@ export default {
         this.dropManager = new SingleImageDropManager();
 
         // fetch tags lazily from server
-        this.fetchTags(route("tags.get_tags"));
+        // this.fetchTags(route("tags.get_tags"));
     },
     mounted() {
         // event gets triggerd when new files are dragged
