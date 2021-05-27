@@ -18,7 +18,6 @@
                     v-for="file in uploadingFiles"
                     :key="file.id"
                     class="file-list__item"
-                    v-on:uploading="showUploads"
                 >
                     <div class="file" :id="'file' + file.id">
                         <div class="file__thumb">
@@ -146,7 +145,7 @@ My title title title title title title title title title title title title title
                                     <a
                                         class="tags__tag tag tag_deletable btn btn-secondary"
                                         href="#"
-                                        v-for="tag in file.tags"
+                                        v-for="(tag, index) in file.tags"
                                         :key="tag.id"
                                     >
                                         {{ tag.name }}
@@ -156,6 +155,9 @@ My title title title title title title title title title title title title title
                                                 type="button"
                                                 class="js-tag-delete tag__delete btn-close"
                                                 aria-label="Delete tag"
+                                                v-on:click="
+                                                    removeTag(index, file.id)
+                                                "
                                             >
                                                 <span class="visually-hidden"
                                                     >Delete tag</span
@@ -181,6 +183,25 @@ My title title title title title title title title title title title title title
                                             </button>
                                         </object>
                                     </a>
+                                    <a
+                                        class="tags__tag tag tag_deletable btn btn-secondary"
+                                        href="#"
+                                    >
+                                        Some tag
+                                        <object type="no/suchtype">
+                                            <button
+                                                title="Delete tag"
+                                                type="button"
+                                                class="js-tag-delete tag__delete btn-close"
+                                                aria-label="Delete tag"
+                                            >
+                                                <span class="visually-hidden"
+                                                    >Delete tag</span
+                                                >
+                                            </button>
+                                        </object>
+                                    </a>
+
                                     <a
                                         class="tags__tag tag tag_deletable btn btn-secondary"
                                         href="#"
@@ -283,7 +304,7 @@ export default {
             spinner: "/images/spinner.svg",
         };
     },
-    mounted() {},
+
     methods: {
         /*
         Fetches the tags from server in chunks.
@@ -315,7 +336,6 @@ export default {
         showUploads(e) {
             console.log("received");
             this.uploadingFiles = e.detail.filesArray;
-            //this.tags = e.detail.tags;
         },
 
         /**
@@ -342,17 +362,47 @@ export default {
                 // its a O(n) solution.
                 for (let k = 0; k < this.uploadingFiles.length; k++) {
                     if (this.uploadingFiles[k].id == fileId) {
+                        for (
+                            let i = 0;
+                            i < this.uploadingFiles[k].tags.length;
+                            i++
+                        ) {
+                            if (
+                                this.uploadingFiles[k].tags[i].name ==
+                                tagInput.value
+                            ) {
+                                // user already added this tag once
+                                return;
+                            }
+                        }
+
+                        // adding new tag to the image
                         this.uploadingFiles[k].tags.push({
                             name: tagInput.value,
                             id: tagId,
                         });
                         console.log(this.uploadingFiles[k].tags);
+                        break;
                     }
                 }
             }
         },
+        /** Removes tag from uploading image
+        @param {Int} tagIndex - The index of tag in the this.uploadingFiles[i].tags
+        @param {Int} fileId - the if of the file that the tag is assigned to. this id is local
+        @returns {null}
+        */
+        removeTag(tagIndex, fileId) {
+            for (let i = 0; i < this.uploadingFiles.length; i++) {
+                if (this.uploadingFiles[i].id == fileId) {
+                    console.log(this.uploadingFiles[i]);
+                    this.uploadingFiles[i].tags.splice(tagIndex, 1);
+                }
+            }
+        },
+        /**Cancels the full upload */
         cancelUpload() {
-            console.log(this.tags);
+            console.log("upload cancelled");
         },
 
         // When a file is uploaded by HeaderUpload
@@ -367,10 +417,6 @@ export default {
                         e.detail.thumbnail_link;
                 }
             }
-        },
-
-        saveTag(e) {
-            console.log("tag saved");
         },
     },
 };

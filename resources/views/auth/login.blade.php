@@ -14,7 +14,7 @@
 
         <!-- Place favicon.ico in the root directory -->
 
-        <link rel="stylesheet" href="css/bundle.css" />
+        {{-- <link rel="stylesheet" href="css/bundle.css" /> --}}
 
         <!-- see https://github.com/h5bp/html5-boilerplate/blob/0ebf00b4c24ea4e27fdb63ff312740f3b6aa14fe/dist/doc/extend.md#theme-color -->
         <meta name="theme-color" content="#fafafa" />
