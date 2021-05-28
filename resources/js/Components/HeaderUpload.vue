@@ -94,6 +94,16 @@ export default {
         );
     },
     methods: {
+        dispatchUploadProgress(e, fileId) {
+            document.dispatchEvent(
+                new CustomEvent("update-progress-bar", {
+                    detail: {
+                        fileId: fileId,
+                        percent: (e.loaded / e.total) * 100,
+                    },
+                })
+            );
+        },
         fetchTags(url) {
             axios
                 .get(url)
@@ -166,39 +176,6 @@ export default {
         },
 
         /**
-         * Gets called when user selects the files
-         * It previews the file list
-         */
-        // previewFiles(event) {
-        //     console.log(event);
-        //     console.log(this.filesArray);
-        //     Array.from(event.target.files).forEach((file) => {
-        //         let fileAlreadyExist = false;
-        //         for (let i = 0; i < this.filesArray.length; i++) {
-        //             if (
-        //                 this.filesArray[i].file.name == file.name &&
-        //                 this.filesArray[i].file.size == file.size &&
-        //                 this.filesArray[i].file.type == file.type
-        //             ) {
-        //                 // this file is already in the list and
-        //                 console.log("file already exists");
-        //                 return;
-        //             }
-        //         }
-        //         this.filesArray.push({
-        //             file: file,
-        //             id: null,
-        //             isUploading: false,
-        //         });
-        //     });
-
-        //     console.log(this.filesArray);
-
-        //     // start file uploading
-        //     this.uploadFiles();
-        // },
-
-        /**
          * this will start 4 simultaneous file upload
          * After one upload is completed this fucntion will
          * called again and it will start new uploads if there
@@ -240,7 +217,7 @@ export default {
          */
         uploadSingleFile(filePostion, retry = false) {
             console.log("started ", this.filesArray[filePostion].name);
-
+            let fileId = this.filesArray[filePostion].id;
             // marking it as uploading so it wont be
             // picked up again for uploading
             this.filesArray[filePostion].isUploading = true;
@@ -252,16 +229,14 @@ export default {
             // This will be used to cancel a file upload
             // Considering the file names will be unique
             // for now. It would be replaced by an id later
-            this.cancelTokens[
-                this.filesArray[filePostion.name]
-            ] = axios.CancelToken.source();
-
+            this.cancelTokens[fileId] = axios.CancelToken.source();
+            console.log(this.cancelTokens);
             // uploading the file
             axios
                 .post(route("uploads.store_file"), formData, {
-                    cancelToken: this.cancelTokens[
-                        this.filesArray[filePostion.name]
-                    ],
+                    cancelToken: this.cancelTokens[fileId].token,
+                    onUploadProgress: (e) =>
+                        this.dispatchUploadProgress(e, fileId),
                 })
                 .then((response) => {
                     console.log(response);
@@ -292,7 +267,7 @@ export default {
                 .catch((error) => {
                     console.log(error);
                     if (retry == false) {
-                        this.uploadSingleFile(filePostion, (retry = True));
+                        this.uploadSingleFile(filePostion, (retry = true));
                     } else {
                         // Show error notification to user
                         console.error(
@@ -323,10 +298,10 @@ export default {
          * @property {string} length - Length of random token
          * @returns {string}
          */
-        randHexToken(length = 32) {
-            // token shouldn't be more than 255 characters(assuming 8 bits for a character)
-            if (length >= 255) {
-                length = 255;
+        randHexToken(length = 64 / 2) {
+            // token shouldn't be more than 128 characters(assuming 8 bits for a character)
+            if (length >= 128 / 2) {
+                length = 128 / 2;
             }
             let buffer = new Int8Array(length);
             window.crypto.getRandomValues(buffer);

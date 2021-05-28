@@ -11,7 +11,7 @@ class Photo extends Model
     use HasFactory;
     use SoftDeletes;
     protected $fillable = [
-        'name', 'size', 'height',
+        'title', 'size', 'height',
         'width', 'parent_id', 'user_id',
         'file_type', 'file_name', 'should_process',
         'token'
