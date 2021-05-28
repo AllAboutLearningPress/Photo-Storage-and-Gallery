@@ -45,7 +45,7 @@
                                     class="progress-bar"
                                     role="progressbar"
                                     style="width: 25%"
-                                    aria-valuenow="25"
+                                    aria-valuenow="0"
                                     aria-valuemin="0"
                                     aria-valuemax="100"
                                 ></div>
@@ -258,44 +258,49 @@ export default {
 
         // fetch tags lazily from server
         this.fetchTags(route("tags.get_tags"));
-        this.uploadingFiles = [
-            {
-                id: 0,
-                title: "test file",
-                tags: [],
-                //thumbnail_link: "http://placekitten.com/200/100",
-            },
-            {
-                id: 1,
-                title: "test file",
-                tags: [],
-                //thumbnail_link: "http://placekitten.com/200/100",
-            },
-        ];
+        // this.uploadingFiles = [
+        //     {
+        //         id: 0,
+        //         title: "test file",
+        //         tags: [],
+        //         //thumbnail_link: "http://placekitten.com/200/100",
+        //     },
+        //     {
+        //         id: 1,
+        //         title: "test file",
+        //         tags: [],
+        //         //thumbnail_link: "http://placekitten.com/200/100",
+        //     },
+        // ];
 
-        // for testing file uploaded event
-        setTimeout(() => {
-            document.dispatchEvent(
-                new CustomEvent("file-uploaded", {
-                    detail: {
-                        id: 0,
-                        thumbnail_link: "https://placekitten.com/200/100",
-                        serverId: 223,
-                    },
-                })
-            );
-        }, 500);
-        setTimeout(() => {
-            document.dispatchEvent(
-                new CustomEvent("file-uploaded", {
-                    detail: {
-                        id: 1,
-                        thumbnail_link: "https://placekitten.com/200/100",
-                        serverId: 223,
-                    },
-                })
-            );
-        }, 1000);
+        // // for testing file uploaded event
+        // setTimeout(() => {
+        //     document.dispatchEvent(
+        //         new CustomEvent("file-uploaded", {
+        //             detail: {
+        //                 id: 0,
+        //                 thumbnail_link: "https://placekitten.com/200/100",
+        //                 serverId: 223,
+        //             },
+        //         })
+        //     );
+        // }, 500);
+        // setTimeout(() => {
+        //     document.dispatchEvent(
+        //         new CustomEvent("file-uploaded", {
+        //             detail: {
+        //                 id: 1,
+        //                 thumbnail_link: "https://placekitten.com/200/100",
+        //                 serverId: 223,
+        //             },
+        //         })
+        //     );
+        // }, 1000);
+        document.dispatchEvent(new CustomEvent("upload-view-created"));
+    },
+    mounted() {
+        // event listener for updating individual progress bar
+        document.addEventListener("update-progress-bar", this.animateUploadBar);
     },
     data() {
         return {
@@ -417,6 +422,19 @@ export default {
                         e.detail.thumbnail_link;
                 }
             }
+        },
+        animateUploadBar(e) {
+            console.log(e);
+            window.requestAnimationFrame(() =>
+                this.updateUploadBar(e.detail.fileId, e.detail.percent)
+            );
+        },
+        updateUploadBar(fileId, percent) {
+            let progressBar = document
+                .getElementById("file" + fileId)
+                .querySelector(".progress-bar");
+            console.log(progressBar);
+            progressBar.style.width = Math.min(percent, 100) + "%";
         },
     },
 };

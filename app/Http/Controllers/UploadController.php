@@ -90,7 +90,7 @@ class UploadController extends Controller
         $data['file']->storeAs("full_size/", $fileName, 'local');
         // adding the photo entry
         $photoId = Photo::create([
-            'name' => $data['file']->getClientOriginalName(),
+            'title' => $data['file']->getClientOriginalName(),
             'file_name' => $fileName,
             'size' => $data['file']->getSize(),
             'height' => $imgsize[1],
@@ -98,6 +98,7 @@ class UploadController extends Controller
             'file_type' => $data['file']->getClientMimeType(),
             'user_id' => Auth::user()->id,
             'should_process' => False,
+            'token' => $data['token'],
         ])->id;
         // $credentials = new Credentials(config('services.ses.key'), config('services.ses.secret'));
         // $client = new LambdaClient(array(
