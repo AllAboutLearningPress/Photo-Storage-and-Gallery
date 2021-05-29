@@ -425,16 +425,14 @@ export default {
         },
         animateUploadBar(e) {
             console.log(e);
-            window.requestAnimationFrame(() =>
-                this.updateUploadBar(e.detail.fileId, e.detail.percent)
-            );
+            window.requestAnimationFrame(() => this.updateUploadBar(e));
         },
-        updateUploadBar(fileId, percent) {
+        updateUploadBar(e) {
             let progressBar = document
-                .getElementById("file" + fileId)
+                .getElementById("file" + e.detail.fileId)
                 .querySelector(".progress-bar");
             console.log(progressBar);
-            progressBar.style.width = Math.min(percent, 100) + "%";
+            (progressBar.style.width = (e.loaded / e.total) * 100), +"%";
         },
     },
 };

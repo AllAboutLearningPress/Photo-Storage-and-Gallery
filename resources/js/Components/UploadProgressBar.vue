@@ -1,17 +1,18 @@
 <template>
-    <a href="#" class="js-upload-bar upload-bar">
+    <inertia-link v-if="total" href="#" class="js-upload-bar upload-bar">
         Uploading 9243 photos (1h 53m remaining)
         <div class="upload-bar__progress progress">
             <div
                 class="progress-bar"
                 role="progressbar"
+                id="master-progress-bar"
                 style="width: {progressValue}%"
                 :aria-valuenow="progressValue"
                 aria-valuemin="0"
                 aria-valuemax="100"
             ></div>
         </div>
-    </a>
+    </inertia-link>
 </template>
 <script>
 export default {
@@ -20,29 +21,38 @@ export default {
             progressValue: 0,
             uploadBar: null,
             start: null,
+            total: 3,
+            loaded: 0,
         };
     },
     mounted: function () {
-        this.uploadBar = document.querySelector(
-            ".upload-bar__progress .progress-bar"
+        console.log("mounted progress bar");
+        document.addEventListener(
+            "update-progress-total",
+            this.updateProgressTotal
         );
+        document.addEventListener("update-progress-bar", this.updateUploadBar);
+        document.dispatchEvent(new CustomEvent("upload-progressbar-mounted"));
         // window.requestAnimationFrame(this.updateUploadBar);
     },
     methods: {
-        updateUploadBar(timestamp) {
-            if (this.start === null) this.start = timestamp;
-            const elapsed = timestamp - this.start;
+        updateProgressTotal(e) {
+            console.log(e);
+            this.total = e.detail.total;
 
-            this.uploadBar.style.width = Math.min(0.05 * elapsed, 100) + "%";
-
-            if (elapsed < 2000) {
-                // Stop the animation after 2 seconds
-                window.requestAnimationFrame(this.updateUploadBar);
-            } else {
-                // show upload complete notification
-                // hide the upload bar
-                console.log("finished uploading");
+            // if uploadBar is not saved then select it
+            if (!this.uploadBar) {
+                this.uploadBar = document.querySelector("#master-progress-bar");
             }
+            console.log(this.uploadBar);
+        },
+        updateUploadBar(e) {
+            window.requestAnimationFrame(() => {
+                console.log(this);
+                this.uploadBar = document.querySelector("#master-progress-bar");
+                this.uploadBar.style.width =
+                    (e.detail.loaded / this.total) * 100 + "%";
+            });
         },
     },
 };
