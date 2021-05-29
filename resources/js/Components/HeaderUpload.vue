@@ -55,6 +55,7 @@ export default {
             uploadCount: 0,
             fileCount: 0,
             fileIndex: 0,
+            total: 0,
             allowedMimeTypes: [
                 "image/jpeg",
                 "image/png",
@@ -99,7 +100,8 @@ export default {
                 new CustomEvent("update-progress-bar", {
                     detail: {
                         fileId: fileId,
-                        percent: (e.loaded / e.total) * 100,
+                        loaded: e.loaded,
+                        total: e.total,
                     },
                 })
             );
@@ -145,6 +147,7 @@ export default {
             console.log("files available: ", filesArray.length);
             let fileCount = this.filesArray.length - 1;
             filesArray.forEach((file) => {
+                this.total = this.total + file.size;
                 this.filesArray[this.fileCount] = {
                     file: file,
                     title: file.name,
@@ -156,6 +159,15 @@ export default {
                 };
             });
             this.fileIndex++;
+
+            document.dispatchEvent(
+                new CustomEvent("update-progress-total", {
+                    detail: {
+                        total: this.total,
+                    },
+                })
+            );
+
             // start uploading
             this.uploadFiles();
 
