@@ -425,6 +425,7 @@ export default {
             console.log(e);
             window.requestAnimationFrame(() => this.updateUploadBar(e));
         },
+        /**Function for updating individual progressbar */
         updateUploadBar(e) {
             for (let i = 0; i < this.uploadingFiles.length; i++) {
                 if (this.uploadingFiles[i].id == e.detail.fileId) {
