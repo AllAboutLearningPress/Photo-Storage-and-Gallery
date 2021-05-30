@@ -24,7 +24,7 @@ import HeaderUpload from "./HeaderUpload.vue";
 export default {
     components: { HeaderUpload, HeaderSearch },
     created() {
-        console.log("created header");
+        //console.log("created header");
     },
 };
 </script>

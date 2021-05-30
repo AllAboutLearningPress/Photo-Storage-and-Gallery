@@ -44,7 +44,7 @@
                                 <div
                                     class="progress-bar"
                                     role="progressbar"
-                                    style="width: 25%"
+                                    :style="'width: ' + file.width"
                                     aria-valuenow="0"
                                     aria-valuemin="0"
                                     aria-valuemax="100"
@@ -299,7 +299,6 @@ export default {
     mounted() {
         // event listener for updating individual progress bar
         document.addEventListener("update-progress-bar", this.animateUploadBar);
-        document.dispatchEvent(new CustomEvent("update-progress-total"));
     },
     data() {
         return {
@@ -427,11 +426,14 @@ export default {
             window.requestAnimationFrame(() => this.updateUploadBar(e));
         },
         updateUploadBar(e) {
-            let progressBar = document
-                .getElementById("file" + e.detail.fileId)
-                .querySelector(".progress-bar");
-            console.log(progressBar);
-            (progressBar.style.width = (e.loaded / e.total) * 100), +"%";
+            for (let i = 0; i < this.uploadingFiles.length; i++) {
+                if (this.uploadingFiles[i].id == e.detail.fileId) {
+                    console.log("file found in uploading files");
+                    this.uploadingFiles[i].width =
+                        (e.detail.loaded / e.detail.total) * 100 + "%";
+                    break;
+                }
+            }
         },
     },
 };
