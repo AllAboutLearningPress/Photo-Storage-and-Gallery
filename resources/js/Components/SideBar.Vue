@@ -48,7 +48,7 @@
 
 <script>
 import { Inertia } from "@inertiajs/inertia";
-import Sidebar from "../frontend/components/Sidebar.js";
+
 export default {
     data() {
         return {
@@ -89,7 +89,7 @@ export default {
         // when inertia visits a new route it dispatches
         // navigate event. So we are listening for it
         // in order to change the active menu item
-        Inertia.on("navigate", (event) => {
+        this.$inertia.on("navigate", (event) => {
             this.currentRoute = route().current();
         });
     },
