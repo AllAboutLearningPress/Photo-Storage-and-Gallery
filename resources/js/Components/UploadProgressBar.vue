@@ -1,5 +1,5 @@
 <template>
-    <inertia-link v-if="total" href="#" class="js-upload-bar upload-bar">
+    <inertia-link href="#" class="js-upload-bar upload-bar">
         Uploading 9243 photos (1h 53m remaining)
         <div class="upload-bar__progress progress">
             <div
@@ -23,7 +23,11 @@ export default {
             start: null,
             total: 3,
             loaded: 0,
+            checke: 0,
         };
+    },
+    created() {
+        console.log("created");
     },
     mounted: function () {
         console.log("mounted progress bar");
@@ -34,8 +38,14 @@ export default {
         document.addEventListener("update-progress-bar", this.updateUploadBar);
         document.dispatchEvent(new CustomEvent("upload-progressbar-mounted"));
         // window.requestAnimationFrame(this.updateUploadBar);
+        //this.check();
     },
     methods: {
+        check() {
+            console.log("check: ", this.checke);
+            this.checke++;
+            setTimeout(this.check, 50);
+        },
         updateProgressTotal(e) {
             console.log(e);
             this.total = e.detail.total;

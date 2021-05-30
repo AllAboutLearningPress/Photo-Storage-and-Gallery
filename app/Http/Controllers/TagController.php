@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Tag;
 use DB;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class TagController extends Controller
 {
@@ -15,7 +16,7 @@ class TagController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('Tag');
     }
 
     /**

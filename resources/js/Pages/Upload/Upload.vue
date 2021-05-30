@@ -1,6 +1,6 @@
 <template>
-    <main-layout v-bind="$attrs">
-        <upload-toolbar></upload-toolbar>
+    <div>
+        <!-- <upload-toolbar></upload-toolbar> -->
         <h2 class="fw-light mb-5">
             Uploading 3 pictures, please take a moment to add details, or keep
             using a site
@@ -235,7 +235,7 @@ My title title title title title title title title title title title title title
                 :data-id="tag.id"
             ></option>
         </datalist>
-    </main-layout>
+    </div>
 </template>
 
 <style lang='scss'>
@@ -246,8 +246,8 @@ import MainLayout from "../../Layouts/MainLayout.vue";
 import UploadToolbar from "./Components/UploadToolbar.vue";
 
 export default {
-    components: { MainLayout, UploadToolbar },
-
+    components: { UploadToolbar },
+    layout: MainLayout,
     created() {
         // this event is dispatched by HeaderUpload.vue
         // containing the filesArray to show the user
@@ -301,6 +301,7 @@ export default {
     mounted() {
         // event listener for updating individual progress bar
         document.addEventListener("update-progress-bar", this.animateUploadBar);
+        document.dispatchEvent(new CustomEvent("update-progress-total"));
     },
     data() {
         return {

@@ -1,9 +1,9 @@
 <template>
-    <main-layout>
+    <div>
         <sub-header></sub-header>
         <div id="pig" class="gallery mb-4"></div>
         <button type="button" class="btn btn-lg btn-primary">Load more</button>
-    </main-layout>
+    </div>
 </template>
 
 <style lang='scss'>
@@ -15,9 +15,9 @@ import SubHeader from "../Components/SubHeader.vue";
 import GlobalDropTarget from "../frontend/components/GlobalDropTarget.js";
 export default {
     components: {
-        MainLayout,
         SubHeader,
     },
+    layout: MainLayout,
     props: {
         photos: Array,
         photo: Object,
