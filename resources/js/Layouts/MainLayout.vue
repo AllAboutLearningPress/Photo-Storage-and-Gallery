@@ -125,6 +125,9 @@
         <upload-progress-bar></upload-progress-bar>
     </div>
 </template>
+<style lang='scss'>
+@import "../../sass/main.scss";
+</style>
 <script>
 import Header from "../Components/Header.vue";
 import SideBar from "../Components/SideBar.vue";

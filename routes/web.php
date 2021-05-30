@@ -40,12 +40,13 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post("/store", [UploadController::class, 'store'])->name('uploads.store');
     Route::post("/store-file", [UploadController::class, 'store_file'])->name('uploads.store_file');
 
-    /* Routes related to viewing photo */
-    Route::get("photo/{name}", [PhotoController::class, 'show'])->name('photos.show');
+    /* Routes related to photos */
+    Route::get("/photo/{name}", [PhotoController::class, 'show'])->name('photos.show');
+    Route::get("/trash", [PhotoController::class, 'trash'])->name('trash');
 
     /* Routes related to tags */
-    Route::get("tags/search-by-partial")->name('tags.search_partial');
-    Route::get('tags/get-tags', [TagController::class, 'getTags'])->name('tags.get_tags');
+    Route::get("/tags/search-by-partial")->name('tags.search_partial');
+    Route::get('/tags/get-tags', [TagController::class, 'getTags'])->name('tags.get_tags');
     Route::resource('tags', TagController::class);
 
 

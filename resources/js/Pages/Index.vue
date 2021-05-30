@@ -6,9 +6,7 @@
     </div>
 </template>
 
-<style lang='scss'>
-@import "../../sass/main.scss";
-</style>
+
 <script>
 import MainLayout from "../Layouts/MainLayout.vue";
 import SubHeader from "../Components/SubHeader.vue";

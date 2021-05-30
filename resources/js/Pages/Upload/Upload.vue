@@ -238,9 +238,7 @@ My title title title title title title title title title title title title title
     </div>
 </template>
 
-<style lang='scss'>
-@import "../../../sass/main.scss";
-</style>
+
 <script>
 import MainLayout from "../../Layouts/MainLayout.vue";
 import UploadToolbar from "./Components/UploadToolbar.vue";
