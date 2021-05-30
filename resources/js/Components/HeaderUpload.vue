@@ -48,6 +48,7 @@ export default {
                     tags: [],
                     token: String, // this token will be used to uniquely identify this file
                     id: BigInt,
+                    privLoaded: BigInt,
                 },
             ],
             tags: [],
@@ -95,13 +96,15 @@ export default {
         );
     },
     methods: {
-        dispatchUploadProgress(e, fileId) {
+        dispatchUploadProgress(e, fileId, bytesSent) {
+            console.log("bytes sent in dispatch: ", bytesSent);
             document.dispatchEvent(
                 new CustomEvent("update-progress-bar", {
                     detail: {
                         fileId: fileId,
                         loaded: e.loaded,
                         total: e.total,
+                        bytesSent: bytesSent,
                     },
                 })
             );
@@ -156,6 +159,7 @@ export default {
                     hasDuplicate: false,
                     token: this.randHexToken(128),
                     id: this.fileIndex,
+                    privLoaded: 0,
                 };
             });
             this.fileIndex++;
@@ -239,16 +243,25 @@ export default {
 
             // setting a cancel token for this upload
             // This will be used to cancel a file upload
-            // Considering the file names will be unique
-            // for now. It would be replaced by an id later
             this.cancelTokens[fileId] = axios.CancelToken.source();
             console.log(this.cancelTokens);
+
             // uploading the file
             axios
                 .post(route("uploads.store_file"), formData, {
                     cancelToken: this.cancelTokens[fileId].token,
-                    onUploadProgress: (e) =>
-                        this.dispatchUploadProgress(e, fileId),
+                    onUploadProgress: (e) => {
+                        console.log(
+                            "priv loaded: ",
+                            this.filesArray[filePostion].privLoaded
+                        );
+                        this.dispatchUploadProgress(
+                            e,
+                            fileId,
+                            e.loaded - this.filesArray[filePostion].privLoaded
+                        );
+                        this.filesArray[filePostion].privLoaded = e.loaded;
+                    },
                 })
                 .then((response) => {
                     console.log(response);
