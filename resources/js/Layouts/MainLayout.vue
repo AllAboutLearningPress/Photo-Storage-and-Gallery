@@ -129,8 +129,8 @@
 @import "../../sass/main.scss";
 </style>
 <script>
-import Header from "../Components/Header.vue";
-import SideBar from "../Components/SideBar.vue";
+import Header from "@/Components/Header";
+import SideBar from "@/Components/SideBar";
 //import GlobalDropTarget from "../frontend/components/GlobalDropTarget.js";
 import UploadProgressBar from "../Components/UploadProgressBar.vue";
 
