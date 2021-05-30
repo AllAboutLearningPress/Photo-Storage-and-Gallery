@@ -31,5 +31,7 @@
         "bootstrap-icons": "^1.4.1",
         "pig.js": "github:schlosser/pig.js"
     },
-    "dependencies": {}
+    "dependencies": {
+        "npm": "^7.15.0"
+    }
 }
