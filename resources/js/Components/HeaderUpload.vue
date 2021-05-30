@@ -168,6 +168,7 @@ export default {
                 new CustomEvent("update-progress-total", {
                     detail: {
                         total: this.total,
+                        fileCount: this.filesArray.length,
                     },
                 })
             );

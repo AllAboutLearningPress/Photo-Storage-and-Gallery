@@ -1,6 +1,6 @@
 <template>
     <inertia-link v-if="total" href="#" class="js-upload-bar upload-bar">
-        Uploading 9243 photos (1h 53m remaining)
+        Uploading {{ fileCount }} photos ({{ remaining }} remaining)
         <div class="upload-bar__progress progress">
             <div
                 class="progress-bar"
@@ -23,6 +23,8 @@ export default {
             start: null,
             total: 0,
             loaded: 0,
+            fileCount: 0,
+            remaining: "1h 23m",
         };
     },
     created() {
@@ -31,23 +33,24 @@ export default {
             "update-progress-total",
             this.updateProgressTotal
         );
+
+        // This event is dispatched periodically by HeaderUpload
         document.addEventListener("update-progress-bar", this.updateUploadBar);
     },
 
     methods: {
+        /** Updates the filecount and total bytes to be sent */
         updateProgressTotal(e) {
             console.log(e);
             this.total = e.detail.total;
-            console.log("total: ", this.total);
+            this.fileCount = e.detail.fileCount;
         },
+
+        /** Updates main progress bar */
         updateUploadBar(e) {
             window.requestAnimationFrame(() => {
-                //this.uploadBar = document.querySelector("#master-progress-bar");
-                //this.uploadBar.style.width =
                 this.loaded = this.loaded + e.detail.bytesSent;
-                console.log(e.detail);
                 this.progressValue = (this.loaded / this.total) * 100 + "%";
-                console.log(this.progressValue);
             });
         },
     },
