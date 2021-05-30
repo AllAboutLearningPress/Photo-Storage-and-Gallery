@@ -54,7 +54,7 @@ class UploadController extends Controller
         ]);
 
         foreach ($data['files'] as $file) {
-            $photo = Photo::where('id', '=', $file['id'])->get();
+            $photo = Photo::find($file['id']);
 
             $photo->update([
                 'name' => $file['name'],

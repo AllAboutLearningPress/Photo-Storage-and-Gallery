@@ -19,30 +19,24 @@
         <div class="sidebar__body scrollbar">
             <div class="navigation list-group list-group-flush">
                 <inertia-link
-                    href="/"
-                    class="active navigation__item list-group-item"
-                    aria-current="true"
+                    v-for="item in menuItems"
+                    :key="item.route"
+                    :href="route(item.route)"
+                    :class="
+                        (currentRoute === item.route ? 'active ' : '') + classes
+                    "
                 >
-                    My photos
+                    {{ item.name }}
                 </inertia-link>
-                <a
-                    href="#"
-                    class="navigation__item list-group-item list-group-item-action"
-                >
-                    Popular tags
-                </a>
-                <a
-                    href="#"
-                    class="navigation__item list-group-item list-group-item-action"
-                >
-                    Trash
-                </a>
-                <a
-                    href="/accounts/logout"
-                    class="navigation__item list-group-item list-group-item-action"
-                >
-                    Logout
-                </a>
+                <form @onsubmit.prevent="logout">
+                    <button
+                        type="submit"
+                        class="navigation__item list-group-item list-group-item-action"
+                        v-on:click="logout"
+                    >
+                        Logout
+                    </button>
+                </form>
             </div>
         </div>
     </aside>
@@ -50,8 +44,29 @@
 </template>
 
 <script>
+import { Inertia } from "@inertiajs/inertia";
 import Sidebar from "../frontend/components/Sidebar.js";
 export default {
+    data() {
+        return {
+            classes: "navigation__item list-group-item",
+            menuItems: [
+                {
+                    name: "Photos",
+                    route: "home",
+                },
+                {
+                    name: "Popular Tags",
+                    route: "tags.index",
+                },
+                {
+                    name: "Trash",
+                    route: "tags.index",
+                },
+            ],
+            currentRoute: route().current(),
+        };
+    },
     mounted: () => {
         document.addEventListener("click", (e) => {
             const toggler = e.target.closest(".js-sidebar-toggle");
@@ -67,6 +82,19 @@ export default {
             document.querySelector(".js-content-sidebar")
         );
         //console.log(contentSidebar);
+    },
+    created() {
+        console.log("current route: ", this.currentRoute);
+        Inertia.on("navigate", (event) => {
+            this.currentRoute = route().current();
+            console.log("current route: ", this.currentRoute);
+        });
+    },
+    methods: {
+        logout() {
+            console.log("logout");
+            this.$inertia.post(route("logout"));
+        },
     },
 };
 </script>
