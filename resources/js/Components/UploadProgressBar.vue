@@ -44,7 +44,8 @@ export default {
             window.requestAnimationFrame(() => {
                 //this.uploadBar = document.querySelector("#master-progress-bar");
                 //this.uploadBar.style.width =
-                this.loaded = this.loaded + e.detail.loaded;
+                this.loaded = this.loaded + e.detail.bytesSent;
+                console.log(e.detail);
                 this.progressValue = (this.loaded / this.total) * 100 + "%";
                 console.log(this.progressValue);
             });
