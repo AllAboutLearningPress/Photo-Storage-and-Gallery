@@ -1,0 +1,62 @@
+version: '3'
+services:
+
+  # PHP Service
+  app:
+    build:
+      args:
+        user: ec2-user
+        uid: 1000
+      context: .
+      dockerfile: docker/Dockerfile
+    image: php-app
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    working_dir: /var/www
+
+    volumes:
+      - ./:/var/www
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - internet
+
+
+    # ports:
+    #   - "9001:9000"
+
+  # Nginx Service
+  webserver:
+    image: nginx:alpine
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "81:80"
+      - "444:443"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx_local:/etc/nginx/conf.d
+      # - /etc/ssl/certs/oto-repair.crt:/etc/ssl/certs/ssl.crt
+      # - /etc/ssl/private/oto-repair.key:/etc/ssl/private/ssl-private.key
+    networks:
+      - internet
+
+    external_links:
+      - app
+    links:
+      - app
+    depends_on:
+      - app
+
+
+# Network
+networks:
+  internet:
+
+
+# Data Volumes
+volumes:
+  dbdata:
+

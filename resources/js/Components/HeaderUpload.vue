@@ -36,6 +36,7 @@
 <script>
 import axios from "axios";
 import SingleImageDropManager from "../frontend/components/SingleImageDropManager.js";
+import Notificator from "../frontend/components/Notificator.js";
 export default {
     data: function () {
         return {
@@ -49,6 +50,7 @@ export default {
                     token: String, // this token will be used to uniquely identify this file
                     id: BigInt,
                     privLoaded: BigInt,
+                    notificator: null,
                 },
             ],
             tags: [],
@@ -69,6 +71,7 @@ export default {
     },
     created() {
         this.dropManager = new SingleImageDropManager();
+        this.notificator = new Notificator();
 
         // fetch tags lazily from server
         // this.fetchTags(route("tags.get_tags"));
@@ -88,6 +91,7 @@ export default {
                 );
             }
         });
+        this.notificator.show(".js-invalid-drop-note");
 
         // This event is triggered by Upload.js to
         // pass files with allowed
