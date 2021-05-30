@@ -6,7 +6,7 @@
                 class="progress-bar"
                 role="progressbar"
                 id="master-progress-bar"
-                style="width: {progressValue}%"
+                :style="'width: ' + progressValue"
                 :aria-valuenow="progressValue"
                 aria-valuemin="0"
                 aria-valuemax="100"
@@ -23,45 +23,30 @@ export default {
             start: null,
             total: 0,
             loaded: 0,
-            checke: 0,
         };
     },
     created() {
-        //console.log("created");
-    },
-    mounted: function () {
-        console.log("mounted progress bar");
+        console.log("created progress bar");
         document.addEventListener(
             "update-progress-total",
             this.updateProgressTotal
         );
         document.addEventListener("update-progress-bar", this.updateUploadBar);
-        document.dispatchEvent(new CustomEvent("upload-progressbar-mounted"));
-        // window.requestAnimationFrame(this.updateUploadBar);
-        //this.check();
     },
+
     methods: {
-        check() {
-            console.log("check: ", this.checke);
-            this.checke++;
-            setTimeout(this.check, 50);
-        },
         updateProgressTotal(e) {
             console.log(e);
             this.total = e.detail.total;
-
-            // if uploadBar is not saved then select it
-            if (!this.uploadBar) {
-                this.uploadBar = document.querySelector("#master-progress-bar");
-            }
-            console.log(this.uploadBar);
+            console.log("total: ", this.total);
         },
         updateUploadBar(e) {
             window.requestAnimationFrame(() => {
-                console.log(this);
                 //this.uploadBar = document.querySelector("#master-progress-bar");
                 //this.uploadBar.style.width =
-                this.progressValue = (e.detail.loaded / this.total) * 100 + "%";
+                this.loaded = this.loaded + e.detail.loaded;
+                this.progressValue = (this.loaded / this.total) * 100 + "%";
+                console.log(this.progressValue);
             });
         },
     },
