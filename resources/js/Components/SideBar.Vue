@@ -28,11 +28,14 @@
                 >
                     {{ item.name }}
                 </inertia-link>
-                <form @onsubmit.prevent="logout">
+                <form
+                    action="logout"
+                    method="POST"
+                    v-on:submit.prevent="logout"
+                >
                     <button
                         type="submit"
                         class="navigation__item list-group-item list-group-item-action"
-                        v-on:click="logout"
                     >
                         Logout
                     </button>
@@ -61,7 +64,7 @@ export default {
                 },
                 {
                     name: "Trash",
-                    route: "tags.index",
+                    route: "trash",
                 },
             ],
             currentRoute: route().current(),
@@ -78,22 +81,26 @@ export default {
                     })
                 );
         });
-        const contentSidebar = new Sidebar(
-            document.querySelector(".js-content-sidebar")
-        );
-        //console.log(contentSidebar);
+        // const contentSidebar = new Sidebar(
+        //     document.querySelector(".js-content-sidebar")
+        // );
     },
     created() {
-        console.log("current route: ", this.currentRoute);
+        // when inertia visits a new route it dispatches
+        // navigate event. So we are listening for it
+        // in order to change the active menu item
         Inertia.on("navigate", (event) => {
             this.currentRoute = route().current();
-            console.log("current route: ", this.currentRoute);
         });
     },
     methods: {
+        /**Logout function */
         logout() {
-            console.log("logout");
-            this.$inertia.post(route("logout"));
+            // sending the post request for logging out this session
+            axios.post(route("logout")).then((resp) => {
+                // visiting the new url
+                location.replace(route("login"));
+            });
         },
     },
 };

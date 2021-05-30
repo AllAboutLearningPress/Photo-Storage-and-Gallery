@@ -85,4 +85,9 @@ class PhotoController extends Controller
     {
         //
     }
+
+    public function trash()
+    {
+        return Inertia::render('Index');
+    }
 }
