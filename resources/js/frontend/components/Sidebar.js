@@ -12,14 +12,14 @@ const collapsedStateLocalStoragePrefix = '__unique-photo-gallery-key-for-details
 let sidebarId = 0;
 
 // document.addEventListener('click', (e) => {
-//   const toggler = e.target.closest('.js-sidebar-toggle');
+//     const toggler = e.target.closest('.js-sidebar-toggle');
 
-//   toggler &&
-//     toggler.dispatchEvent(
-//       new CustomEvent('sidebar-toggle-click', {
-//         bubbles: true,
-//       })
-//     );
+//     toggler &&
+//         toggler.dispatchEvent(
+//             new CustomEvent('sidebar-toggle-click', {
+//                 bubbles: true,
+//             })
+//         );
 // });
 
 class Sidebar {

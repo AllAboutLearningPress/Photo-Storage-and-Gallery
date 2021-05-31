@@ -48,7 +48,7 @@
 
 <script>
 import { Inertia } from "@inertiajs/inertia";
-
+import Side from "../frontend/components/Sidebar";
 export default {
     data() {
         return {
@@ -84,6 +84,9 @@ export default {
         // const contentSidebar = new Sidebar(
         //     document.querySelector(".js-content-sidebar")
         // );
+        const contentSidebar = new Side(
+            document.querySelector(".js-content-sidebar")
+        );
     },
     created() {
         // when inertia visits a new route it dispatches
