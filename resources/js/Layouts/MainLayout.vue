@@ -130,14 +130,14 @@
 </style>
 <script>
 import Header from "@/Components/Header";
-import SideBar from "@/Components/SideBar";
+import Sidebar from "@/Components/SideBar";
 //import GlobalDropTarget from "../frontend/components/GlobalDropTarget.js";
 import UploadProgressBar from "../Components/UploadProgressBar.vue";
 
 export default {
     components: {
         Header,
-        SideBar,
+        Sidebar,
         UploadProgressBar,
     },
 };
