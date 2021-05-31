@@ -91,7 +91,7 @@ export default {
                 );
             }
         });
-        this.notificator.show(".js-invalid-drop-note");
+        // this.notificator.show(".js-invalid-drop-note");
 
         // This event is triggered by Upload.js to
         // pass files with allowed
