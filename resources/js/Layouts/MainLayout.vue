@@ -75,7 +75,7 @@
             </div>
             <Header></Header>
             <div class="content">
-                <side-bar></side-bar>
+                <sidebar></sidebar>
                 <main class="main">
                     <slot></slot>
                 </main>
@@ -130,7 +130,7 @@
 </style>
 <script>
 import Header from "@/Components/Header";
-import Sidebar from "@/Components/SideBar";
+import Sidebar from "@/Components/Sidebar.vue";
 //import GlobalDropTarget from "../frontend/components/GlobalDropTarget.js";
 import UploadProgressBar from "../Components/UploadProgressBar.vue";
 
