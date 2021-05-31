@@ -48,7 +48,7 @@
 
 <script>
 import { Inertia } from "@inertiajs/inertia";
-import Side from "../frontend/components/Sidebar";
+import SidebarHelper from "../frontend/components/Sidebar";
 export default {
     data() {
         return {
@@ -84,7 +84,7 @@ export default {
         // const contentSidebar = new Sidebar(
         //     document.querySelector(".js-content-sidebar")
         // );
-        const contentSidebar = new Side(
+        const contentSidebar = new SidebarHelper(
             document.querySelector(".js-content-sidebar")
         );
     },
