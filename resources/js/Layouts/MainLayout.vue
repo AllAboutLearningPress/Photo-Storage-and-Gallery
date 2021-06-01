@@ -96,32 +96,7 @@
             </div>
         </div>
 
-        <div aria-live="polite" aria-atomic="true" class="notification-area">
-            <div
-                class="js-notification-container notification-area__container toast-container"
-            >
-                <!-- Put toasts here -->
-
-                <div
-                    class="js-invalid-drop-note notification-area__toast toast align-items-center"
-                    role="alert"
-                    aria-live="assertive"
-                    aria-atomic="true"
-                >
-                    <div class="d-flex">
-                        <div class="toast-body">
-                            Some of the file types you dropped aren't allowed
-                        </div>
-                        <button
-                            type="button"
-                            class="btn-close me-2 m-auto"
-                            data-bs-dismiss="toast"
-                            aria-label="Close"
-                        ></button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <notificator></notificator>
         <upload-progress-bar></upload-progress-bar>
     </div>
 </template>
@@ -133,12 +108,14 @@ import Header from "@/Components/Header";
 import Sidebar from "@/Components/Sidebar.vue";
 //import GlobalDropTarget from "../frontend/components/GlobalDropTarget.js";
 import UploadProgressBar from "../Components/UploadProgressBar.vue";
+import Notificator from "../Components/Notificator.vue";
 
 export default {
     components: {
         Header,
         Sidebar,
         UploadProgressBar,
+        Notificator,
     },
 };
 </script>
