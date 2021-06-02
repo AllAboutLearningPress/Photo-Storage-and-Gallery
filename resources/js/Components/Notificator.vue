@@ -6,10 +6,13 @@
             <!-- Put toasts here -->
 
             <div
-                v-for="toast in toastData"
-                :key="toast.id"
-                :id="'toast' + toast.id"
-                class="js-invalid-drop-note notification-area__toast toast align-items-center"
+                v-for="toast in toasts.slice().reverse()"
+                :key="toast.ref"
+                :ref="toast.ref"
+                :class="
+                    toast.ref +
+                    ' notification-area__toast toast align-items-center'
+                "
                 role="alert"
                 aria-live="assertive"
                 aria-atomic="true"
@@ -37,34 +40,35 @@ export default {
     data() {
         return {
             toasts: [],
-            handlers: [],
-            isInited: true,
-            toastData: [
-                {
-                    id: 1,
-                    body: "Some of the file types you dropped aren't allowed",
-                },
-                {
-                    id: 2,
-                    body: "File upload completed",
-                },
-            ],
             toastOptions: { delay: 10000 },
+            ref: "toast-",
+            toastId: 0,
+            count: 0,
         };
     },
     created() {
-        document.addEventListener("notify", (e) => {
-            this.show("#toast2");
-        });
+        document.addEventListener("notify", this.show);
     },
     mounted() {
         this.container = document.querySelector(".js-notification-container");
 
-        if (!this.container) {
-            return;
-        }
+        //this.testEvent();
     },
     methods: {
+        testEvent() {
+            console.log(this.ref + this.count);
+            document.dispatchEvent(
+                new CustomEvent("notify", {
+                    detail: {
+                        body: this.ref + this.count,
+                    },
+                })
+            );
+            if (this.count < 10) {
+                this.count++;
+                setTimeout(this.testEvent, 1500);
+            }
+        },
         getElemAndInstanceBySelector(selector) {
             const elem = document.querySelector(selector);
             let instance;
@@ -73,7 +77,7 @@ export default {
                 instance = Toast.getInstance(elem);
 
                 if (!instance) {
-                    instance = new Toast(elem, this.toastOptions);
+                    instance = new Toast(elem, ...this.toastOptions);
                     this.toasts.push(instance);
                 }
             } else {
@@ -85,16 +89,14 @@ export default {
                 instance,
             };
         },
-        show(toastSelector) {
-            const { elem, instance } = this.getElemAndInstanceBySelector(
-                toastSelector
-            );
-
-            if (elem) {
-                // always stack the newest toast at the beginning
-                this.container.insertAdjacentElement("afterbegin", elem);
-                instance.show();
-            }
+        show(e) {
+            let ref = this.ref + this.toastId;
+            this.toastId++;
+            this.toasts.push({ ref: ref, body: e.detail.body });
+            this.$nextTick(() => {
+                let toast = new Toast(this.$refs[ref]);
+                toast.show();
+            });
         },
         hide(toastSelector) {
             const { instance } = this.getElemAndInstanceBySelector(
