@@ -52,7 +52,10 @@
                             </div>
                             <div class="file__header">
                                 <div class="js-editable editable file__title">
-                                    <h3 class="editable__content fs-4 fw-light">
+                                    <h3
+                                        v-on:click="editTitle(file.id)"
+                                        class="editable__content fs-4 fw-light"
+                                    >
                                         <span class="js-editable__val">
                                             {{ file.title }}
                                         </span>
@@ -84,9 +87,9 @@
                                             disabled
                                             placeholder="Write here"
                                             class="js-editable__area editable__area fs-4 fw-light form-control form-control-lg form-control-plaintext"
-                                        >
-My title title title title title title title title title title title title title title title title title title title title</textarea
-                                        >
+                                            v-model="file.title"
+                                            :id="'title' + file.id"
+                                        ></textarea>
                                         <button
                                             type="submit"
                                             class="js-editable__confirm btn btn-outline-secondary"
@@ -165,44 +168,7 @@ My title title title title title title title title title title title title title
                                             </button>
                                         </object>
                                     </a>
-                                    <!-- <a
-                                        class="tags__tag tag tag_deletable btn btn-secondary"
-                                        href="#"
-                                    >
-                                        Some tag
-                                        <object type="no/suchtype">
-                                            <button
-                                                title="Delete tag"
-                                                type="button"
-                                                class="js-tag-delete tag__delete btn-close"
-                                                aria-label="Delete tag"
-                                            >
-                                                <span class="visually-hidden"
-                                                    >Delete tag</span
-                                                >
-                                            </button>
-                                        </object>
-                                    </a>
-                                    <a
-                                        class="tags__tag tag tag_deletable btn btn-secondary"
-                                        href="#"
-                                    >
-                                        Some tag
-                                        <object type="no/suchtype">
-                                            <button
-                                                title="Delete tag"
-                                                type="button"
-                                                class="js-tag-delete tag__delete btn-close"
-                                                aria-label="Delete tag"
-                                            >
-                                                <span class="visually-hidden"
-                                                    >Delete tag</span
-                                                >
-                                            </button>
-                                        </object>
-                                    </a>
-
-                                    <a
+                                    <!-- a
                                         class="tags__tag tag tag_deletable btn btn-secondary"
                                         href="#"
                                     >
@@ -240,9 +206,9 @@ My title title title title title title title title title title title title title
 
 
 <script>
-import MainLayout from "../../Layouts/MainLayout.vue";
+import MainLayout from "@/Layouts/MainLayout.vue";
 import UploadToolbar from "./Components/UploadToolbar.vue";
-import { addEventListener } from "../util/utils.js";
+import { addEventListener } from "@/frontend/util/utils.js";
 export default {
     components: { UploadToolbar },
     layout: MainLayout,
@@ -252,6 +218,8 @@ export default {
             tags: [],
             spinner: "/images/spinner.svg",
             rmlisteners: [],
+            editableContainerKlass: "js-editable",
+            editingKlass: "is-editing",
         };
     },
     created() {
@@ -312,9 +280,58 @@ export default {
             "update-progress-bar",
             this.animateUploadBar
         );
+        // document.addEventListener("mousedown", (e) => {
+        //     console.log(e);
+        //     const editableValue = e.target.closest(".js-editable__val");
+        //     const editableTrigger = e.target.closest(".js-editable__trigger");
+        //     let container;
+        //     let textarea;
+        //     let clickedThing = editableValue || editableTrigger;
+
+        //     if (clickedThing) {
+        //         container = clickedThing.closest(`.${editableContainerKlass}`);
+        //         textarea = container.querySelector(`.${textareaKlass}`);
+
+        //         /*
+        //          * `<textarea>` somehow gets focused out on any mousedown,
+        //          * so without `setTimeout` the whole thing "closes" immediately after the opening
+        //          * */
+        //         setTimeout(() => {
+        //             container.classList.add(editingKlass);
+        //             container.querySelector(
+        //                 `.${textareaKlass}`
+        //             ).disabled = false;
+        //             resize(textarea);
+        //             textarea.focus();
+
+        //             // allow android chrome to lag, and then actually do select text
+        //             setTimeout(() => textarea.select(), 0);
+        //         }, 0);
+        //     }
+        // });
     },
 
     methods: {
+        editTitle(id) {
+            let textarea = document.getElementById("title" + id);
+            console.log(textarea);
+            let container = textarea.closest(`.${this.editableContainerKlass}`);
+            console.log(container);
+
+            setTimeout(() => {
+                container.classList.add(this.editingKlass);
+                textarea.disabled = false;
+                this.resize(textarea);
+                textarea.focus();
+
+                // allow android chrome to lag, and then actually do select text
+                setTimeout(() => textarea.select(), 0);
+            }, 0);
+        },
+        resize(tx) {
+            tx.style.height = "auto";
+            tx.style.height = tx.scrollHeight + "px";
+        },
         /*
         Fetches the tags from server in chunks.
         Server returns 100 tags at each request then
