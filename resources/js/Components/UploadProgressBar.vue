@@ -28,7 +28,7 @@ export default {
         };
     },
     created() {
-        console.log("created progress bar");
+        //console.log("created progress bar");
         document.addEventListener(
             "update-progress-total",
             this.updateProgressTotal

@@ -1,9 +1,9 @@
 <template>
     <div>
         <!-- <upload-toolbar></upload-toolbar> -->
-        <h2 class="fw-light mb-5">
-            Uploading 3 pictures, please take a moment to add details, or keep
-            using a site
+        <h2 v-if="uploadingFiles.len" class="fw-light mb-5">
+            Uploading {{ uploadingFiles.len }} pictures, please take a moment to
+            add details, or keep using a site
             <button
                 v-on:click="cancelUpload"
                 type="button"
@@ -242,34 +242,43 @@ My title title title title title title title title title title title title title
 <script>
 import MainLayout from "../../Layouts/MainLayout.vue";
 import UploadToolbar from "./Components/UploadToolbar.vue";
-
+import { addEventListener } from "../util/utils.js";
 export default {
     components: { UploadToolbar },
     layout: MainLayout,
+    data() {
+        return {
+            uploadingFiles: [],
+            tags: [],
+            spinner: "/images/spinner.svg",
+            rmlisteners: [],
+        };
+    },
     created() {
         // this event is dispatched by HeaderUpload.vue
         // containing the filesArray to show the user
         // for editing
-        // this event listener will be moved to a specific componenet later
-        document.addEventListener("uploading-files", this.showUploads);
-        document.addEventListener("file-uploaded", this.fileUploaded);
+        this.rmlisteners.push(
+            addEventListener(document, "uploading-files", this.showUploads)
+        );
+        this.rmlisteners.push(document, "file-uploaded", this.fileUploaded);
 
         // fetch tags lazily from server
         this.fetchTags(route("tags.get_tags"));
-        // this.uploadingFiles = [
-        //     {
-        //         id: 0,
-        //         title: "test file",
-        //         tags: [],
-        //         //thumbnail_link: "http://placekitten.com/200/100",
-        //     },
-        //     {
-        //         id: 1,
-        //         title: "test file",
-        //         tags: [],
-        //         //thumbnail_link: "http://placekitten.com/200/100",
-        //     },
-        // ];
+        this.uploadingFiles = [
+            {
+                id: 0,
+                title: "test file",
+                tags: [],
+                //thumbnail_link: "http://placekitten.com/200/100",
+            },
+            {
+                id: 1,
+                title: "test file",
+                tags: [],
+                //thumbnail_link: "http://placekitten.com/200/100",
+            },
+        ];
 
         // // for testing file uploaded event
         // setTimeout(() => {
@@ -298,14 +307,11 @@ export default {
     },
     mounted() {
         // event listener for updating individual progress bar
-        document.addEventListener("update-progress-bar", this.animateUploadBar);
-    },
-    data() {
-        return {
-            uploadingFiles: [],
-            tags: [],
-            spinner: "/images/spinner.svg",
-        };
+        this.rmlisteners.push(
+            document,
+            "update-progress-bar",
+            this.animateUploadBar
+        );
     },
 
     methods: {
@@ -342,7 +348,7 @@ export default {
         },
 
         /**
-         * get called when add button is pressed on tag
+         * gets called when add button is pressed on tag
          * @param {Event} e - Add button click event
          * @param {Int} fileId - the id of the file that the tag is being added to
          */
@@ -436,6 +442,10 @@ export default {
                 }
             }
         },
+    },
+    beforeUnmount() {
+        // removing the event listener for this page
+        this.rmlisteners.forEach((func) => func());
     },
 };
 </script>
