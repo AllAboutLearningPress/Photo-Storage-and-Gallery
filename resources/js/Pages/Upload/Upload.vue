@@ -53,7 +53,7 @@
                             <div class="file__header">
                                 <div class="js-editable editable file__title">
                                     <h3
-                                        v-on:click="editTitle(file.id)"
+                                        v-on:click="editTitle($event, file.id)"
                                         class="editable__content fs-4 fw-light"
                                     >
                                         <span class="js-editable__val">
@@ -79,7 +79,7 @@
                                             </svg>
                                         </button>
                                     </h3>
-                                    <form
+                                    <div
                                         class="js-editable__form editable__form"
                                         action="#"
                                     >
@@ -91,12 +91,14 @@
                                             :id="'title' + file.id"
                                         ></textarea>
                                         <button
-                                            type="submit"
+                                            v-on:click="
+                                                saveTitle($event, file.id)
+                                            "
                                             class="js-editable__confirm btn btn-outline-secondary"
                                         >
                                             Ok
                                         </button>
-                                    </form>
+                                    </div>
                                 </div>
                                 <div class="file__notes">
                                     <a
@@ -125,7 +127,6 @@
                                 >
                                     <div class="input-group mt-1 mb-3">
                                         <input
-                                            id="tag-input"
                                             name="tag-input"
                                             list="tag-list"
                                             class="js-tags__input form-control form-control-lg"
@@ -220,6 +221,8 @@ export default {
             rmlisteners: [],
             editableContainerKlass: "js-editable",
             editingKlass: "is-editing",
+            confirmKlass: "js-editable__confirm",
+            textareaKlass: "js-editable__area",
         };
     },
     created() {
@@ -280,39 +283,24 @@ export default {
             "update-progress-bar",
             this.animateUploadBar
         );
-        // document.addEventListener("mousedown", (e) => {
-        //     console.log(e);
-        //     const editableValue = e.target.closest(".js-editable__val");
-        //     const editableTrigger = e.target.closest(".js-editable__trigger");
-        //     let container;
-        //     let textarea;
-        //     let clickedThing = editableValue || editableTrigger;
+        this.rmlisteners.push(
+            addEventListener(document, "focusout", (e) => {
+                console.log(e);
+                const actionEntitiesSelector = `.${this.textareaKlass}, .${this.confirmKlass}`;
+                let container = document.querySelector(`.${this.editingKlass}`);
+                if (e.target.matches(actionEntitiesSelector) && container) {
+                    let textarea = container.querySelector("textarea");
 
-        //     if (clickedThing) {
-        //         container = clickedThing.closest(`.${editableContainerKlass}`);
-        //         textarea = container.querySelector(`.${textareaKlass}`);
-
-        //         /*
-        //          * `<textarea>` somehow gets focused out on any mousedown,
-        //          * so without `setTimeout` the whole thing "closes" immediately after the opening
-        //          * */
-        //         setTimeout(() => {
-        //             container.classList.add(editingKlass);
-        //             container.querySelector(
-        //                 `.${textareaKlass}`
-        //             ).disabled = false;
-        //             resize(textarea);
-        //             textarea.focus();
-
-        //             // allow android chrome to lag, and then actually do select text
-        //             setTimeout(() => textarea.select(), 0);
-        //         }, 0);
-        //     }
-        // });
+                    textarea.disabled = true;
+                    container.classList.remove(this.editingKlass);
+                }
+            })
+        );
     },
 
     methods: {
-        editTitle(id) {
+        editTitle(e, id) {
+            e.preventDefault();
             let textarea = document.getElementById("title" + id);
             console.log(textarea);
             let container = textarea.closest(`.${this.editableContainerKlass}`);
@@ -327,6 +315,18 @@ export default {
                 // allow android chrome to lag, and then actually do select text
                 setTimeout(() => textarea.select(), 0);
             }, 0);
+        },
+        saveTitle(e, id) {
+            console.log(id);
+            let container = e.target.closest(`.${this.editableContainerKlass}`);
+            let textarea = e.target.closest(".textarea");
+            console.log(textarea);
+            container.classList.remove(this.editingKlass);
+            // send axios request to save title
+        },
+        storeTitle() {
+            // dispatch event with title data
+            // send axios request for storing data to server
         },
         resize(tx) {
             tx.style.height = "auto";

@@ -42,85 +42,89 @@ function resize(tx) {
 //     }
 // });
 
-document.addEventListener('submit', (e) => {
-    const editableForm = e.target.closest(`.${formKlass}`);
-    let container;
-    let textarea;
-    let newValue;
+// document.addEventListener('submit', (e) => {
+//     const editableForm = e.target.closest(`.${formKlass}`);
+//     let container;
+//     let textarea;
+//     let newValue;
 
-    e.preventDefault();
+//     e.preventDefault();
 
-    if (editableForm) {
-        container = editableForm.closest(`.${editableContainerKlass}`);
-        textarea = container.querySelector(`.${textareaKlass}`);
+//     if (editableForm) {
+//         container = editableForm.closest(`.${editableContainerKlass}`);
+//         textarea = container.querySelector(`.${textareaKlass}`);
 
-        container.classList.remove(editingKlass);
-        newValue = textarea.value.trim();
+//         container.classList.remove(editingKlass);
+//         newValue = textarea.value.trim();
 
-        if (newValue) {
-            container.querySelector(`.${editableValueKlass}`).innerHTML = newValue;
-            textarea.dataset.latestValue = newValue;
-        }
-    }
-});
+//         if (newValue) {
+//             container.querySelector(`.${editableValueKlass}`).innerHTML = newValue;
+//             textarea.dataset.latestValue = newValue;
+//         }
+//     }
+// });
 
-document.addEventListener('input', (e) => {
-    const tx = e.target.matches(`.${textareaKlass}`) && e.target;
+// document.addEventListener('input', (e) => {
+//     const tx = e.target.matches(`.${textareaKlass}`) && e.target;
 
-    tx && resize(tx);
-});
+//     tx && resize(tx);
+// });
 
 let isEditableConfirmMousePressed;
 
-document.addEventListener(
-    'mousedown',
-    (e) => {
-        const confirmBtn = e.target.closest(`.${confirmKlass}`);
+// document.addEventListener(
+//     'mousedown',
+//     (e) => {
+//         const confirmBtn = e.target.closest(`.${confirmKlass}`);
 
-        if (confirmBtn) {
-            isEditableConfirmMousePressed = true;
-        }
-    },
-    true
-);
-document.addEventListener(
-    'mouseup',
-    (e) => {
-        const confirmBtn = e.target.closest(`.${confirmKlass}`);
+//         if (confirmBtn) {
+//             isEditableConfirmMousePressed = true;
+//         }
+//     },
+//     true
+// );
+// document.addEventListener(
+//     'mouseup',
+//     (e) => {
+//         const confirmBtn = e.target.closest(`.${confirmKlass}`);
 
-        if (confirmBtn) {
-            isEditableConfirmMousePressed = false;
-        }
-    },
-    true
-);
-document.addEventListener('focusout', (e) => {
-    const actionEntitiesSelector = `.${textareaKlass}, .${confirmKlass}`;
-    let container;
-    let textarea;
+//         if (confirmBtn) {
+//             isEditableConfirmMousePressed = false;
+//         }
+//     },
+//     true
+// );
+// document.addEventListener('focusout', (e) => {
+//     console.log(e);
+//     const actionEntitiesSelector = `.${textareaKlass}, .${confirmKlass}`;
+//     let container;
+//     let textarea;
 
-    if (
-        e.target.matches(actionEntitiesSelector) &&
-        (!e.relatedTarget || !e.relatedTarget.matches(actionEntitiesSelector)) &&
-        !isEditableConfirmMousePressed
-    ) {
-        container = e.target.closest(`.${editableContainerKlass}`);
-        textarea = container.querySelector(`.${textareaKlass}`);
+//     if (
+//         e.target.matches(actionEntitiesSelector) &&
+//         (!e.relatedTarget || !e.relatedTarget.matches(actionEntitiesSelector)) &&
+//         !isEditableConfirmMousePressed
+//     ) {
+//         console.log(
+//             'focusout passes'
+//         );
+//         container = e.target.closest(`.${editableContainerKlass}`);
+//         textarea = container.querySelector(`.${textareaKlass}`);
 
-        container.classList.remove(editingKlass);
-        container.querySelector(`.${textareaKlass}`).disabled = true;
-        textarea.value = textarea.dataset.latestValue || textarea.defaultValue;
-    }
-});
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        [].slice
-            .call(document.querySelectorAll(`.${editableContainerKlass}.${editingKlass}`))
-            .forEach((elem) => {
-                const textarea = elem.querySelector(`.${textareaKlass}`);
+//         container.classList.remove(editingKlass);
+//         container.querySelector(`.${textareaKlass}`).disabled = true;
+//         //textarea.value = textarea.dataset.latestValue || textarea.defaultValue;
+//     }
+// });
+// document.addEventListener('keydown', (e) => {
+//     if (e.key === 'Escape') {
+//         [].slice
+//             .call(document.querySelectorAll(`.${editableContainerKlass}.${editingKlass}`))
+//             .forEach((elem) => {
+//                 const textarea = elem.querySelector(`.${textareaKlass}`);
 
-                elem.classList.remove(editingKlass);
-                textarea.value = textarea.dataset.latestValue || textarea.defaultValue;
-            });
-    }
-});
+//                 elem.classList.remove(editingKlass);
+//                 textarea.value = textarea.dataset.latestValue || textarea.defaultValue;
+//             });
+//     }
+// });
