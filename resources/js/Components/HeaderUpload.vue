@@ -36,8 +36,8 @@
 <script>
 import axios from "axios";
 import SingleImageDropManager from "../frontend/components/SingleImageDropManager.js";
-import Notificator from "../frontend/components/Notificator.js";
-
+//import Notificator from "../frontend/components/Notificator.js";
+import { notify } from "@/util.js";
 export default {
     data: function () {
         return {
@@ -72,7 +72,7 @@ export default {
     },
     created() {
         this.dropManager = new SingleImageDropManager();
-        this.notificator = new Notificator();
+        //this.notificator = new Notificator();
 
         // fetch tags lazily from server
         // this.fetchTags(route("tags.get_tags"));
@@ -92,7 +92,7 @@ export default {
                 );
             }
         });
-        this.notificator.show(".js-invalid-drop-note");
+        //this.notificator.show(".js-invalid-drop-note");
 
         // This event is triggered by Upload.js to
         // pass files with allowed
@@ -101,6 +101,11 @@ export default {
         );
     },
     methods: {
+        /** This event is dispatched by axios when data is being
+         * sent to server. This event is responsible for matching
+         * the global progressbar and single file progress bars
+         * on /upload page
+         */
         dispatchUploadProgress(e, fileId, bytesSent) {
             console.log("bytes sent in dispatch: ", bytesSent);
             document.dispatchEvent(
@@ -114,6 +119,9 @@ export default {
                 })
             );
         },
+        /** Fetches all tags from servers
+         * Server returns 100 tags at one request
+         */
         fetchTags(url) {
             axios
                 .get(url)
@@ -132,10 +140,14 @@ export default {
                 })
                 .catch((err) => {
                     console.log(err);
+                    document.dispatchEvent(
+                        new CustomEvent("notify", {
+                            detail: {
+                                body: "Error fetching tags",
+                            },
+                        })
+                    );
                 });
-        },
-        passDataToUploadView(event) {
-            console.log("upload view created received");
         },
         handleFileDrop(e) {
             const isUploadDrop =
@@ -180,7 +192,7 @@ export default {
 
             // start uploading
             this.uploadFiles();
-
+            document.dispatchEvent(new CustomEvent());
             // show the upload details
             this.$inertia.get("/upload");
 
