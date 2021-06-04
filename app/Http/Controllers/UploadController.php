@@ -48,25 +48,27 @@ class UploadController extends Controller
     public function store(Request $request)
     {
 
-        $data = $request->validate([
-            'files.*.id' => 'exists:photos,id',
-            'files.*.title' => 'string',
-            'files.*.description' => 'string',
-            'files.*.tags' => 'exists:tags,id',
+        $files = $request->validate([
+            '*.token' => 'required|string',
+            '*.title' => 'required|string',
+            '*.size' => 'required|integer',
+
         ]);
+        // will save the file id as an array
+        // token will be used as key. From frontend
+        // we will use this token to match the correct
+        // photo id
+        $resp_data = [];
 
-        foreach ($data['files'] as $file) {
-            $photo = Photo::create([
-                'title' => $data['file']->getClientOriginalName(),
+        foreach ($files as $file) {
+            $id =  Photo::create([
+                'title' => $file['title'],
                 'user_id' => Auth::user()->id,
-                'should_process' => False,
-                'token' => $data['token'],
-            ]);
-
-            // updating tags
-            //$photo->tags->sync($file['tags']);
+                'size' => $file['size']
+            ])->id;
+            array_push($resp_data, ['token' => $file['token'], 'id' => $id]);
         }
-        return http_response_code(202);
+        return $resp_data;
     }
 
     public function update(Request $request)
