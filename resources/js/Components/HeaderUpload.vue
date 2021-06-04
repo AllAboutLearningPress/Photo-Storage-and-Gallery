@@ -36,7 +36,6 @@
 <script>
 import axios from "axios";
 import SingleImageDropManager from "../frontend/components/SingleImageDropManager.js";
-//import Notificator from "../frontend/components/Notificator.js";
 import { notify } from "@/util.js";
 export default {
     data: function () {
@@ -72,7 +71,6 @@ export default {
     },
     created() {
         this.dropManager = new SingleImageDropManager();
-        //this.notificator = new Notificator();
 
         // fetch tags lazily from server
         // this.fetchTags(route("tags.get_tags"));
@@ -92,7 +90,6 @@ export default {
                 );
             }
         });
-        //this.notificator.show(".js-invalid-drop-note");
 
         // This event is triggered by Upload.js to
         // pass files with allowed
@@ -140,13 +137,7 @@ export default {
                 })
                 .catch((err) => {
                     console.log(err);
-                    document.dispatchEvent(
-                        new CustomEvent("notify", {
-                            detail: {
-                                body: "Error fetching tags",
-                            },
-                        })
-                    );
+                    document.dispatchEvent(notify("Error Fetching Tags"));
                 });
         },
         handleFileDrop(e) {
@@ -166,6 +157,7 @@ export default {
             console.log("uploading");
             console.log("files available: ", filesArray.length);
 
+            // generating filesArray for handling user modification
             filesArray.forEach((file) => {
                 this.total += file.size;
                 this.filesArray.push({
@@ -179,8 +171,45 @@ export default {
                     privLoaded: 0,
                 });
             });
-            console.log("files array", this.filesArray);
 
+            // update global progress bar's total byte size
+            this.updateProgressTotal();
+
+            // start uploading
+            this.uploadFiles();
+
+            // go to upload details page where user can modify file details
+            this.$inertia.get("/upload");
+
+            // listen to upload-view-created event
+            // this event is raised by /upload page when its
+            // created. After this we can pass the filesArray
+            document.addEventListener(
+                "upload-view-created",
+                this.passFilesArray
+            );
+        },
+        passFilesArray() {
+            document.dispatchEvent(
+                new CustomEvent("uploading-files", {
+                    detail: {
+                        filesArray: this.filesArray,
+                        //tags: this.tags,
+                    },
+                })
+            );
+        },
+        /** Add all the file size to total */
+        calculateTotalBytes() {
+            this.total = 0;
+            this.filesArray.forEach((file) => {
+                this.total += file.file.size;
+            });
+        },
+        updateProgressTotal(total) {
+            // letting the UploadProgressBar know the total
+            // bytes to be sent. This is required to calculate
+            // the percentage of uploaded bytes
             document.dispatchEvent(
                 new CustomEvent("update-progress-total", {
                     detail: {
@@ -189,26 +218,7 @@ export default {
                     },
                 })
             );
-
-            // start uploading
-            this.uploadFiles();
-            document.dispatchEvent(new CustomEvent());
-            // show the upload details
-            this.$inertia.get("/upload");
-
-            // pass the files array to /upload page
-            document.addEventListener("upload-view-created", () => {
-                document.dispatchEvent(
-                    new CustomEvent("uploading-files", {
-                        detail: {
-                            filesArray: this.filesArray,
-                            //tags: this.tags,
-                        },
-                    })
-                );
-            });
         },
-
         /**
          * this will start 4 simultaneous file upload
          * After one upload is completed this fucntion will
@@ -239,7 +249,7 @@ export default {
                         }
                     }
                 });
-                console.log(this.filesArray);
+                notify("Upload Started");
             });
 
             // for (let i = 0; i < this.filesArray.length; i++) {
