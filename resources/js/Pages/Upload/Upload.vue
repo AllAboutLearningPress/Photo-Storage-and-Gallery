@@ -238,20 +238,20 @@ export default {
 
         // fetch tags lazily from server
         this.fetchTags(route("tags.get_tags"));
-        this.uploadingFiles = [
-            {
-                id: 0,
-                title: "test file",
-                tags: [],
-                //thumbnail_link: "http://placekitten.com/200/100",
-            },
-            {
-                id: 1,
-                title: "test file",
-                tags: [],
-                //thumbnail_link: "http://placekitten.com/200/100",
-            },
-        ];
+        // this.uploadingFiles = [
+        //     {
+        //         id: 0,
+        //         title: "test file",
+        //         tags: [],
+        //         //thumbnail_link: "http://placekitten.com/200/100",
+        //     },
+        //     {
+        //         id: 1,
+        //         title: "test file",
+        //         tags: [],
+        //         //thumbnail_link: "http://placekitten.com/200/100",
+        //     },
+        // ];
 
         // // for testing file uploaded event
         // setTimeout(() => {
@@ -293,6 +293,7 @@ export default {
     },
 
     methods: {
+        /**Function to process a focusout event */
         focusOut(e) {
             console.log(e);
             const actionEntitiesSelector = `.${this.textareaKlass}, .${this.confirmKlass}`;

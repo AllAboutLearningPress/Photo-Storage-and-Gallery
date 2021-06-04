@@ -37,21 +37,22 @@
 import axios from "axios";
 import SingleImageDropManager from "../frontend/components/SingleImageDropManager.js";
 import Notificator from "../frontend/components/Notificator.js";
+
 export default {
     data: function () {
         return {
             filesArray: [
-                {
-                    file: File,
-                    title: String,
-                    serverId: BigInt,
-                    hasDuplicate: false,
-                    tags: [],
-                    token: String, // this token will be used to uniquely identify this file
-                    id: BigInt,
-                    privLoaded: BigInt,
-                    notificator: null,
-                },
+                // {
+                //     file: File,
+                //     title: String,
+                //     serverId: BigInt,
+                //     hasDuplicate: false,
+                //     tags: [],
+                //     token: String, // this token will be used to uniquely identify this file
+                //     id: BigInt,
+                //     privLoaded: BigInt,
+                //     notificator: null,
+                // },
             ],
             tags: [],
             maxUploadCount: 4,
@@ -91,7 +92,7 @@ export default {
                 );
             }
         });
-        // this.notificator.show(".js-invalid-drop-note");
+        this.notificator.show(".js-invalid-drop-note");
 
         // This event is triggered by Upload.js to
         // pass files with allowed
@@ -152,10 +153,10 @@ export default {
         handleUpload(filesArray) {
             console.log("uploading");
             console.log("files available: ", filesArray.length);
-            let fileCount = this.filesArray.length - 1;
+
             filesArray.forEach((file) => {
-                this.total = this.total + file.size;
-                this.filesArray[this.fileCount] = {
+                this.total += file.size;
+                this.filesArray.push({
                     file: file,
                     title: file.name,
                     serverId: null,
@@ -164,9 +165,9 @@ export default {
                     token: this.randHexToken(128),
                     id: this.fileIndex,
                     privLoaded: 0,
-                };
+                });
             });
-            this.fileIndex++;
+            console.log("files array", this.filesArray);
 
             document.dispatchEvent(
                 new CustomEvent("update-progress-total", {
@@ -205,12 +206,21 @@ export default {
         uploadFiles() {
             console.log("upload started");
             console.log(this.filesArray.length);
-            for (let i = 0; i < this.filesArray.length; i++) {
-                //if (this.filesArray[i].isUploading == false) {
-                this.uploadSingleFile(i);
-                //    break;
-                //}
-            }
+            let requestPhotos = [];
+            this.filesArray.forEach((file) => {
+                requestPhotos.push({
+                    token: file.token,
+                    title: file.file.name,
+                    size: file.file.size,
+                });
+            });
+            console.log(requestPhotos);
+            // for (let i = 0; i < this.filesArray.length; i++) {
+            //     //if (this.filesArray[i].isUploading == false) {
+            //     this.uploadSingleFile(i);
+            //     //    break;
+            //     //}
+            // }
 
             // while (
             //     this.uploadCount < this.maxUploadCount &&
