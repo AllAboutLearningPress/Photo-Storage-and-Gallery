@@ -232,7 +232,9 @@ export default {
         this.rmlisteners.push(
             addEventListener(document, "uploading-files", this.showUploads)
         );
-        this.rmlisteners.push(document, "file-uploaded", this.fileUploaded);
+        this.rmlisteners.push(
+            addEventListener(document, "file-uploaded", this.fileUploaded)
+        );
 
         // fetch tags lazily from server
         this.fetchTags(route("tags.get_tags"));
@@ -279,26 +281,29 @@ export default {
     mounted() {
         // event listener for updating individual progress bar
         this.rmlisteners.push(
-            document,
-            "update-progress-bar",
-            this.animateUploadBar
+            addEventListener(
+                document,
+                "update-progress-bar",
+                this.animateUploadBar
+            )
         );
         this.rmlisteners.push(
-            addEventListener(document, "focusout", (e) => {
-                console.log(e);
-                const actionEntitiesSelector = `.${this.textareaKlass}, .${this.confirmKlass}`;
-                let container = document.querySelector(`.${this.editingKlass}`);
-                if (e.target.matches(actionEntitiesSelector) && container) {
-                    let textarea = container.querySelector("textarea");
-
-                    textarea.disabled = true;
-                    container.classList.remove(this.editingKlass);
-                }
-            })
+            addEventListener(document, "focusout", this.focusOut)
         );
     },
 
     methods: {
+        focusOut(e) {
+            console.log(e);
+            const actionEntitiesSelector = `.${this.textareaKlass}, .${this.confirmKlass}`;
+            let container = document.querySelector(`.${this.editingKlass}`);
+            if (e.target.matches(actionEntitiesSelector) && container) {
+                let textarea = container.querySelector("textarea");
+
+                textarea.disabled = true;
+                container.classList.remove(this.editingKlass);
+            }
+        },
         editTitle(e, id) {
             e.preventDefault();
             let textarea = document.getElementById("title" + id);
@@ -462,6 +467,7 @@ export default {
     },
     beforeUnmount() {
         // removing the event listener for this page
+        console.log(this.rmlisteners);
         this.rmlisteners.forEach((func) => func());
     },
 };

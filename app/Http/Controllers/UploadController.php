@@ -39,33 +39,62 @@ class UploadController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
+     * This function will be used to store the initial data
+     * when a user selects a file. This entry will be updated
+     * When the actual file is sent.
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        // 'required|mimes:jpg,jpeg,png,zip,psd|max:2048';
+
         $data = $request->validate([
             'files.*.id' => 'exists:photos,id',
-            'files.*.name' => 'string',
+            'files.*.title' => 'string',
             'files.*.description' => 'string',
             'files.*.tags' => 'exists:tags,id',
         ]);
 
         foreach ($data['files'] as $file) {
-            $photo = Photo::find($file['id']);
-
-            $photo->update([
-                'name' => $file['name'],
-                'description' => $file['description'] ? $file['description'] : null,
-                'should_process' => true
+            $photo = Photo::create([
+                'title' => $data['file']->getClientOriginalName(),
+                'user_id' => Auth::user()->id,
+                'should_process' => False,
+                'token' => $data['token'],
             ]);
 
             // updating tags
-            $photo->tags->sync($file['tags']);
+            //$photo->tags->sync($file['tags']);
         }
         return http_response_code(202);
+    }
+
+    public function update(Request $request)
+    {
+        $data = $request->validate([
+            'token' => 'required|string',
+            'title' => 'string',
+            'description' => 'string',
+            'tags' => 'exists:tags,id'
+        ]);
+        $photo = Photo::where('token', '=', $data['token'])->get();
+        if (!$photo) {
+            // if photo doesn't exist then we should create the photo
+            $photo = Photo::create([
+                'token' => $data['token'],
+                'title' => $data['title'] ? $data['title'] : ''
+            ]);
+        }
+        // if tags are supplied then we sync it with pivot table
+        if (array_key_exists('tags', $data)) {
+            $photo->tags->sync($data['tags']);
+            // removing tags from $data array for updating $photo
+            unset($data['tags']);
+        }
+        // we dont want to update token. So removing it from array
+        unset($data['token']);
+
+        $photo->update($data);
     }
 
     /**
@@ -88,8 +117,8 @@ class UploadController extends Controller
         $fileName = bin2hex(random_bytes(32)) . '.' . $data['file']->getClientOriginalExtension(); //
         $imgsize = getimagesize($data['file']->getPathName());
         $data['file']->storeAs("full_size/", $fileName, 'local');
-        // adding the photo entry
-        $photoId = Photo::create([
+        // updating the photo entry
+        Photo::where('token', '=', $data['token'])->update([
             'title' => $data['file']->getClientOriginalName(),
             'file_name' => $fileName,
             'size' => $data['file']->getSize(),
@@ -99,7 +128,9 @@ class UploadController extends Controller
             'user_id' => Auth::user()->id,
             'should_process' => False,
             'token' => $data['token'],
-        ])->id;
+        ]);
+
+
         // $credentials = new Credentials(config('services.ses.key'), config('services.ses.secret'));
         // $client = new LambdaClient(array(
         //     'credentials' => $credentials,
@@ -118,6 +149,6 @@ class UploadController extends Controller
         //     //'Qualifier' => 'string',
         // ));
         // dd($result['Payload']->getContents());
-        return $photoId;
+        return http_response_code(204);
     }
 }
