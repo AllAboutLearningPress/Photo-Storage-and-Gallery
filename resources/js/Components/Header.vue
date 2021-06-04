@@ -10,7 +10,9 @@
             >
                 <span class="visually-hidden">Open menu</span>
             </button>
-            <a class="logo btn-lg btn" href="#">Photos</a>
+            <inertia-link class="logo btn-lg btn" :href="route('home')"
+                >Photos</inertia-link
+            >
         </div>
         <header-search></header-search>
         <header-upload></header-upload>

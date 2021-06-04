@@ -163,7 +163,7 @@ export default {
                     tags: [],
                     hasDuplicate: false,
                     token: this.randHexToken(128),
-                    id: this.fileIndex,
+                    id: null,
                     privLoaded: 0,
                 });
             });
@@ -205,7 +205,7 @@ export default {
          */
         uploadFiles() {
             console.log("upload started");
-            console.log(this.filesArray.length);
+
             let requestPhotos = [];
             this.filesArray.forEach((file) => {
                 requestPhotos.push({
@@ -214,7 +214,22 @@ export default {
                     size: file.file.size,
                 });
             });
-            console.log(requestPhotos);
+            // sending reqeust to server to create the rows for photos
+            // we will use the server returned id for additional requests
+            axios.post(route("uploads.store"), requestPhotos).then((resp) => {
+                console.log(resp.data);
+                resp.data.forEach((photo) => {
+                    for (let i = 0; i < this.filesArray.length; i++) {
+                        if (this.filesArray[i].token == photo.token) {
+                            // realted file found
+                            // adding the photo id returned by server
+                            this.filesArray[i].id = photo.id;
+                        }
+                    }
+                });
+                console.log(this.filesArray);
+            });
+
             // for (let i = 0; i < this.filesArray.length; i++) {
             //     //if (this.filesArray[i].isUploading == false) {
             //     this.uploadSingleFile(i);
