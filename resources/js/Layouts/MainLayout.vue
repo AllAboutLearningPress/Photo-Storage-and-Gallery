@@ -120,17 +120,15 @@ export default {
     },
     data() {
         return {
-            total: ref(4),
+            total: ref(0),
             filesArray: ref([]),
         };
     },
     created() {
-        // provider("total", this.total);
-        setInterval(() => {
-            //.log("total in main: ", this.total);
-            console.log(this.filesArray);
-            this.total++;
-        }, 5000);
+        //     setInterval(() => {
+        //         console.log(this.filesArray);
+        //         this.total++;
+        //     }, 5000);
     },
     provide() {
         return {

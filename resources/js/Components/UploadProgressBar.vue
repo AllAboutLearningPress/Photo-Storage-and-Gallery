@@ -19,26 +19,23 @@
     </inertia-link>
 </template>
 <script>
+import { inject } from "@vue/runtime-core";
 export default {
+    setup() {
+        const total = inject("total");
+        return { total };
+    },
     data: () => {
         return {
             progressValue: 0,
-            uploadBar: null,
-            start: null,
-            total: 0,
             loaded: 0,
             fileCount: 0,
             remaining: "1h 23m",
         };
     },
     created() {
-        //console.log("created progress bar");
-        document.addEventListener(
-            "update-progress-total",
-            this.updateProgressTotal
-        );
-
         // This event is dispatched periodically by HeaderUpload
+        // bytes are sent for individual file
         document.addEventListener("update-progress-bar", this.updateUploadBar);
     },
 
