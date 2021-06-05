@@ -110,17 +110,17 @@ class UploadController extends Controller
 
         $data = $request->validate([
             'file' => 'required|mimes:jpg,jpeg,png,zip,psd',
-            'token' => 'required|string',
-            'name' => 'string'
+            'id' => 'required|exists:photos,id',
+
         ]);
-        // generating a random string and getting the first 8 characters of the random
-        // hex string. then adding an underscore to the file name. also all spaces are
-        // removed from filename
+        // generating a random filename for photo
         $fileName = bin2hex(random_bytes(32)) . '.' . $data['file']->getClientOriginalExtension(); //
         $imgsize = getimagesize($data['file']->getPathName());
         $data['file']->storeAs("full_size/", $fileName, 'local');
+
         // updating the photo entry
-        Photo::where('token', '=', $data['token'])->update([
+
+        Photo::where("id", $data['id'])->update([
             'title' => $data['file']->getClientOriginalName(),
             'file_name' => $fileName,
             'size' => $data['file']->getSize(),
@@ -129,7 +129,7 @@ class UploadController extends Controller
             'file_type' => $data['file']->getClientMimeType(),
             'user_id' => Auth::user()->id,
             'should_process' => False,
-            'token' => $data['token'],
+
         ]);
 
 

@@ -150,6 +150,7 @@ export default {
                     document.dispatchEvent(notify("Error Fetching Tags"));
                 });
         },
+        /**Handles single file drop event */
         handleFileDrop(e) {
             const isUploadDrop =
                 !this.dropManager.isInited ||
@@ -179,35 +180,15 @@ export default {
                     token: this.randHexToken(128),
                     id: null,
                     privLoaded: 0,
+                    isUploading: false,
                 });
             });
-            //this.pushToFilesArray(this.filesArray);
-            // update global progress bar's total byte size
-            this.updateProgressTotal();
 
             // start uploading
             this.uploadFiles();
 
             // go to upload details page where user can modify file details
             this.$inertia.get("/upload");
-
-            // listen to upload-view-created event
-            // this event is raised by /upload page when its
-            // created. After this we can pass the filesArray
-            //     document.addEventListener(
-            //         "upload-view-created",
-            //         this.passFilesArray
-            //     );
-        },
-        passFilesArray() {
-            document.dispatchEvent(
-                new CustomEvent("uploading-files", {
-                    detail: {
-                        filesArray: this.filesArray,
-                        //tags: this.tags,
-                    },
-                })
-            );
         },
         /** Add all the file size to total */
         calculateTotalBytes() {
@@ -215,19 +196,6 @@ export default {
             this.filesArray.forEach((file) => {
                 this.total += file.file.size;
             });
-        },
-        updateProgressTotal(total) {
-            // letting the UploadProgressBar know the total
-            // bytes to be sent. This is required to calculate
-            // the percentage of uploaded bytes
-            document.dispatchEvent(
-                new CustomEvent("update-progress-total", {
-                    detail: {
-                        total: this.total,
-                        fileCount: this.filesArray.length,
-                    },
-                })
-            );
         },
         /**
          * this will start 4 simultaneous file upload
@@ -248,26 +216,31 @@ export default {
             });
             // sending reqeust to server to create the rows for photos
             // we will use the server returned id for additional requests
-            axios.post(route("uploads.store"), requestPhotos).then((resp) => {
-                console.log(resp.data);
-                resp.data.forEach((photo) => {
-                    for (let i = 0; i < this.filesArray.length; i++) {
-                        if (this.filesArray[i].token == photo.token) {
-                            // realted file found
-                            // adding the photo id returned by server
-                            this.filesArray[i].id = photo.id;
+            axios
+                .post(route("uploads.store"), requestPhotos)
+                .then((resp) => {
+                    console.log(resp.data);
+                    resp.data.forEach((photo) => {
+                        for (let i = 0; i < this.filesArray.length; i++) {
+                            if (this.filesArray[i].token == photo.token) {
+                                // realted file found
+                                // adding the photo id returned by server
+                                this.filesArray[i].id = photo.id;
+                            }
                         }
+                    });
+                    notify("Upload Started");
+                    for (let i = 0; i < this.filesArray.length; i++) {
+                        //if (this.filesArray[i].isUploading == false) {
+                        this.uploadSingleFile(i);
+                        //    break;
+                        //}
                     }
+                })
+                .catch((err) => {
+                    console.log(err);
+                    notify("Upload Failed");
                 });
-                notify("Upload Started");
-            });
-
-            // for (let i = 0; i < this.filesArray.length; i++) {
-            //     //if (this.filesArray[i].isUploading == false) {
-            //     this.uploadSingleFile(i);
-            //     //    break;
-            //     //}
-            // }
 
             // while (
             //     this.uploadCount < this.maxUploadCount &&
@@ -302,7 +275,7 @@ export default {
 
             const formData = new FormData();
             formData.append("file", this.filesArray[filePostion].file);
-            formData.append("token", this.filesArray[filePostion].token);
+            formData.append("id", this.filesArray[filePostion].id);
 
             // setting a cancel token for this upload
             // This will be used to cancel a file upload
