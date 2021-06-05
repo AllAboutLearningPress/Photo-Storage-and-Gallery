@@ -37,22 +37,32 @@
 import axios from "axios";
 import SingleImageDropManager from "../frontend/components/SingleImageDropManager.js";
 import { notify } from "@/util.js";
+import { inject } from "@vue/runtime-core";
 export default {
+    // inject: ["filesArray", "pushToFilesArray"],
+    setup() {
+        const pushToFilesArray = inject("pushToFilesArray");
+        const filesArray = inject("filesArray");
+        return {
+            pushToFilesArray,
+            filesArray,
+        };
+    },
     data: function () {
         return {
-            filesArray: [
-                // {
-                //     file: File,
-                //     title: String,
-                //     serverId: BigInt,
-                //     hasDuplicate: false,
-                //     tags: [],
-                //     token: String, // this token will be used to uniquely identify this file
-                //     id: BigInt,
-                //     privLoaded: BigInt,
-                //     notificator: null,
-                // },
-            ],
+            // filesArray: [
+            //     // {
+            //     //     file: File,
+            //     //     title: String,
+            //     //     serverId: BigInt,
+            //     //     hasDuplicate: false,
+            //     //     tags: [],
+            //     //     token: String, // this token will be used to uniquely identify this file
+            //     //     id: BigInt,
+            //     //     privLoaded: BigInt,
+            //     //     notificator: null,
+            //     // },
+            // ],
             tags: [],
             maxUploadCount: 4,
             uploadCount: 0,
@@ -160,7 +170,7 @@ export default {
             // generating filesArray for handling user modification
             filesArray.forEach((file) => {
                 this.total += file.size;
-                this.filesArray.push({
+                this.pushToFilesArray({
                     file: file,
                     title: file.name,
                     serverId: null,
@@ -171,7 +181,7 @@ export default {
                     privLoaded: 0,
                 });
             });
-
+            //this.pushToFilesArray(this.filesArray);
             // update global progress bar's total byte size
             this.updateProgressTotal();
 
@@ -184,10 +194,10 @@ export default {
             // listen to upload-view-created event
             // this event is raised by /upload page when its
             // created. After this we can pass the filesArray
-            document.addEventListener(
-                "upload-view-created",
-                this.passFilesArray
-            );
+            //     document.addEventListener(
+            //         "upload-view-created",
+            //         this.passFilesArray
+            //     );
         },
         passFilesArray() {
             document.dispatchEvent(
@@ -289,6 +299,7 @@ export default {
             // marking it as uploading so it wont be
             // picked up again for uploading
             this.filesArray[filePostion].isUploading = true;
+
             const formData = new FormData();
             formData.append("file", this.filesArray[filePostion].file);
             formData.append("token", this.filesArray[filePostion].token);
@@ -319,10 +330,6 @@ export default {
                     console.log(response);
                     this.uploadCount--;
 
-                    // server returns the stored file id
-                    this.filesArray[filePostion].serverId = response.data;
-                    console.log(this.filesArray);
-
                     // dispatching event for /upload page
                     // If the upload details page is open
                     // then it will use this data to process
@@ -347,26 +354,16 @@ export default {
                         this.uploadSingleFile(filePostion, (retry = true));
                     } else {
                         // Show error notification to user
+                        notify(
+                            "Upload Failed: ",
+                            this.filesArray[filePostion].title
+                        );
                         console.error(
                             "File upload failed. File name: ",
-                            this.filesArray[filePostion].name
+                            this.filesArray[filePostion].title
                         );
                     }
                 });
-        },
-
-        /**
-         * Get called when user clicks cross button on file list
-         * Removes the file with provided name
-         * @property {string} name - The name of the file to remove
-         */
-        removeFile(name) {
-            for (let i = 0; i < this.filesArray.length; i++) {
-                if (this.filesArray[i].name == name) {
-                    console.log(this.filesArray[i]);
-                    this.filesArray.splice(i, 1);
-                }
-            }
         },
 
         /**

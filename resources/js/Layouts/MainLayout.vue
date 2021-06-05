@@ -109,6 +109,7 @@ import Sidebar from "@/Components/Sidebar.vue";
 //import GlobalDropTarget from "../frontend/components/GlobalDropTarget.js";
 import UploadProgressBar from "../Components/UploadProgressBar.vue";
 import Notificator from "../Components/Notificator.vue";
+import { inject, ref } from "@vue/runtime-core";
 
 export default {
     components: {
@@ -116,6 +117,33 @@ export default {
         Sidebar,
         UploadProgressBar,
         Notificator,
+    },
+    data() {
+        return {
+            total: ref(4),
+            filesArray: ref([]),
+        };
+    },
+    created() {
+        // provider("total", this.total);
+        setInterval(() => {
+            //.log("total in main: ", this.total);
+            console.log(this.filesArray);
+            this.total++;
+        }, 5000);
+    },
+    provide() {
+        return {
+            total: this.total,
+            filesArray: this.filesArray,
+            pushToFilesArray: this.pushToFilesArray,
+        };
+    },
+    methods: {
+        pushToFilesArray(files) {
+            console.log("pushing to files");
+            this.filesArray.push(files);
+        },
     },
 };
 </script>
