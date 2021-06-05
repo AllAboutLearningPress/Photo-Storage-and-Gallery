@@ -70,7 +70,7 @@ export default {
             currentRoute: route().current(),
         };
     },
-    mounted: () => {
+    mounted() {
         document.addEventListener("click", (e) => {
             const toggler = e.target.closest(".js-sidebar-toggle");
 

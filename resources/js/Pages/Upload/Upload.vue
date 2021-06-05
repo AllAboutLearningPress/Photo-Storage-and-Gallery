@@ -1,9 +1,9 @@
 <template>
     <div>
         <!-- <upload-toolbar></upload-toolbar> -->
-        <h2 v-if="uploadingFiles.len" class="fw-light mb-5">
-            Uploading {{ uploadingFiles.len }} pictures, please take a moment to
-            add details, or keep using a site
+        <h2 v-if="filesArray.len" class="fw-light mb-5">
+            Uploading {{ filesArray.len }} pictures, please take a moment to add
+            details, or keep using a site
             <button
                 v-on:click="cancelUpload"
                 type="button"
@@ -15,7 +15,7 @@
         <div class="upload-manager">
             <ul class="mb-5 upload-manager__files file-list nolist">
                 <li
-                    v-for="file in uploadingFiles"
+                    v-for="file in filesArray"
                     :key="file.id"
                     class="file-list__item"
                 >
@@ -210,12 +210,21 @@
 import MainLayout from "@/Layouts/MainLayout.vue";
 import UploadToolbar from "./Components/UploadToolbar.vue";
 import { addEventListener } from "@/frontend/util/utils.js";
+import { inject } from "@vue/runtime-core";
 export default {
     components: { UploadToolbar },
     layout: MainLayout,
+    setup() {
+        const pushToFilesArray = inject("pushToFilesArray");
+        const filesArray = inject("filesArray");
+        return {
+            pushToFilesArray,
+            filesArray,
+        };
+    },
     data() {
         return {
-            uploadingFiles: [],
+            // filesArray: [],
             tags: [],
             spinner: "/images/spinner.svg",
             rmlisteners: [],
@@ -238,7 +247,7 @@ export default {
 
         // fetch tags lazily from server
         this.fetchTags(route("tags.get_tags"));
-        // this.uploadingFiles = [
+        // this.filesArray = [
         //     {
         //         id: 0,
         //         title: "test file",
@@ -367,7 +376,7 @@ export default {
         },
         showUploads(e) {
             console.log("received");
-            this.uploadingFiles = e.detail.filesArray;
+            this.filesArray = e.detail.filesArray;
         },
 
         /**
@@ -390,17 +399,17 @@ export default {
                     tagId = tagOption.getAttribute("data-id");
                 }
 
-                // adding the tag to the uploadingFiles Array
+                // adding the tag to the filesArray Array
                 // its a O(n) solution.
-                for (let k = 0; k < this.uploadingFiles.length; k++) {
-                    if (this.uploadingFiles[k].id == fileId) {
+                for (let k = 0; k < this.filesArray.length; k++) {
+                    if (this.filesArray[k].id == fileId) {
                         for (
                             let i = 0;
-                            i < this.uploadingFiles[k].tags.length;
+                            i < this.filesArray[k].tags.length;
                             i++
                         ) {
                             if (
-                                this.uploadingFiles[k].tags[i].name ==
+                                this.filesArray[k].tags[i].name ==
                                 tagInput.value
                             ) {
                                 // user already added this tag once
@@ -409,26 +418,26 @@ export default {
                         }
 
                         // adding new tag to the image
-                        this.uploadingFiles[k].tags.push({
+                        this.filesArray[k].tags.push({
                             name: tagInput.value,
                             id: tagId,
                         });
-                        console.log(this.uploadingFiles[k].tags);
+                        console.log(this.filesArray[k].tags);
                         break;
                     }
                 }
             }
         },
         /** Removes tag from uploading image
-        @param {Int} tagIndex - The index of tag in the this.uploadingFiles[i].tags
+        @param {Int} tagIndex - The index of tag in the this.filesArray[i].tags
         @param {Int} fileId - the if of the file that the tag is assigned to. this id is local
         @returns {null}
         */
         removeTag(tagIndex, fileId) {
-            for (let i = 0; i < this.uploadingFiles.length; i++) {
-                if (this.uploadingFiles[i].id == fileId) {
-                    console.log(this.uploadingFiles[i]);
-                    this.uploadingFiles[i].tags.splice(tagIndex, 1);
+            for (let i = 0; i < this.filesArray.length; i++) {
+                if (this.filesArray[i].id == fileId) {
+                    console.log(this.filesArray[i]);
+                    this.filesArray[i].tags.splice(tagIndex, 1);
                 }
             }
         },
@@ -442,11 +451,10 @@ export default {
         // Will listen for that event to update data in
         // This page
         fileUploaded(e) {
-            for (let i = 0; i < this.uploadingFiles.length; i++) {
-                if (this.uploadingFiles[i].id == e.detail.id) {
-                    this.uploadingFiles[i].serverId = e.detail.serverId;
-                    this.uploadingFiles[i].thumbnail_link =
-                        e.detail.thumbnail_link;
+            for (let i = 0; i < this.filesArray.length; i++) {
+                if (this.filesArray[i].id == e.detail.id) {
+                    this.filesArray[i].serverId = e.detail.serverId;
+                    this.filesArray[i].thumbnail_link = e.detail.thumbnail_link;
                 }
             }
         },
@@ -456,10 +464,10 @@ export default {
         },
         /**Function for updating individual progressbar */
         updateUploadBar(e) {
-            for (let i = 0; i < this.uploadingFiles.length; i++) {
-                if (this.uploadingFiles[i].id == e.detail.fileId) {
+            for (let i = 0; i < this.filesArray.length; i++) {
+                if (this.filesArray[i].id == e.detail.fileId) {
                     console.log("file found in uploading files");
-                    this.uploadingFiles[i].width =
+                    this.filesArray[i].width =
                         (e.detail.loaded / e.detail.total) * 100 + "%";
                     break;
                 }

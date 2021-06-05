@@ -1,5 +1,9 @@
 <template>
-    <inertia-link v-if="total" href="#" class="js-upload-bar upload-bar">
+    <inertia-link
+        v-if="total"
+        :href="route('uploads.index')"
+        class="js-upload-bar upload-bar"
+    >
         Uploading {{ fileCount }} photos ({{ remaining }} remaining)
         <div class="upload-bar__progress progress">
             <div
