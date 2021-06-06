@@ -11327,6 +11327,7 @@ input[type=time] {
   padding: 1rem 0.5rem;
   text-align: right;
   min-height: 74px;
+  flex-shrink: 0;
 }
 @media (min-width: 768px) {
   .sidebar__head {

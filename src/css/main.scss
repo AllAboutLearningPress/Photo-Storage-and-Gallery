@@ -471,6 +471,8 @@ $sidebar-animation-duration: 0.2s;
   text-align: right;
   min-height: $header-height;
 
+  flex-shrink: 0;
+
   @include media-breakpoint-up(md) {
     min-height: 0;
     padding-top: 0;
