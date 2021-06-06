@@ -16,6 +16,19 @@ class Photo extends Model
         'file_type', 'file_name', 'should_process',
         'token'
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+        static::deleting(function ($photo) {
+            // deleting pivot table tag entries before the photo is deleted
+            $photo->tags()->detach();
+            // add code to delete the file
+            // add code to remove download links
+
+        });
+    }
+
     /**
      * The tags that belong to this photo
      */

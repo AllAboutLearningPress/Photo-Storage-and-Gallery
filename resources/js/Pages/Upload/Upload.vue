@@ -43,6 +43,7 @@
                             </div>
 
                             <button
+                                v-on:click="removeFile($event, file.id)"
                                 title="Remove file"
                                 type="button"
                                 class="js-file__delete file__delete btn-close btn-lg"
@@ -223,6 +224,7 @@ import MainLayout from "@/Layouts/MainLayout.vue";
 import UploadToolbar from "./Components/UploadToolbar.vue";
 import { addEventListener } from "@/frontend/util/utils.js";
 import { inject } from "@vue/runtime-core";
+import axios from "axios";
 export default {
     components: { UploadToolbar },
     layout: MainLayout,
@@ -435,6 +437,21 @@ export default {
         //         }
         //     }
         // },
+        removeFile(e, fileId) {
+            for (let i = 0; i < this.filesArray.length; i++) {
+                if (this.filesArray[i].id == fileId) {
+                    // file found
+                    this.filesArray[i].cancelToken.cancel();
+                    // let user know that this file is cancelled
+                    notify("Upload cancelled: " + this.filesArray[i].title);
+                    axios.post("uploads.cancel_upload", {
+                        id: this.filesArray[i].id,
+                    });
+                    // removing the entry from filesArray.
+                    this.filesArray.splice(i, 1);
+                }
+            }
+        },
     },
     beforeUnmount() {
         // removing the event listener for this page

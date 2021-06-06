@@ -191,6 +191,7 @@ export default {
                     isUploading: false,
                     width: "0%",
                     uploadCompleted: false,
+                    cancelToken: null,
                 });
             });
             console.log(this.updateTotal(total));
@@ -290,13 +291,14 @@ export default {
 
             // setting a cancel token for this upload
             // This will be used to cancel a file upload
-            this.cancelTokens[fileId] = axios.CancelToken.source();
-            console.log(this.cancelTokens);
+            this.filesArray[
+                filePostion
+            ].cancelToken = axios.CancelToken.source();
 
             // uploading the file
             axios
                 .post(route("uploads.store_file"), formData, {
-                    cancelToken: this.cancelTokens[fileId].token,
+                    cancelToken: this.filesArray[filePostion].cancelToken.token,
                     onUploadProgress: (e) => {
                         // console.log(
                         //     "priv loaded: ",
