@@ -35,14 +35,19 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post("/load-more", [IndexController::class, 'load_more'])->name('index.load_more');
 
     /* Routes related to uploading files */
+    Route::prefix('upload')->name("uploads")->group(function () {
+        Route::get("/", [UploadController::class, 'index'])->name('index');
+        Route::post("store", [UploadController::class, 'store'])->name('store');
+        Route::post("store-file", [UploadController::class, 'store_file'])->name('store_file');
+        Route::post("cancel-upload", [UploadController::class, 'cancel_upload'])->name('cancel_upload');
+        Route::post("add-tag", [UploadController::class, 'addTag'])->name('add_tag');
+    });
 
-    Route::get("/upload", [UploadController::class, 'index'])->name('uploads.index');
-    Route::post("/store", [UploadController::class, 'store'])->name('uploads.store');
-    Route::post("/store-file", [UploadController::class, 'store_file'])->name('uploads.store_file');
 
     /* Routes related to photos */
     Route::get("/photo/{name}", [PhotoController::class, 'show'])->name('photos.show');
     Route::get("/trash", [PhotoController::class, 'trash'])->name('trash');
+
 
     /* Routes related to tags */
     Route::get("/tags/search-by-partial")->name('tags.search_partial');
@@ -50,7 +55,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::resource('tags', TagController::class);
 
 
-    Route::get("/dashboard", function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+
+    // Route::get("/dashboard", function () {
+    //     return Inertia::render('Dashboard');
+    // })->name('dashboard');
 });

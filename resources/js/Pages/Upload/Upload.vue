@@ -404,6 +404,9 @@ export default {
                 }
             }
         },
+        saveTag(fileId, tagId){
+            axios.post()
+        }
         /** Removes tag from uploading image
         @param {Int} tagIndex - The index of tag in the this.filesArray[i].tags
         @param {Int} fileId - the if of the file that the tag is assigned to. this id is local
@@ -442,13 +445,25 @@ export default {
                 if (this.filesArray[i].id == fileId) {
                     // file found
                     this.filesArray[i].cancelToken.cancel();
-                    // let user know that this file is cancelled
-                    notify("Upload cancelled: " + this.filesArray[i].title);
-                    axios.post("uploads.cancel_upload", {
-                        id: this.filesArray[i].id,
-                    });
+
+                    axios
+                        .post(route("uploads.cancel_upload"), [
+                            {
+                                id: this.filesArray[i].id,
+                            },
+                        ])
+                        .then((resp) => {
+                            // let user know that this file is cancelled
+                            notify(
+                                "Upload cancelled: " + this.filesArray[i].title
+                            );
+                        })
+                        .catch((err) => {
+                            console.error(err);
+                        });
+
                     // removing the entry from filesArray.
-                    this.filesArray.splice(i, 1);
+                    //this.filesArray.splice(i, 1);
                 }
             }
         },
