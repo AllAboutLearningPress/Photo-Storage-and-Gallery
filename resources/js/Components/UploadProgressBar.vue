@@ -10,8 +10,7 @@
                 class="progress-bar"
                 role="progressbar"
                 id="master-progress-bar"
-                :style="'width: ' + progressValue"
-                :aria-valuenow="progressValue"
+                :style="'width: ' + calculateProgressWidth"
                 aria-valuemin="0"
                 aria-valuemax="100"
             ></div>
@@ -20,10 +19,19 @@
 </template>
 <script>
 import { inject } from "@vue/runtime-core";
+//:aria-valuenow="progressValue"
 export default {
     setup() {
+        const pushToFilesArray = inject("pushToFilesArray");
+        const filesArray = inject("filesArray");
         const total = inject("total");
-        return { total };
+        const updateTotal = inject("updateTotal");
+        return {
+            pushToFilesArray,
+            filesArray,
+            total,
+            updateTotal,
+        };
     },
     data: () => {
         return {
@@ -33,10 +41,22 @@ export default {
             remaining: "1h 23m",
         };
     },
-    created() {
+    mounted() {
         // This event is dispatched periodically by HeaderUpload
         // bytes are sent for individual file
-        document.addEventListener("update-progress-bar", this.updateUploadBar);
+        // document.addEventListener("update-progress-bar", this.updateUploadBar);
+        // setInterval(() => {
+        //     console.log("total in progress bar ", this.total);
+        // }, 1500);
+    },
+    computed: {
+        calculateProgressWidth() {
+            let loaded = 0;
+            for (let i = 0; i < this.filesArray.length; i++) {
+                loaded += this.filesArray[i].loaded;
+            }
+            return loaded;
+        },
     },
 
     methods: {

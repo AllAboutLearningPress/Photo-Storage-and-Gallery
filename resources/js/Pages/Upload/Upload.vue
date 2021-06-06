@@ -30,6 +30,7 @@
                                 class="file__pic"
                             >
                                 <svg
+                                    v-if="file.total == file.priv_loaded"
                                     xmlns="http://www.w3.org/2000/svg"
                                     class="file__pic__tick bi bi-check"
                                     fill="currentColor"
@@ -215,19 +216,7 @@
         </datalist>
     </div>
 </template>
-<style scoped>
-.file__picc {
-    width: 200px;
-    max-width: 100%;
-    /* padding-top: 100%; */
-    height: 200px;
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    border: 1px solid #424242;
-    border-radius: 0.25rem;
-}
-</style>
+
 
 <script>
 import MainLayout from "@/Layouts/MainLayout.vue";
@@ -270,20 +259,20 @@ export default {
 
         // fetch tags lazily from server
         this.fetchTags(route("tags.get_tags"));
-        this.filesArray.push(
-            {
-                id: 0,
-                title: "test file",
-                tags: [],
-                //thumbnail_link: "http://placekitten.com/200/100",
-            },
-            {
-                id: 1,
-                title: "test file",
-                tags: [],
-                //thumbnail_link: "http://placekitten.com/200/100",
-            }
-        );
+        // this.filesArray.push(
+        //     {
+        //         id: 0,
+        //         title: "test file",
+        //         tags: [],
+        //         //thumbnail_link: "http://placekitten.com/200/100",
+        //     },
+        //     {
+        //         id: 1,
+        //         title: "test file",
+        //         tags: [],
+        //         //thumbnail_link: "http://placekitten.com/200/100",
+        //     }
+        // );
 
         // // for testing file uploaded event
         // setTimeout(() => {
@@ -486,16 +475,16 @@ export default {
             window.requestAnimationFrame(() => this.updateUploadBar(e));
         },
         /**Function for updating individual progressbar */
-        updateUploadBar(e) {
-            for (let i = 0; i < this.filesArray.length; i++) {
-                if (this.filesArray[i].id == e.detail.fileId) {
-                    console.log("file found in uploading files");
-                    this.filesArray[i].width =
-                        (e.detail.loaded / e.detail.total) * 100 + "%";
-                    break;
-                }
-            }
-        },
+        // updateUploadBar(e) {
+        //     for (let i = 0; i < this.filesArray.length; i++) {
+        //         if (this.filesArray[i].id == e.detail.fileId) {
+        //             console.log("file found in uploading files");
+        //             this.filesArray[i].width =
+        //                 (e.detail.loaded / e.detail.total) * 100 + "%";
+        //             break;
+        //         }
+        //     }
+        // },
     },
     beforeUnmount() {
         // removing the event listener for this page
