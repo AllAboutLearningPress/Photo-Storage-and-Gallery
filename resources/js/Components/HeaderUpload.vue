@@ -186,9 +186,11 @@ export default {
                     hasDuplicate: false,
                     token: this.randHexToken(128),
                     id: null,
-                    privLoaded: 0,
+                    total: file.size, // this total is larger than file size due the other datas
+                    loaded: 0,
                     isUploading: false,
                     width: "0%",
+                    uploadCompleted: false,
                 });
             });
             console.log(this.updateTotal(total));
@@ -305,6 +307,7 @@ export default {
                         //     fileId,
                         //     e.loaded - this.filesArray[filePostion].privLoaded
                         // );
+
                         this.filesArray[filePostion].loaded = e.loaded;
                         this.filesArray[filePostion].width =
                             (e.loaded / e.total) * 100 + "%";
@@ -319,14 +322,8 @@ export default {
                     // then it will use this data to process
                     // user updated details
 
-                    document.dispatchEvent(
-                        new CustomEvent("file-uploaded", {
-                            detail: {
-                                name: this.filesArray[filePostion].token,
-                                serverId: response.data,
-                            },
-                        })
-                    );
+                    // this will be used to show the tick on /upload page
+                    this.filesArray[filePostion].uploadCompleted = true;
 
                     // upload finished. Now it will check and
                     // start a new upload

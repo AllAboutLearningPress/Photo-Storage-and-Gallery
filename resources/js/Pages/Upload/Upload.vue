@@ -30,7 +30,7 @@
                                 class="file__pic"
                             >
                                 <svg
-                                    v-if="file.total == file.priv_loaded"
+                                    v-if="file.uploadCompleted"
                                     xmlns="http://www.w3.org/2000/svg"
                                     class="file__pic__tick bi bi-check"
                                     fill="currentColor"
@@ -247,18 +247,9 @@ export default {
         };
     },
     created() {
-        // this event is dispatched by HeaderUpload.vue
-        // containing the filesArray to show the user
-        // for editing
-        this.rmlisteners.push(
-            addEventListener(document, "uploading-files", this.showUploads)
-        );
-        this.rmlisteners.push(
-            addEventListener(document, "file-uploaded", this.fileUploaded)
-        );
-
         // fetch tags lazily from server
         this.fetchTags(route("tags.get_tags"));
+
         // this.filesArray.push(
         //     {
         //         id: 0,
@@ -273,31 +264,6 @@ export default {
         //         //thumbnail_link: "http://placekitten.com/200/100",
         //     }
         // );
-
-        // // for testing file uploaded event
-        // setTimeout(() => {
-        //     document.dispatchEvent(
-        //         new CustomEvent("file-uploaded", {
-        //             detail: {
-        //                 id: 0,
-        //                 thumbnail_link: "https://placekitten.com/200/100",
-        //                 serverId: 223,
-        //             },
-        //         })
-        //     );
-        // }, 500);
-        // setTimeout(() => {
-        //     document.dispatchEvent(
-        //         new CustomEvent("file-uploaded", {
-        //             detail: {
-        //                 id: 1,
-        //                 thumbnail_link: "https://placekitten.com/200/100",
-        //                 serverId: 223,
-        //             },
-        //         })
-        //     );
-        // }, 1000);
-        document.dispatchEvent(new CustomEvent("upload-view-created"));
     },
     mounted() {
         // event listener for updating individual progress bar
@@ -386,10 +352,6 @@ export default {
                     console.log(err);
                 });
         },
-        showUploads(e) {
-            console.log("received");
-            this.filesArray = e.detail.filesArray;
-        },
 
         /**
          * gets called when add button is pressed on tag
@@ -458,18 +420,6 @@ export default {
             console.log("upload cancelled");
         },
 
-        // When a file is uploaded by HeaderUpload
-        // It will dispatch an event. And this componenet
-        // Will listen for that event to update data in
-        // This page
-        fileUploaded(e) {
-            for (let i = 0; i < this.filesArray.length; i++) {
-                if (this.filesArray[i].id == e.detail.id) {
-                    this.filesArray[i].serverId = e.detail.serverId;
-                    this.filesArray[i].thumbnail_link = e.detail.thumbnail_link;
-                }
-            }
-        },
         animateUploadBar(e) {
             console.log(e);
             window.requestAnimationFrame(() => this.updateUploadBar(e));

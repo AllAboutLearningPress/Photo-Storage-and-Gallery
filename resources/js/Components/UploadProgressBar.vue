@@ -22,15 +22,12 @@ import { inject } from "@vue/runtime-core";
 //:aria-valuenow="progressValue"
 export default {
     setup() {
-        const pushToFilesArray = inject("pushToFilesArray");
         const filesArray = inject("filesArray");
         const total = inject("total");
-        const updateTotal = inject("updateTotal");
+
         return {
-            pushToFilesArray,
             filesArray,
             total,
-            updateTotal,
         };
     },
     data: () => {
@@ -41,14 +38,7 @@ export default {
             remaining: "1h 23m",
         };
     },
-    mounted() {
-        // This event is dispatched periodically by HeaderUpload
-        // bytes are sent for individual file
-        // document.addEventListener("update-progress-bar", this.updateUploadBar);
-        // setInterval(() => {
-        //     console.log("total in progress bar ", this.total);
-        // }, 1500);
-    },
+
     computed: {
         calculateProgressWidth() {
             let loaded = 0;
@@ -57,23 +47,6 @@ export default {
             }
             //console.log("loaded now ", loaded);
             return (loaded / this.total) * 100 + "%";
-        },
-    },
-
-    methods: {
-        /** Updates the filecount and total bytes to be sent */
-        updateProgressTotal(e) {
-            console.log(e);
-            this.total = e.detail.total;
-            this.fileCount = e.detail.fileCount;
-        },
-
-        /** Updates main progress bar */
-        updateUploadBar(e) {
-            window.requestAnimationFrame(() => {
-                this.loaded = this.loaded + e.detail.bytesSent;
-                this.progressValue = (this.loaded / this.total) * 100 + "%";
-            });
         },
     },
 };
