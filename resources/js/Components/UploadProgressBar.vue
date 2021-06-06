@@ -55,7 +55,8 @@ export default {
             for (let i = 0; i < this.filesArray.length; i++) {
                 loaded += this.filesArray[i].loaded;
             }
-            return loaded;
+            //console.log("loaded now ", loaded);
+            return (loaded / this.total) * 100 + "%";
         },
     },
 
