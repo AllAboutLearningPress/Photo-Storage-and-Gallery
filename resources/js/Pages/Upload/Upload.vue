@@ -28,7 +28,18 @@
                                         : spinner
                                 }')`"
                                 class="file__pic"
-                            ></div>
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    class="file__pic__tick bi bi-check"
+                                    fill="currentColor"
+                                    viewBox="0 0 16 16"
+                                >
+                                    <path
+                                        d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"
+                                    />
+                                </svg>
+                            </div>
 
                             <button
                                 title="Remove file"
@@ -204,7 +215,19 @@
         </datalist>
     </div>
 </template>
-
+<style scoped>
+.file__picc {
+    width: 200px;
+    max-width: 100%;
+    /* padding-top: 100%; */
+    height: 200px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 1px solid #424242;
+    border-radius: 0.25rem;
+}
+</style>
 
 <script>
 import MainLayout from "@/Layouts/MainLayout.vue";
@@ -247,20 +270,20 @@ export default {
 
         // fetch tags lazily from server
         this.fetchTags(route("tags.get_tags"));
-        // this.filesArray = [
-        //     {
-        //         id: 0,
-        //         title: "test file",
-        //         tags: [],
-        //         //thumbnail_link: "http://placekitten.com/200/100",
-        //     },
-        //     {
-        //         id: 1,
-        //         title: "test file",
-        //         tags: [],
-        //         //thumbnail_link: "http://placekitten.com/200/100",
-        //     },
-        // ];
+        this.filesArray.push(
+            {
+                id: 0,
+                title: "test file",
+                tags: [],
+                //thumbnail_link: "http://placekitten.com/200/100",
+            },
+            {
+                id: 1,
+                title: "test file",
+                tags: [],
+                //thumbnail_link: "http://placekitten.com/200/100",
+            }
+        );
 
         // // for testing file uploaded event
         // setTimeout(() => {
