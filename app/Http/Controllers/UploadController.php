@@ -169,7 +169,7 @@ class UploadController extends Controller
         foreach ($data as $photo_id) {
             $photo = Photo::where([
                 ['id', "=", $photo_id],
-                ['uploaded_by', "=", auth()->id],
+                ['user_id', "=", Auth::id()],
                 ['created_at', ">=", Carbon::now()->subHours(12)->toDateTimeString()]
             ]);
             if ($photo) {

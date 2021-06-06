@@ -191,7 +191,7 @@ export default {
                     isUploading: false,
                     width: "0%",
                     uploadCompleted: false,
-                    cancelToken: null,
+                    cancelToken: axios.CancelToken.source(),
                 });
             });
             console.log(this.updateTotal(total));
@@ -279,7 +279,7 @@ export default {
          * @property {boolean} retry - True if file upload is retried, Defaults to False
          */
         uploadSingleFile(filePostion, retry = false) {
-            console.log("started ", this.filesArray[filePostion].name);
+            console.log("started ", this.filesArray[filePostion].title);
             let fileId = this.filesArray[filePostion].id;
             // marking it as uploading so it wont be
             // picked up again for uploading
@@ -288,12 +288,6 @@ export default {
             const formData = new FormData();
             formData.append("file", this.filesArray[filePostion].file);
             formData.append("id", this.filesArray[filePostion].id);
-
-            // setting a cancel token for this upload
-            // This will be used to cancel a file upload
-            this.filesArray[
-                filePostion
-            ].cancelToken = axios.CancelToken.source();
 
             // uploading the file
             axios
