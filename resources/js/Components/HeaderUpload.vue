@@ -296,10 +296,10 @@ export default {
                 .post(route("uploads.store_file"), formData, {
                     cancelToken: this.cancelTokens[fileId].token,
                     onUploadProgress: (e) => {
-                        console.log(
-                            "priv loaded: ",
-                            this.filesArray[filePostion].privLoaded
-                        );
+                        // console.log(
+                        //     "priv loaded: ",
+                        //     this.filesArray[filePostion].privLoaded
+                        // );
                         // this.dispatchUploadProgress(
                         //     e,
                         //     fileId,
