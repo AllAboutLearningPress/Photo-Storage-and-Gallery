@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Aws\Lambda\LambdaClient;
 use Aws\Credentials\Credentials;
+use Carbon\Carbon;
+use Response;
 
 class UploadController extends Controller
 {
@@ -152,5 +154,29 @@ class UploadController extends Controller
         // ));
         // dd($result['Payload']->getContents());
         return http_response_code(204);
+    }
+    /**
+     * Cancel an upload while its still uploading
+     * This function will be used from cancel button
+     * in /upload page
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function cancel_upload(Request $request)
+    {
+        $data = $request->validate(['*.id' => "required|integer"]);
+        foreach ($data as $photo_id) {
+            $photo = Photo::where([
+                ['id', "=", $photo_id],
+                ['uploaded_by', "=", auth()->id],
+                ['created_at', ">=", Carbon::now()->subHours(12)->toDateTimeString()]
+            ]);
+            if ($photo) {
+                $photo->delete();
+            }
+        }
+
+        return response('', 200);
     }
 }

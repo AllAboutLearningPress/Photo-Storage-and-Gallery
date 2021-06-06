@@ -4,7 +4,7 @@
         :href="route('uploads.index')"
         class="js-upload-bar upload-bar"
     >
-        Uploading {{ fileCount }} photos ({{ remaining }} remaining)
+        Uploading {{ filesArray.length }} photos ({{ remaining }} remaining)
         <div class="upload-bar__progress progress">
             <div
                 class="progress-bar"
