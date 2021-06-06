@@ -109,7 +109,7 @@ import Sidebar from "@/Components/Sidebar.vue";
 //import GlobalDropTarget from "../frontend/components/GlobalDropTarget.js";
 import UploadProgressBar from "../Components/UploadProgressBar.vue";
 import Notificator from "../Components/Notificator.vue";
-import { inject, ref } from "@vue/runtime-core";
+import { inject, provide, ref } from "@vue/runtime-core";
 
 export default {
     components: {
@@ -120,27 +120,50 @@ export default {
     },
     data() {
         return {
-            total: ref(0),
+            total: ref(4),
             filesArray: ref([]),
         };
     },
-    created() {
-        //     setInterval(() => {
-        //         console.log(this.filesArray);
-        //         this.total++;
-        //     }, 5000);
-    },
-    provide() {
+    setup() {
+        const total = ref(0);
+        const filesArray = ref([]);
+        const pushToFilesArray = (files) => {
+            console.log("pushing to files");
+            this.filesArray.push(files);
+        };
+        const updateTotal = (total) => {
+            this.total = total;
+        };
+        provide("total", total);
+        provide("filesArray", filesArray);
+        provide("pushToFilesArray", pushToFilesArray);
+        provide("updateTotal", updateTotal);
         return {
-            total: this.total,
-            filesArray: this.filesArray,
-            pushToFilesArray: this.pushToFilesArray,
+            total,
+            filesArray,
         };
     },
+    created() {
+        // setInterval(() => {
+        //     console.log("total in main: ", this.total);
+        //     this.total++;
+        // }, 1000);
+    },
+    // provide() {
+    //     return {
+    //         total: this.total,
+    //         filesArray: this.filesArray,
+    //         pushToFilesArray: this.pushToFilesArray,
+    //         updateTotal: this.updateTotal,
+    //     };
+    // },
     methods: {
         pushToFilesArray(files) {
             console.log("pushing to files");
             this.filesArray.push(files);
+        },
+        updateTotal(total) {
+            this.total = total;
         },
     },
 };

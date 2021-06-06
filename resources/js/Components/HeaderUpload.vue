@@ -43,12 +43,16 @@ export default {
     setup() {
         const pushToFilesArray = inject("pushToFilesArray");
         const filesArray = inject("filesArray");
+        const total = inject("total");
+        const updateTotal = inject("updateTotal");
         return {
             pushToFilesArray,
             filesArray,
+            total,
+            updateTotal,
         };
     },
-    data: function () {
+    data() {
         return {
             // filesArray: [
             //     // {
@@ -106,6 +110,9 @@ export default {
         document.addEventListener("items-dropped", (e) =>
             this.handleFileDrop(e)
         );
+        // setInterval(() => {
+        //     console.log("total in header upload", this.total);
+        // }, 1500);
     },
     methods: {
         /** This event is dispatched by axios when data is being
@@ -167,10 +174,10 @@ export default {
         handleUpload(filesArray) {
             console.log("uploading");
             console.log("files available: ", filesArray.length);
-
+            let total = 0;
             // generating filesArray for handling user modification
             filesArray.forEach((file) => {
-                this.total += file.size;
+                total += file.size;
                 this.pushToFilesArray({
                     file: file,
                     title: file.name,
@@ -181,9 +188,11 @@ export default {
                     id: null,
                     privLoaded: 0,
                     isUploading: false,
+                    width: "0%",
                 });
             });
-
+            console.log(this.updateTotal(total));
+            console.log("total in headerupload ", this.total);
             // start uploading
             this.uploadFiles();
 
@@ -291,12 +300,14 @@ export default {
                             "priv loaded: ",
                             this.filesArray[filePostion].privLoaded
                         );
-                        this.dispatchUploadProgress(
-                            e,
-                            fileId,
-                            e.loaded - this.filesArray[filePostion].privLoaded
-                        );
-                        this.filesArray[filePostion].privLoaded = e.loaded;
+                        // this.dispatchUploadProgress(
+                        //     e,
+                        //     fileId,
+                        //     e.loaded - this.filesArray[filePostion].privLoaded
+                        // );
+                        this.filesArray[filePostion].loaded = e.loaded;
+                        this.filesArray[filePostion].width =
+                            (e.loaded / e.total) * 100 + "%";
                     },
                 })
                 .then((response) => {
