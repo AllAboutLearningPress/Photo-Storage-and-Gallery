@@ -107,7 +107,7 @@ class UploadController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store_file(Request $request)
+    public function storeFile(Request $request)
     {
 
         $data = $request->validate([
@@ -163,9 +163,32 @@ class UploadController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function cancel_upload(Request $request)
+    public function cancelUpload(Request $request)
     {
         $data = $request->validate(['*.id' => "required|integer"]);
+        foreach ($data as $photo_id) {
+            $photo = Photo::where([
+                ['id', "=", $photo_id],
+                ['user_id', "=", Auth::id()],
+                ['created_at', ">=", Carbon::now()->subHours(12)->toDateTimeString()]
+            ]);
+            if ($photo) {
+                $photo->delete();
+            }
+        }
+
+        return response('', 200);
+    }
+    /**
+     * Adds tag to photo
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function addTag(Request $request)
+    {
+        $tags = $request->validate(['*.id' => "required|exists:tags,id"]);
+        dd($tags);
         foreach ($data as $photo_id) {
             $photo = Photo::where([
                 ['id', "=", $photo_id],
