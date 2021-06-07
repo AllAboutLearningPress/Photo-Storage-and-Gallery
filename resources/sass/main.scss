@@ -1,4 +1,5 @@
 @import 'customised-bootstrap';
+@import 'node_modules/img-comparison-slider/dist/collection/styles/initial';
 :root {
     --main-x-pad: .8rem;
     @include media-breakpoint-up(sm) {
@@ -197,6 +198,7 @@ $header-search-slot-gap: 1em;
   Search
 */
 
+$search-input-x-pad: $input-padding-x-lg;
 .search {
     text-align: right;
     @include media-breakpoint-up(xs) {
@@ -302,7 +304,7 @@ $header-search-slot-gap: 1em;
     padding-left: calc(3rem + 0.2em);
     padding-right: calc(3rem + 0.2em);
     @include media-breakpoint-up(sm) {
-        padding-left: $input-padding-x-lg;
+        padding-left: $search-input-x-pad;
     }
 }
 
@@ -325,12 +327,17 @@ $header-search-slot-gap: 1em;
 }
 
 .search__suggest,
+.search__suggest::after,
+.search__suggest-content {
+    border-bottom-left-radius: $input-border-radius-lg;
+    border-bottom-right-radius: $input-border-radius-lg;
+}
+
+.search__suggest,
 .search__suggest::after {
     position: absolute;
     left: 0;
     right: 0;
-    border-bottom-left-radius: $input-border-radius-lg;
-    border-bottom-right-radius: $input-border-radius-lg;
 }
 
 .search__suggest {
@@ -343,7 +350,7 @@ $header-search-slot-gap: 1em;
 }
 
 .search__suggest-content {
-    max-height: 200px;
+    max-height: 250px;
 }
 
 .is-suggesting .search__suggest {
@@ -371,9 +378,11 @@ $header-search-slot-gap: 1em;
 
 .search__suggest-item {
     border-color: $contrast1;
-    padding-left: $input-padding-x-lg;
-    padding-right: $input-padding-x-lg;
+    padding-left: $search-input-x-pad;
+    padding-right: .5em;
     background-color: transparent;
+    display: flex;
+    align-items: start;
 }
 
 .search__suggest-item:hover,
@@ -385,6 +394,16 @@ $header-search-slot-gap: 1em;
 .search__suggest-item:focus-visible {
     outline: 0;
     box-shadow: $input-btn-focus-box-shadow;
+}
+
+.search__suggest-item-thumb {
+    margin-right: .6em;
+    margin-top: calc(#{-$list-group-item-padding-y} + 4px);
+    margin-bottom: calc(#{-$list-group-item-padding-y} + 4px);
+}
+
+.search__suggest-item-thumb-txt {
+    align-self: center;
 }
 
 
@@ -441,6 +460,9 @@ $sidebar-animation-duration: 0.2s;
     outline: none;
     box-shadow: 0 0.5rem 1rem rgba($black, 0.9);
     visibility: hidden;
+    @include media-breakpoint-up(md) {
+        z-index: 1;
+    }
 }
 
 .sidebar_right {
@@ -499,6 +521,9 @@ $sidebar-animation-duration: 0.2s;
     opacity: 0;
     will-change: opacity;
     transition: opacity $sidebar-animation-duration;
+    @include media-breakpoint-up(md) {
+        z-index: 0;
+    }
 }
 
 .sidebar.is-open~.sidebar-backdrop {
@@ -1283,8 +1308,8 @@ $file-thumb-border-width: 1px;
     // keep it square
     width: $file-thumb-size;
     max-width: 100%;
-    //padding-top: 100%;
-    height: $file-thumb-size;
+    padding-top: 100%;
+    height: 0;
     // position background image
     background-size: contain;
     background-position: 50% 50%;
@@ -1292,15 +1317,6 @@ $file-thumb-border-width: 1px;
     // allow total thumb dimension to bee comprehended
     border: $file-thumb-border-width solid $contrast2;
     border-radius: $btn-border-radius;
-    text-align: center;
-}
-
-.file__pic__tick {
-    position: relative;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
-    width: 70%;
 }
 
 .file__delete {
@@ -1384,6 +1400,34 @@ $file-thumb-border-width: 1px;
 
 .filter__param {
     border-bottom: 1px solid $contrast2;
+}
+
+
+/*
+  Image compare slider: https://sneas.github.io/img-comparison-slider/
+*/
+
+img-comparison-slider {
+    background-color: $contrast1;
+    --divider-width: 3px;
+    --divider-color: #{transparentize($page-text-color, .3)};
+    --handle-size: 60px;
+    @include media-breakpoint-up(md) {
+        --handle-size: 80px;
+    }
+}
+
+img-comparison-slider:focus-visible {
+    @include bootstrap-focus;
+}
+
+.img-comparison-slider__handle {
+    width: var(--handle-size);
+    height: var(--handle-size);
+    background-image: escape-svg( url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"> <defs> <filter id="custom-arrows-a"> <feColorMatrix in="SourceGraphic" values="0 0 0 0 1.000000 0 0 0 0 1.000000 0 0 0 0 1.000000 0 0 0 1.000000 0"/> </filter> </defs> <g fill="#{$page-text-color}" fill-rule="evenodd" filter="url(#custom-arrows-a)"> <path fill="#000" fill-rule="nonzero" d="M11.44 225.39L336.56 225.39C340.706504 225.38742 344.485424 223.011082 346.284179 219.275044 348.082933 215.539006 347.583887 211.102996 345 207.86L182.44 4.06C180.39264 1.49344455 177.288122-.00133928631 174.005-.00133928631 170.721878-.00133928631 167.61736 1.49344455 165.57 4.06L3 207.86C.416112605 211.102996-.0829331302 215.539006 1.7158212 219.275044 3.51457553 223.011082 7.29349632 225.38742 11.44 225.39zM336.56 286.61L11.44 286.61C7.29349632 286.61258 3.51457553 288.988918 1.7158212 292.724956-.0829331302 296.460994.416112605 300.897004 3 304.14L165.56 507.94C167.60736 510.506555 170.711878 512.001339 173.995 512.001339 177.278122 512.001339 180.38264 510.506555 182.43 507.94L345 304.14C347.582769 300.898415 348.0826 296.464701 346.286357 292.729453 344.490113 288.994205 340.714699 286.616413 336.57 286.61L336.56 286.61z" transform="rotate(-90 215 215)"/> </g></svg>'));
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: contain;
 }
 
 
