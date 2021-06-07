@@ -35,7 +35,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post("/load-more", [IndexController::class, 'load_more'])->name('index.load_more');
 
     /* Routes related to uploading files */
-    Route::prefix('upload')->name("uploads")->group(function () {
+    Route::prefix('upload')->name("uploads.")->group(function () {
         Route::get("/", [UploadController::class, 'index'])->name('index');
         Route::post("store", [UploadController::class, 'store'])->name('store');
         Route::post("store-file", [UploadController::class, 'storeFile'])->name('store_file');
