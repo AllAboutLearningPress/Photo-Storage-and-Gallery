@@ -398,6 +398,7 @@ export default {
                             name: tagInput.value,
                             id: tagId,
                         });
+                        this.saveTag(this.filesArray[k].id, tagId);
                         console.log(this.filesArray[k].tags);
                         break;
                     }
@@ -411,6 +412,11 @@ export default {
                     tagId: tagId,
                 })
                 .then((resp) => {
+                    if (resp.status == 201) {
+                        // Tag created because user typed a new tag string
+                        notify("Tag created and added to photo");
+                        return;
+                    }
                     notify("Tag Added successfully");
                 });
         },

@@ -187,18 +187,20 @@ class UploadController extends Controller
      */
     public function addTag(Request $request)
     {
-        $tags = $request->validate(['*.id' => "required|exists:tags,id"]);
-        dd($tags);
-        foreach ($data as $photo_id) {
-            $photo = Photo::where([
-                ['id', "=", $photo_id],
-                ['user_id', "=", Auth::id()],
-                ['created_at', ">=", Carbon::now()->subHours(12)->toDateTimeString()]
-            ]);
-            if ($photo) {
-                $photo->delete();
-            }
+        $data = $request->validate([
+            'fileId' => "required|exists:photos,id",
+            'tagId' => "nullable|exists:tags,id"
+        ]);
+        dd($data);
+        $photo = Photo::where([
+            ['id', "=", $data['id']],
+            ['user_id', "=", Auth::id()],
+            ['created_at', ">=", Carbon::now()->subHours(12)->toDateTimeString()]
+        ]);
+        if ($photo) {
+            $photo->delete();
         }
+
 
         return response('', 200);
     }
