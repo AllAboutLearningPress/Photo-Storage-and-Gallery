@@ -38,8 +38,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::prefix('upload')->name("uploads")->group(function () {
         Route::get("/", [UploadController::class, 'index'])->name('index');
         Route::post("store", [UploadController::class, 'store'])->name('store');
-        Route::post("store-file", [UploadController::class, 'store_file'])->name('store_file');
-        Route::post("cancel-upload", [UploadController::class, 'cancel_upload'])->name('cancel_upload');
+        Route::post("store-file", [UploadController::class, 'storeFile'])->name('store_file');
+        Route::post("cancel-upload", [UploadController::class, 'cancelUpload'])->name('cancel_upload');
         Route::post("add-tag", [UploadController::class, 'addTag'])->name('add_tag');
     });
 

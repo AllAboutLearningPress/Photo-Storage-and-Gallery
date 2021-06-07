@@ -404,9 +404,16 @@ export default {
                 }
             }
         },
-        saveTag(fileId, tagId){
-            axios.post()
-        }
+        saveTag(fileId, tagId) {
+            axios
+                .post(route("uploads.add_tag"), {
+                    fileId: fileId,
+                    tagId: tagId,
+                })
+                .then((resp) => {
+                    notify("Tag Added successfully");
+                });
+        },
         /** Removes tag from uploading image
         @param {Int} tagIndex - The index of tag in the this.filesArray[i].tags
         @param {Int} fileId - the if of the file that the tag is assigned to. this id is local

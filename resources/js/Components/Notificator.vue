@@ -10,8 +10,8 @@
                 :key="toast.ref"
                 :ref="toast.ref"
                 :class="
-                    toast.ref +
-                    ' notification-area__toast toast align-items-center'
+                    'notification-area__toast toast align-items-center ' +
+                    toast.level
                 "
                 role="alert"
                 aria-live="assertive"
@@ -44,6 +44,11 @@ export default {
             ref: "toast-",
             toastId: 0,
             count: 0,
+            levels: {
+                info: "",
+                danger: "bg-danger",
+                success: "bg-success",
+            },
         };
     },
     created() {
@@ -61,6 +66,7 @@ export default {
                 new CustomEvent("notify", {
                     detail: {
                         body: this.ref + this.count,
+                        level: "danger",
                     },
                 })
             );
@@ -92,7 +98,15 @@ export default {
         show(e) {
             let ref = this.ref + this.toastId;
             this.toastId++;
-            this.toasts.push({ ref: ref, body: e.detail.body });
+            let level = "info";
+            if (e.detail.level) {
+                level = e.detail.level;
+            }
+            this.toasts.push({
+                ref: ref,
+                body: e.detail.body,
+                level: this.levels[level],
+            });
             this.$nextTick(() => {
                 let toast = new Toast(this.$refs[ref]);
                 toast.show();
