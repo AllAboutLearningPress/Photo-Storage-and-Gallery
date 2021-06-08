@@ -166,23 +166,22 @@
                                         :key="tag.id"
                                     >
                                         {{ tag.name }}
-                                        <object type="no/suchtype">
-                                            <button
-                                                title="Delete tag"
-                                                type="button"
-                                                class="js-tag-delete tag__delete btn-close"
-                                                aria-label="Delete tag"
-                                                v-on:click="
-                                                    removeTag(index, file.id)
-                                                "
+
+                                        <button
+                                            title="Delete tag"
+                                            type="button"
+                                            class="js-tag-delete tag__delete btn-close"
+                                            aria-label="Delete tag"
+                                            v-on:click="
+                                                removeTag(index, file.id)
+                                            "
+                                        >
+                                            <span class="visually-hidden"
+                                                >Delete tag</span
                                             >
-                                                <span class="visually-hidden"
-                                                    >Delete tag</span
-                                                >
-                                            </button>
-                                        </object>
+                                        </button>
                                     </a>
-                                    <!-- a
+                                    <a
                                         class="tags__tag tag tag_deletable btn btn-secondary"
                                         href="#"
                                     >
@@ -199,7 +198,7 @@
                                                 >
                                             </button>
                                         </object>
-                                    </a> -->
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -252,20 +251,20 @@ export default {
         // fetch tags lazily from server
         this.fetchTags(route("tags.get_tags"));
 
-        // this.filesArray.push(
-        //     {
-        //         id: 0,
-        //         title: "test file",
-        //         tags: [],
-        //         //thumbnail_link: "http://placekitten.com/200/100",
-        //     },
-        //     {
-        //         id: 1,
-        //         title: "test file",
-        //         tags: [],
-        //         //thumbnail_link: "http://placekitten.com/200/100",
-        //     }
-        // );
+        this.filesArray.push(
+            {
+                id: 0,
+                title: "test file",
+                tags: [],
+                //thumbnail_link: "http://placekitten.com/200/100",
+            },
+            {
+                id: 1,
+                title: "test file",
+                tags: [],
+                //thumbnail_link: "http://placekitten.com/200/100",
+            }
+        );
     },
     mounted() {
         // event listener for updating individual progress bar
