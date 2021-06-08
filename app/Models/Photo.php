@@ -34,7 +34,7 @@ class Photo extends Model
      */
     public function tags()
     {
-        return $this->belongsToMany(Tag::class)->using(PhotoTag::class);
+        return $this->belongsToMany(Tag::class)->using(PhotoTag::class)->withTimestamps();
     }
 
     /*

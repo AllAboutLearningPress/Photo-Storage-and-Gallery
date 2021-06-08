@@ -4,7 +4,11 @@
             <button
                 title="Open menu"
                 type="button"
-                class="js-sidebar-toggle header__open-sidebar btn-subtle btn-menu btn-lg btn"
+                class="
+                    js-sidebar-toggle
+                    header__open-sidebar
+                    btn-subtle btn-menu btn-lg btn
+                "
                 data-sidebar="#content-sidebar"
                 aria-controls="sidebar"
             >

@@ -191,15 +191,9 @@ class UploadController extends Controller
             'fileId' => "required|exists:photos,id",
             'tagId' => "nullable|exists:tags,id"
         ]);
-        dd($data);
-        $photo = Photo::where([
-            ['id', "=", $data['id']],
-            ['user_id', "=", Auth::id()],
-            ['created_at', ">=", Carbon::now()->subHours(12)->toDateTimeString()]
-        ]);
-        if ($photo) {
-            $photo->delete();
-        }
+        //dd($data);
+        $photo = Photo::find($data['fileId']);
+        $photo->tags()->attach($data['tagId']);
 
 
         return response('', 200);

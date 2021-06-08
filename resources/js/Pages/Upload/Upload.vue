@@ -46,7 +46,11 @@
                                 v-on:click="removeFile($event, file.id)"
                                 title="Remove file"
                                 type="button"
-                                class="js-file__delete file__delete btn-close btn-lg"
+                                class="
+                                    js-file__delete
+                                    file__delete
+                                    btn-close btn-lg
+                                "
                                 aria-label="Remove file"
                             >
                                 <span class="visually-hidden">Remove file</span>
@@ -75,7 +79,12 @@
                                         <button
                                             type="button"
                                             title="Edit"
-                                            class="js-editable__trigger editable__trigger d-inline-flex btn btn-subtle btn-lg"
+                                            class="
+                                                js-editable__trigger
+                                                editable__trigger
+                                                d-inline-flex
+                                                btn btn-subtle btn-lg
+                                            "
                                             aria-label="Edit"
                                         >
                                             <svg
@@ -99,7 +108,15 @@
                                         <textarea
                                             disabled
                                             placeholder="Write here"
-                                            class="js-editable__area editable__area fs-4 fw-light form-control form-control-lg form-control-plaintext"
+                                            class="
+                                                js-editable__area
+                                                editable__area
+                                                fs-4
+                                                fw-light
+                                                form-control
+                                                form-control-lg
+                                                form-control-plaintext
+                                            "
                                             v-model="file.title"
                                             :id="'title' + file.id"
                                         ></textarea>
@@ -107,7 +124,10 @@
                                             v-on:click="
                                                 saveTitle($event, file.id)
                                             "
-                                            class="js-editable__confirm btn btn-outline-secondary"
+                                            class="
+                                                js-editable__confirm
+                                                btn btn-outline-secondary
+                                            "
                                         >
                                             Ok
                                         </button>
@@ -115,19 +135,28 @@
                                 </div>
                                 <div class="file__notes">
                                     <a
-                                        class="file__note btn btn-outline-primary"
+                                        class="
+                                            file__note
+                                            btn btn-outline-primary
+                                        "
                                         href="#"
                                         >Choose a family?</a
                                     >
                                     <a
                                         v-if="file.hasDuplicate"
-                                        class="file__note btn btn-outline-warning"
+                                        class="
+                                            file__note
+                                            btn btn-outline-warning
+                                        "
                                         href="#"
                                         >Compare duplicate</a
                                     >
                                     <a
                                         v-else
-                                        class="file__note btn btn-outline-warning"
+                                        class="
+                                            file__note
+                                            btn btn-outline-warning
+                                        "
                                         href="#"
                                         >Checking for duplicate</a
                                     >
@@ -142,14 +171,19 @@
                                         <input
                                             name="tag-input"
                                             list="tag-list"
-                                            class="js-tags__input form-control form-control-lg"
+                                            class="
+                                                js-tags__input
+                                                form-control form-control-lg
+                                            "
                                             type="text"
                                             placeholder="Specify tag"
                                             autocomplete="off"
                                         />
                                         <button
                                             title="Add tag"
-                                            class="btn btn-lg btn-outline-secondary"
+                                            class="
+                                                btn btn-lg btn-outline-secondary
+                                            "
                                             type="submit"
                                             v-on:click="addTag($event, file.id)"
                                         >
@@ -160,7 +194,11 @@
 
                                 <div class="js-tags__list tags__list">
                                     <a
-                                        class="tags__tag tag tag_deletable btn btn-secondary"
+                                        class="
+                                            tags__tag
+                                            tag tag_deletable
+                                            btn btn-secondary
+                                        "
                                         href="#"
                                         v-for="(tag, index) in file.tags"
                                         :key="tag.id"
@@ -170,7 +208,11 @@
                                         <button
                                             title="Delete tag"
                                             type="button"
-                                            class="js-tag-delete tag__delete btn-close"
+                                            class="
+                                                js-tag-delete
+                                                tag__delete
+                                                btn-close
+                                            "
                                             aria-label="Delete tag"
                                             v-on:click="
                                                 removeTag(index, file.id)
@@ -181,7 +223,7 @@
                                             >
                                         </button>
                                     </a>
-                                    <a
+                                    <!-- <a
                                         class="tags__tag tag tag_deletable btn btn-secondary"
                                         href="#"
                                     >
@@ -198,7 +240,7 @@
                                                 >
                                             </button>
                                         </object>
-                                    </a>
+                                    </a> -->
                                 </div>
                             </div>
                         </div>
@@ -221,6 +263,7 @@
 <script>
 import MainLayout from "@/Layouts/MainLayout.vue";
 import UploadToolbar from "./Components/UploadToolbar.vue";
+import { notify } from "@/util.js";
 import { addEventListener } from "@/frontend/util/utils.js";
 import { inject } from "@vue/runtime-core";
 import axios from "axios";
@@ -251,20 +294,20 @@ export default {
         // fetch tags lazily from server
         this.fetchTags(route("tags.get_tags"));
 
-        this.filesArray.push(
-            {
-                id: 0,
-                title: "test file",
-                tags: [],
-                //thumbnail_link: "http://placekitten.com/200/100",
-            },
-            {
-                id: 1,
-                title: "test file",
-                tags: [],
-                //thumbnail_link: "http://placekitten.com/200/100",
-            }
-        );
+        // this.filesArray.push(
+        //     {
+        //         id: 0,
+        //         title: "test file",
+        //         tags: [],
+        //         //thumbnail_link: "http://placekitten.com/200/100",
+        //     },
+        //     {
+        //         id: 1,
+        //         title: "test file",
+        //         tags: [],
+        //         //thumbnail_link: "http://placekitten.com/200/100",
+        //     }
+        // );
     },
     mounted() {
         // event listener for updating individual progress bar
