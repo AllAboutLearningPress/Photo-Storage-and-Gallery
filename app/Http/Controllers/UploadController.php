@@ -166,14 +166,17 @@ class UploadController extends Controller
     public function cancelUpload(Request $request)
     {
         $data = $request->validate(['*.id' => "required|integer"]);
-        foreach ($data as $photo_id) {
+
+        foreach ($data as $single_photo) {
+
             $photo = Photo::where([
-                ['id', "=", $photo_id],
+                ['id', "=", $single_photo['id']],
                 ['user_id', "=", Auth::id()],
-                ['created_at', ">=", Carbon::now()->subHours(12)->toDateTimeString()]
-            ]);
+                ['created_at', ">=", Carbon::now()->subHours(12)->toDateTimeString()],
+            ])->first();
+
             if ($photo) {
-                $photo->delete();
+                $photo->forceDelete();
             }
         }
 
