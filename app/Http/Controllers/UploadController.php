@@ -198,4 +198,23 @@ class UploadController extends Controller
 
         return response('', 200);
     }
+    /**
+     * Removes tag to photo
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function removeTag(Request $request)
+    {
+        $data = $request->validate([
+            'fileId' => "required|exists:photos,id",
+            'tagId' => "nullable|exists:tags,id"
+        ]);
+        //dd($data);
+        $photo = Photo::find($data['fileId']);
+        $photo->tags()->detach($data['tagId']);
+
+
+        return response('', 200);
+    }
 }
