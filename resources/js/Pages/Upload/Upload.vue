@@ -462,6 +462,20 @@ export default {
                     notify("Tag Added successfully");
                 });
         },
+        deleteTag(fileId, tagId) {
+            axios
+                .post(route("uploads.remove_tag"), {
+                    fileId: fileId,
+                    tagId: tagId,
+                })
+                .then((reso) => {
+                    notify("Tag Removed");
+                })
+                .catch((err) => {
+                    notify("Something went wrong. Please try again");
+                    console.log(err);
+                });
+        },
         /** Removes tag from uploading image
         @param {Int} tagIndex - The index of tag in the this.filesArray[i].tags
         @param {Int} fileId - the if of the file that the tag is assigned to. this id is local
@@ -471,6 +485,10 @@ export default {
             for (let i = 0; i < this.filesArray.length; i++) {
                 if (this.filesArray[i].id == fileId) {
                     console.log(this.filesArray[i]);
+                    this.deleteTag(
+                        this.filesArray[i].id,
+                        this.filesArray[i].tags[tagIndex].id
+                    );
                     this.filesArray[i].tags.splice(tagIndex, 1);
                 }
             }

@@ -41,6 +41,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::post("store-file", [UploadController::class, 'storeFile'])->name('store_file');
         Route::post("cancel-upload", [UploadController::class, 'cancelUpload'])->name('cancel_upload');
         Route::post("add-tag", [UploadController::class, 'addTag'])->name('add_tag');
+        Route::post("remove-tag", [UploadController::class, 'removeTag'])->name('remove_tag');
     });
 
 
