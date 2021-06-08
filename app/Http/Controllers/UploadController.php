@@ -165,8 +165,8 @@ class UploadController extends Controller
      */
     public function cancelUpload(Request $request)
     {
-        $data = $request->validate(['*.id' => "required|integer"]);
-
+        $data = $request->validate(['*' => "required|integer"]);
+        dd($data);
         foreach ($data as $single_photo) {
 
             $photo = Photo::where([
