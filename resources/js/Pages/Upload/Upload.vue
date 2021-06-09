@@ -71,11 +71,6 @@
                                 <file-title
                                     v-bind:title="file.title"
                                     v-on:title-change="file.title = $event"
-                                    :id="file.id"
-                                    :editableContainerKlass="
-                                        editableContainerKlass
-                                    "
-                                    :editingKlass="editingKlass"
                                 ></file-title>
                                 <file-notes
                                     :hasDuplicate="file.hasDuplicateddssss"
@@ -205,8 +200,8 @@ export default {
             tags: [],
             spinner: "/images/spinner.svg",
             rmlisteners: [],
-            editableContainerKlass: "js-editable",
-            editingKlass: "is-editing",
+            // editableContainerKlass: "js-editable",
+            // editingKlass: "is-editing",
             confirmKlass: "js-editable__confirm",
             textareaKlass: "js-editable__area",
         };
@@ -242,9 +237,9 @@ export default {
                 this.animateUploadBar
             )
         );
-        this.rmlisteners.push(
-            addEventListener(document, "focusout", this.focusOut)
-        );
+        // this.rmlisteners.push(
+        //     addEventListener(document, "focusout", this.focusOut)
+        // );
     },
 
     methods: {
@@ -252,18 +247,18 @@ export default {
             console.log(e);
             window.requestAnimationFrame(() => this.updateUploadBar(e));
         },
-        /**Function to process a focusout event */
-        focusOut(e) {
-            console.log(e);
-            const actionEntitiesSelector = `.${this.textareaKlass}, .${this.confirmKlass}`;
-            let container = document.querySelector(`.${this.editingKlass}`);
-            if (e.target.matches(actionEntitiesSelector) && container) {
-                let textarea = container.querySelector("textarea");
+        // /**Function to process a focusout event */
+        // focusOut(e) {
+        //     console.log(e);
+        //     const actionEntitiesSelector = `.${this.textareaKlass}, .${this.confirmKlass}`;
+        //     let container = document.querySelector(`.${this.editingKlass}`);
+        //     if (e.target.matches(actionEntitiesSelector) && container) {
+        //         let textarea = container.querySelector("textarea");
 
-                textarea.disabled = true;
-                container.classList.remove(this.editingKlass);
-            }
-        },
+        //         textarea.disabled = true;
+        //         container.classList.remove(this.editingKlass);
+        //     }
+        // },
 
         saveTitle(e, id) {
             console.log(id);
