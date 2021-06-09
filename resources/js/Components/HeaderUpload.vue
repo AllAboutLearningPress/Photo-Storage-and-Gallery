@@ -2,7 +2,12 @@
     <div class="header__slot_actions header__slot">
         <label
             title="Upload"
-            class="js-upload header__action-btn button-file btn btn-subtle btn-lg"
+            class="
+                js-upload
+                header__action-btn
+                button-file
+                btn btn-subtle btn-lg
+            "
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
