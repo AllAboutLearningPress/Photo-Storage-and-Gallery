@@ -70,7 +70,10 @@
                             <div class="file__header">
                                 <file-title
                                     v-bind:title="file.title"
-                                    v-on:title-change="file.title = $event"
+                                    v-on:title-change="
+                                        file.title = $event;
+                                        saveTitle(file.title, file.id);
+                                    "
                                 ></file-title>
                                 <file-notes
                                     :hasDuplicate="file.hasDuplicateddssss"
@@ -237,9 +240,6 @@ export default {
                 this.animateUploadBar
             )
         );
-        // this.rmlisteners.push(
-        //     addEventListener(document, "focusout", this.focusOut)
-        // );
     },
 
     methods: {
@@ -247,31 +247,17 @@ export default {
             console.log(e);
             window.requestAnimationFrame(() => this.updateUploadBar(e));
         },
-        // /**Function to process a focusout event */
-        // focusOut(e) {
-        //     console.log(e);
-        //     const actionEntitiesSelector = `.${this.textareaKlass}, .${this.confirmKlass}`;
-        //     let container = document.querySelector(`.${this.editingKlass}`);
-        //     if (e.target.matches(actionEntitiesSelector) && container) {
-        //         let textarea = container.querySelector("textarea");
 
-        //         textarea.disabled = true;
-        //         container.classList.remove(this.editingKlass);
-        //     }
-        // },
+        saveTitle(title, fileId) {
+            console.log(title);
+            console.log(fileId);
 
-        saveTitle(e, id) {
-            console.log(id);
-            let container = e.target.closest(`.${this.editableContainerKlass}`);
-            let textarea = e.target.closest(".textarea");
-            console.log(textarea);
-            container.classList.remove(this.editingKlass);
             // send axios request to save title
-            this.sendPhotoDetailsReq({ title: textarea.value });
+            this.sendPhotoDetailsReq({ title: title }, fileId);
         },
-        sendPhotoDetailsReq(data) {
+        sendPhotoDetailsReq(data, fileId) {
             axios
-                .post(route("uploads.save-details"), data)
+                .post(route("uploads.update-details", fileId), data)
                 .then((resp) => {
                     notify("Photo Updated");
                 })
