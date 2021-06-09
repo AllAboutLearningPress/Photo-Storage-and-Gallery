@@ -221,7 +221,7 @@ class UploadController extends Controller
         return response('', 200);
     }
 
-    public function updateDetails(Request $request, $id)
+    public function updateDetails(Request $request)
     {
         $data = $request->validate([
             'id' => 'required|integer|exists:photos,id',
@@ -232,7 +232,10 @@ class UploadController extends Controller
 
         // photo details can only 9be updated in upload time
         // if the photo belongs to the authenticated user
-        $photo = Photo::where(['id', '=', $data['id'], ['user_id', "=", Auth::id()]])->first();
+        $photo = Photo::where([
+            ['id', '=', $data['id']],
+            ['user_id', "=", Auth::id()],
+        ])->first();
         if ($photo) {
             // removed the id from $data array. as we dont want to update the id
             unset($data['id']);
@@ -240,5 +243,6 @@ class UploadController extends Controller
             // updating the photo with updated details
             $photo->update($data);
         }
+        return response('', 200);
     }
 }
