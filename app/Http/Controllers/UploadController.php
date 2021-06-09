@@ -118,7 +118,7 @@ class UploadController extends Controller
         // generating a random filename for photo
         $fileName = bin2hex(random_bytes(32)) . '.' . $data['file']->getClientOriginalExtension(); //
         $imgsize = getimagesize($data['file']->getPathName());
-        $data['file']->storeAs("full_size/", $fileName, 'local');
+        $data['file']->storeAs("public/full_size/", $fileName, 'local');
 
         // updating the photo entry
 
@@ -166,7 +166,6 @@ class UploadController extends Controller
     public function cancelUpload(Request $request)
     {
         $data = $request->validate(['*.id' => "required|integer"]);
-        dd($data);
         foreach ($data as $single_photo) {
 
             $photo = Photo::where([
