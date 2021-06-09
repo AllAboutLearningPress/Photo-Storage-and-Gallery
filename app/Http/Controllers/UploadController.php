@@ -165,7 +165,7 @@ class UploadController extends Controller
      */
     public function cancelUpload(Request $request)
     {
-        $data = $request->validate(['*' => "required|integer"]);
+        $data = $request->validate(['*.id' => "required|integer"]);
         dd($data);
         foreach ($data as $single_photo) {
 

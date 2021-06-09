@@ -15,7 +15,7 @@
         <div class="upload-manager">
             <ul class="mb-5 upload-manager__files file-list nolist">
                 <li
-                    v-for="file in filesArray"
+                    v-for="(file, index) in filesArray"
                     :key="file.id"
                     class="file-list__item"
                 >
@@ -43,7 +43,7 @@
                             </div>
 
                             <button
-                                v-on:click="cancelSingleUpload($event, file.id)"
+                                v-on:click="cancelSingleUpload(index)"
                                 title="Remove file"
                                 type="button"
                                 class="
@@ -72,11 +72,11 @@
                                     v-bind:title="file.title"
                                     v-on:title-change="
                                         file.title = $event;
-                                        saveTitle(file.title, file.id);
+                                        updateTitle($event, file.id);
                                     "
                                 ></file-title>
                                 <file-notes
-                                    :hasDuplicate="file.hasDuplicateddssss"
+                                    :hasDuplicate="file.hasDuplicate"
                                 ></file-notes>
                             </div>
                             <file-tag
@@ -158,21 +158,21 @@ export default {
     },
     mounted() {
         // event listener for updating individual progress bar
-        this.rmlisteners.push(
-            addEventListener(
-                document,
-                "update-progress-bar",
-                this.animateUploadBar
-            )
-        );
+        // this.rmlisteners.push(
+        //     addEventListener(
+        //         document,
+        //         "update-progress-bar",
+        //         this.animateUploadBar
+        //     )
+        // );
     },
 
     methods: {
-        animateUploadBar(e) {
-            console.log(e);
-            window.requestAnimationFrame(() => this.updateUploadBar(e));
-        },
-        Title(title, fileId) {
+        // animateUploadBar(e) {
+        //     console.log(e);
+        //     window.requestAnimationFrame(() => this.updateUploadBar(e));
+        // },
+        updateTitle(title, fileId) {
             console.log(title);
             console.log(fileId);
 
@@ -218,149 +218,44 @@ export default {
                 });
         },
 
-        /**
-         * Gets called when add button is pressed on tag
-         * @param {Event} e - Add button click event
-         * @param {Int} fileId - the id of the file that the tag is being added to
-         */
-        addTag(e, fileId) {
-            console.log(e);
-            const tagInput = e.target.parentElement.querySelector("input");
-            if (tagInput.value) {
-                let tagOption = document
-                    .querySelector("datalist")
-                    .querySelector(`[value='${tagInput.value}']`);
-
-                // tagId will be null if user typed a new tag
-                let tagId = null;
-                if (tagOption) {
-                    // user choosed a tag from the datalist
-                    tagId = tagOption.getAttribute("data-id");
-                }
-
-                // adding the tag to the filesArray Array
-                // its a O(n) solution.
-                for (let k = 0; k < this.filesArray.length; k++) {
-                    if (this.filesArray[k].id == fileId) {
-                        for (
-                            let i = 0;
-                            i < this.filesArray[k].tags.length;
-                            i++
-                        ) {
-                            if (
-                                this.filesArray[k].tags[i].name ==
-                                tagInput.value
-                            ) {
-                                // user already added this tag once
-                                return;
-                            }
-                        }
-
-                        // adding new tag to the image
-                        this.filesArray[k].tags.push({
-                            name: tagInput.value,
-                            id: tagId,
-                        });
-                        this.sendAddTagReq(this.filesArray[k].id, tagId);
-                        console.log(this.filesArray[k].tags);
-                        break;
-                    }
-                }
-            }
-        },
-        /** Sends "add tag" request to server
-         * @param {Number} fileId - The id of the file where tag should be added
-         * @param {Number} tagId - The if of the tag to add
-         */
-        sendAddTagReq(fileId, tagId) {
-            axios
-                .post(route("uploads.add_tag"), {
-                    fileId: fileId,
-                    tagId: tagId,
-                })
-                .then((resp) => {
-                    if (resp.status == 201) {
-                        // Tag created because user typed a new tag string
-                        notify("Tag created and added to photo");
-                        return;
-                    }
-                    notify("Tag Added successfully");
-                });
-        },
-        /** Sends "delete tag" request to server
-         * @param {Number} - The id of the file to remove tag from
-         * @param {Number} - The id of tag to remove
-         */
-        sendDeleteTagReq(fileId, tagId) {
-            axios
-                .post(route("uploads.remove_tag"), {
-                    fileId: fileId,
-                    tagId: tagId,
-                })
-                .then((reso) => {
-                    notify("Tag Removed");
-                })
-                .catch((err) => {
-                    notify("Something went wrong. Please try again");
-                    console.log(err);
-                });
-        },
-        /** Removes tag from uploading image
-        @param {Int} tagIndex - The index of tag in the this.filesArray[i].tags
-        @param {Int} fileId - the if of the file that the tag is assigned to. this id is local
-        @returns {null}
-        */
-        removeTag(tagIndex, fileId) {
-            for (let i = 0; i < this.filesArray.length; i++) {
-                if (this.filesArray[i].id == fileId) {
-                    console.log(this.filesArray[i]);
-                    this.sendDeleteTagReq(
-                        this.filesArray[i].id,
-                        this.filesArray[i].tags[tagIndex].id
-                    );
-                    this.filesArray[i].tags.splice(tagIndex, 1);
-                }
-            }
-        },
         /**Cancels the full upload */
         cancelUpload() {
             console.log("upload cancelled");
+            // saving the filesArray for restoring
+            let filesArray = [...this.filesArray];
             let ids = [];
             for (let i = 0; i < this.filesArray.length; i++) {
-                ids.push(this.filesArray[i].id);
+                ids.push({ id: this.filesArray[i].id });
             }
-            this.sendCancelUploadReq(ids, "Upload Cancelled");
+            console.log(ids);
+            this.sendCancelUploadReq(ids, () => {
+                this.filesArray = filesArray;
+            });
             this.$inertia.get(route("home"));
             this.filesArray = [];
         },
 
-        cancelSingleUpload(e, fileId) {
-            for (let i = 0; i < this.filesArray.length; i++) {
-                if (this.filesArray[i].id == fileId) {
-                    // file found
-                    // cancelling the ongoing upload
-                    this.filesArray[i].cancelToken.cancel();
-                    let title = this.filesArray[i].title;
-
-                    // removing the file from filesArray
-                    this.filesArray.splice(i, 1);
-                    this.sendCancelUploadReq([fileId], "File removed");
-                    // removing the entry from filesArray.
-                    //this.filesArray.splice(i, 1);
-                }
-            }
-        },
-        sendCancelUploadReq(ids, notificationText) {
+        cancelSingleUpload(index) {
+            let file = this.filesArray[index];
+            // removing the file from filesArray
+            this.filesArray.splice(index, 1);
             // sending request to remove the file entry
+            this.sendPhotoDetailsReq([{ id: file.id }], () => {
+                // adding the file again to exact location
+                this.filesArray.splice(index, 0, file);
+            });
+        },
+        sendCancelUploadReq(ids, errCallback) {
             axios
                 .post(route("uploads.cancel_upload"), ids)
                 .then((resp) => {
                     // let user know that this file is cancelled
-
-                    notify(notificationText);
+                    notify("File removed");
                 })
                 .catch((err) => {
                     console.error(err);
+                    notify("Something went wrong. Please try again");
+                    errCallback();
                 });
         },
     },

@@ -16,10 +16,6 @@
 </template>
 <script>
 export default {
-    props() {
-        return {
-            hasDuplicate: Boolean,
-        };
-    },
+    props: ["hasDuplicate"],
 };
 </script>
