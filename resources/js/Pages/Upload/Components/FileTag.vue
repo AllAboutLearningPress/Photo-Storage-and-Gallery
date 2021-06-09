@@ -66,11 +66,6 @@
 import { notify } from "@/util.js";
 export default {
     props: ["tags", "id"],
-    mounted() {
-        // setInterval(() => {
-        //     console.log(this.tags);
-        // }, 1500);
-    },
     methods: {
         addTag() {
             let value = this.$refs["tag-input"].value;

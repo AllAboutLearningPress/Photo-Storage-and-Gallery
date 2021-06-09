@@ -43,16 +43,11 @@
                     fw-light
                     form-control form-control-lg form-control-plaintext
                 "
-                v-bind:title="title"
-                :value="title"
-                ref="textarea"
-                v-on:change="$emit('title-change', $event.target.value)"
+                v-model="textareaValue"
                 v-on:blur="onBlur"
+                ref="textarea"
             ></textarea>
-            <button
-                v-on:click="saveTitle($event, id)"
-                class="js-editable__confirm btn btn-outline-secondary"
-            >
+            <button class="js-editable__confirm btn btn-outline-secondary">
                 Ok
             </button>
         </div>
@@ -70,7 +65,12 @@ export default {
         return {
             editableContainerKlass: "js-editable",
             editingKlass: "is-editing",
+            textareaValue: null,
         };
+    },
+    mounted() {
+        this.textareaValue = this.title;
+        console.log("mounted");
     },
     methods: {
         onBlur(e) {
@@ -78,13 +78,15 @@ export default {
             console.log("input blurred");
             this.$refs["container"].classList.remove(this.editingKlass);
             this.$refs["textarea"].disabled = true;
-            //this.$emit("title-change", this.$refs["textarea"].value);
+
+            this.$emit("title-change", this.$refs["textarea"].value);
         },
 
         editTitle(e, id) {
             e.preventDefault();
 
             setTimeout(() => {
+                console.log(this.$refs);
                 this.$refs["container"].classList.add(this.editingKlass);
                 this.$refs["textarea"].disabled = false;
                 this.resize(this.$refs["textarea"]);
