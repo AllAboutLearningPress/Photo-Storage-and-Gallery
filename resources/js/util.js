@@ -6,3 +6,7 @@ export const notify = (body, level) => {
         }
     }))
 }
+
+export const axiosError = (err) => {
+    notify("Something went wrong. Please try again")
+}

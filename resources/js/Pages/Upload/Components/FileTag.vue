@@ -36,7 +36,7 @@
                     type="button"
                     class="js-tag-delete tag__delete btn-close"
                     aria-label="Delete tag"
-                    v-on:click="$emit('remove-tag', index)"
+                    v-on:click="removeTag(tag, index)"
                 >
                     <span class="visually-hidden">Delete tag</span>
                 </button>
@@ -63,24 +63,62 @@
     </div>
 </template>
 <script>
+import { notify } from "@/util.js";
 export default {
-    props: ["tags"],
+    props: ["tags", "id"],
     mounted() {
-        setInterval(() => {
-            console.log(this.tags);
-        }, 1500);
+        // setInterval(() => {
+        //     console.log(this.tags);
+        // }, 1500);
     },
     methods: {
         addTag() {
             let value = this.$refs["tag-input"].value;
-            let tagOption = document
-                .querySelector("datalist")
-                .querySelector(`[value='${value}']`);
+            // only add the tag if its not added before
+            if (this.uniqueTag(value)) {
+                let tagOption = document
+                    .querySelector("datalist")
+                    .querySelector(`[value='${value}']`);
+                let tagId = tagOption.getAttribute("data-id");
+                this.$emit("add-tag", {
+                    name: value,
+                    id: tagId,
+                });
+                axios
+                    .post(route("uploads.add_tag"), {
+                        fileId: this.id,
+                        tagId: tagId,
+                    })
+                    .then((resp) => {
+                        notify("Tag Added");
+                    });
+            }
+        },
 
-            this.$emit("add-tag", {
-                name: value,
-                id: tagOption.getAttribute("data-id"),
+        removeTag(tag, index) {
+            this.$emit("remove-tag", index);
+            axios
+                .post(route("uploads.remove_tag"), {
+                    fileId: this.id,
+                    tagId: tag.id,
+                })
+                .then((resp) => {
+                    notify("Tag removed");
+                })
+                .catch((err) => {
+                    notify("Something went wrong. Please try again", "danger");
+                    // tag remove failed
+                    // so adding the tag again to the taglist
+                    this.$emit("add-tag", tag);
+                });
+        },
+        uniqueTag(newTag) {
+            this.tags.forEach((tag) => {
+                if (Tag.name == newTag) {
+                    return;
+                }
             });
+            return true;
         },
     },
 };

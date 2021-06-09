@@ -81,11 +81,9 @@
                             </div>
                             <file-tag
                                 :tags="file.tags"
-                                v-on:add-tag="
-                                    file.tags.push(
-                                        checkUniqueTag(file.tags, $event)
-                                    )
-                                "
+                                :id="file.id"
+                                v-on:add-tag="file.tags.push($event)"
+                                v-on:remove-tag="file.tags.splice($event, 1)"
                             >
                             </file-tag>
                         </div>
@@ -140,20 +138,20 @@ export default {
     created() {
         // fetch tags lazily from server
         this.fetchTags(route("tags.get_tags"));
-        this.filesArray.push(
-            {
-                id: 0,
-                title: "test file",
-                tags: [],
-                //thumbnail_link: "http://placekitten.com/200/100",
-            }
-            // {
-            //     id: 1,
-            //     title: "test file",
-            //     tags: [],
-            //     //thumbnail_link: "http://placekitten.com/200/100",
-            // }
-        );
+        // this.filesArray.push(
+        //     {
+        //         id: 0,
+        //         title: "test file",
+        //         tags: [],
+        //         //thumbnail_link: "http://placekitten.com/200/100",
+        //     }
+        //     // {
+        //     //     id: 1,
+        //     //     title: "test file",
+        //     //     tags: [],
+        //     //     //thumbnail_link: "http://placekitten.com/200/100",
+        //     // }
+        // );
         // setInterval(() => {
         //     console.log(this.filesArray[0].title);
         // }, 1000);
@@ -174,15 +172,7 @@ export default {
             console.log(e);
             window.requestAnimationFrame(() => this.updateUploadBar(e));
         },
-        checkUniqueTag(tags, newTag) {
-            tags.forEach((tag) => {
-                if (Tag.name == newTag) {
-                    return;
-                }
-            });
-            return newTag;
-        },
-        saveTitle(title, fileId) {
+        Title(title, fileId) {
             console.log(title);
             console.log(fileId);
 
