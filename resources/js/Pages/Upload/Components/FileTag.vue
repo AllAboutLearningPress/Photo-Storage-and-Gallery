@@ -1,0 +1,87 @@
+<template>
+    <div class="js-tags tags">
+        <div class="js-tags__form tags__form" action="#">
+            <div class="input-group mt-1 mb-3">
+                <input
+                    name="tag-input"
+                    list="tag-list"
+                    class="js-tags__input form-control form-control-lg"
+                    type="text"
+                    placeholder="Specify tag"
+                    autocomplete="off"
+                    ref="tag-input"
+                />
+                <button
+                    title="Add tag"
+                    class="btn btn-lg btn-outline-secondary"
+                    type="submit"
+                    v-on:click="addTag"
+                >
+                    Add
+                </button>
+            </div>
+        </div>
+
+        <div class="js-tags__list tags__list">
+            <a
+                class="tags__tag tag tag_deletable btn btn-secondary"
+                href="#"
+                v-for="(tag, index) in tags"
+                :key="tag.id"
+            >
+                {{ tag.name }}
+
+                <button
+                    title="Delete tag"
+                    type="button"
+                    class="js-tag-delete tag__delete btn-close"
+                    aria-label="Delete tag"
+                    v-on:click="$emit('remove-tag', index)"
+                >
+                    <span class="visually-hidden">Delete tag</span>
+                </button>
+            </a>
+            <!-- <a
+                class="tags__tag tag tag_deletable btn btn-secondary"
+                href="#"
+            >
+                Some tag ometagomet agomet agometa etag
+                <object type="no/suchtype">
+                    <button
+                        title="Delete tag"
+                        type="button"
+                        class="js-tag-delete tag__delete btn-close"
+                        aria-label="Delete tag"
+                    >
+                        <span class="visually-hidden"
+                            >Delete tag</span
+                        >
+                    </button>
+                </object>
+            </a> -->
+        </div>
+    </div>
+</template>
+<script>
+export default {
+    props: ["tags"],
+    mounted() {
+        setInterval(() => {
+            console.log(this.tags);
+        }, 1500);
+    },
+    methods: {
+        addTag() {
+            let value = this.$refs["tag-input"].value;
+            let tagOption = document
+                .querySelector("datalist")
+                .querySelector(`[value='${value}']`);
+
+            this.$emit("add-tag", {
+                name: value,
+                id: tagOption.getAttribute("data-id"),
+            });
+        },
+    },
+};
+</script>
