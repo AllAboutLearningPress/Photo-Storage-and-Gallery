@@ -79,87 +79,15 @@
                                     :hasDuplicate="file.hasDuplicateddssss"
                                 ></file-notes>
                             </div>
-                            <div class="js-tags tags">
-                                <div
-                                    class="js-tags__form tags__form"
-                                    action="#"
-                                >
-                                    <div class="input-group mt-1 mb-3">
-                                        <input
-                                            name="tag-input"
-                                            list="tag-list"
-                                            class="
-                                                js-tags__input
-                                                form-control form-control-lg
-                                            "
-                                            type="text"
-                                            placeholder="Specify tag"
-                                            autocomplete="off"
-                                        />
-                                        <button
-                                            title="Add tag"
-                                            class="
-                                                btn btn-lg btn-outline-secondary
-                                            "
-                                            type="submit"
-                                            v-on:click="addTag($event, file.id)"
-                                        >
-                                            Add
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div class="js-tags__list tags__list">
-                                    <a
-                                        class="
-                                            tags__tag
-                                            tag tag_deletable
-                                            btn btn-secondary
-                                        "
-                                        href="#"
-                                        v-for="(tag, index) in file.tags"
-                                        :key="tag.id"
-                                    >
-                                        {{ tag.name }}
-
-                                        <button
-                                            title="Delete tag"
-                                            type="button"
-                                            class="
-                                                js-tag-delete
-                                                tag__delete
-                                                btn-close
-                                            "
-                                            aria-label="Delete tag"
-                                            v-on:click="
-                                                removeTag(index, file.id)
-                                            "
-                                        >
-                                            <span class="visually-hidden"
-                                                >Delete tag</span
-                                            >
-                                        </button>
-                                    </a>
-                                    <!-- <a
-                                        class="tags__tag tag tag_deletable btn btn-secondary"
-                                        href="#"
-                                    >
-                                        Some tag ometagomet agomet agometa etag
-                                        <object type="no/suchtype">
-                                            <button
-                                                title="Delete tag"
-                                                type="button"
-                                                class="js-tag-delete tag__delete btn-close"
-                                                aria-label="Delete tag"
-                                            >
-                                                <span class="visually-hidden"
-                                                    >Delete tag</span
-                                                >
-                                            </button>
-                                        </object>
-                                    </a> -->
-                                </div>
-                            </div>
+                            <file-tag
+                                :tags="file.tags"
+                                v-on:add-tag="
+                                    file.tags.push(
+                                        checkUniqueTag(file.tags, $event)
+                                    )
+                                "
+                            >
+                            </file-tag>
                         </div>
                     </div>
                 </li>
@@ -185,9 +113,9 @@ import { addEventListener } from "@/frontend/util/utils.js";
 import { inject } from "@vue/runtime-core";
 import FileNotes from "./Components/ FileNotes.vue";
 import FileTitle from "./Components/FileTitle.vue";
-
+import FileTag from "./Components/FileTag.vue";
 export default {
-    components: { UploadToolbar, FileNotes, FileTitle },
+    components: { UploadToolbar, FileNotes, FileTitle, FileTag },
     layout: MainLayout,
     setup() {
         const pushToFilesArray = inject("pushToFilesArray");
@@ -211,21 +139,21 @@ export default {
     },
     created() {
         // fetch tags lazily from server
-        // this.fetchTags(route("tags.get_tags"));
-        // this.filesArray.push(
-        //     {
-        //         id: 0,
-        //         title: "test file",
-        //         tags: [],
-        //         //thumbnail_link: "http://placekitten.com/200/100",
-        //     }
-        //     // {
-        //     //     id: 1,
-        //     //     title: "test file",
-        //     //     tags: [],
-        //     //     //thumbnail_link: "http://placekitten.com/200/100",
-        //     // }
-        // );
+        this.fetchTags(route("tags.get_tags"));
+        this.filesArray.push(
+            {
+                id: 0,
+                title: "test file",
+                tags: [],
+                //thumbnail_link: "http://placekitten.com/200/100",
+            }
+            // {
+            //     id: 1,
+            //     title: "test file",
+            //     tags: [],
+            //     //thumbnail_link: "http://placekitten.com/200/100",
+            // }
+        );
         // setInterval(() => {
         //     console.log(this.filesArray[0].title);
         // }, 1000);
@@ -246,7 +174,14 @@ export default {
             console.log(e);
             window.requestAnimationFrame(() => this.updateUploadBar(e));
         },
-
+        checkUniqueTag(tags, newTag) {
+            tags.forEach((tag) => {
+                if (Tag.name == newTag) {
+                    return;
+                }
+            });
+            return newTag;
+        },
         saveTitle(title, fileId) {
             console.log(title);
             console.log(fileId);
@@ -263,10 +198,6 @@ export default {
                 .catch((err) => {
                     notify("Something went Wrong", "danger");
                 });
-        },
-        storeTitle() {
-            // dispatch event with title data
-            // send axios request for storing data to server
         },
 
         /*
