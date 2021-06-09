@@ -68,7 +68,15 @@
                                 ></div>
                             </div>
                             <div class="file__header">
-                                <file-title></file-title>
+                                <file-title
+                                    v-bind:title="file.title"
+                                    v-on:title-change="file.title = $event"
+                                    :id="file.id"
+                                    :editableContainerKlass="
+                                        editableContainerKlass
+                                    "
+                                    :editingKlass="editingKlass"
+                                ></file-title>
                                 <file-notes
                                     :hasDuplicate="file.hasDuplicateddssss"
                                 ></file-notes>
@@ -207,20 +215,23 @@ export default {
         // fetch tags lazily from server
         this.fetchTags(route("tags.get_tags"));
 
-        // this.filesArray.push(
-        //     {
-        //         id: 0,
-        //         title: "test file",
-        //         tags: [],
-        //         //thumbnail_link: "http://placekitten.com/200/100",
-        //     },
-        //     {
-        //         id: 1,
-        //         title: "test file",
-        //         tags: [],
-        //         //thumbnail_link: "http://placekitten.com/200/100",
-        //     }
-        // );
+        this.filesArray.push(
+            {
+                id: 0,
+                title: "test file",
+                tags: [],
+                //thumbnail_link: "http://placekitten.com/200/100",
+            }
+            // {
+            //     id: 1,
+            //     title: "test file",
+            //     tags: [],
+            //     //thumbnail_link: "http://placekitten.com/200/100",
+            // }
+        );
+        setInterval(() => {
+            console.log(this.filesArray[0].title);
+        }, 1000);
     },
     mounted() {
         // event listener for updating individual progress bar
@@ -253,23 +264,7 @@ export default {
                 container.classList.remove(this.editingKlass);
             }
         },
-        editTitle(e, id) {
-            e.preventDefault();
-            let textarea = document.getElementById("title" + id);
-            console.log(textarea);
-            let container = textarea.closest(`.${this.editableContainerKlass}`);
-            console.log(container);
 
-            setTimeout(() => {
-                container.classList.add(this.editingKlass);
-                textarea.disabled = false;
-                this.resize(textarea);
-                textarea.focus();
-
-                // allow android chrome to lag, and then actually do select text
-                setTimeout(() => textarea.select(), 0);
-            }, 0);
-        },
         saveTitle(e, id) {
             console.log(id);
             let container = e.target.closest(`.${this.editableContainerKlass}`);
@@ -277,15 +272,23 @@ export default {
             console.log(textarea);
             container.classList.remove(this.editingKlass);
             // send axios request to save title
+            this.sendPhotoDetailsReq({ title: textarea.value });
+        },
+        sendPhotoDetailsReq(data) {
+            axios
+                .post(route("uploads.save-details"), data)
+                .then((resp) => {
+                    notify("Photo Updated");
+                })
+                .catch((err) => {
+                    notify("Something went Wrong", "danger");
+                });
         },
         storeTitle() {
             // dispatch event with title data
             // send axios request for storing data to server
         },
-        resize(tx) {
-            tx.style.height = "auto";
-            tx.style.height = tx.scrollHeight + "px";
-        },
+
         /*
         Fetches the tags from server in chunks.
         Server returns 100 tags at each request then

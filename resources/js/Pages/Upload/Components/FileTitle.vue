@@ -1,11 +1,11 @@
 <template>
-    <div class="js-editable editable file__title">
+    <div class="js-editable editable file__title" ref="container">
         <h3
-            v-on:click="editTitle($event, file.id)"
+            v-on:click="editTitle($event, id)"
             class="editable__content fs-4 fw-light"
         >
             <span class="js-editable__val">
-                {{ file.title }}
+                {{ title }}
             </span>
             <button
                 type="button"
@@ -43,11 +43,12 @@
                     fw-light
                     form-control form-control-lg form-control-plaintext
                 "
-                v-model="file.title"
-                :id="'title' + file.id"
+                v-bind:title="title"
+                ref="textarea"
+                v-on:change="$emit('title-change', $event.target.value)"
             ></textarea>
             <button
-                v-on:click="saveTitle($event, file.id)"
+                v-on:click="saveTitle(dd$event, id)"
                 class="js-editable__confirm btn btn-outline-secondary"
             >
                 Ok
@@ -57,5 +58,30 @@
 </template>
 
 <script>
-export default {};
+export default {
+    props: ["id", "title", "editableContainerKlass", "editingKlass"],
+    model: {
+        prop: "title",
+        event: "change",
+    },
+    methods: {
+        editTitle(e, id) {
+            e.preventDefault();
+
+            setTimeout(() => {
+                this.$refs["container"].classList.add(this.editingKlass);
+                this.$refs["textarea"].disabled = false;
+                this.resize(this.$refs["textarea"]);
+                this.$refs["textarea"].focus();
+
+                // allow android chrome to lag, and then actually do select text
+                setTimeout(() => this.$refs["textarea"].select(), 0);
+            }, 0);
+        },
+        resize(tx) {
+            tx.style.height = "auto";
+            tx.style.height = tx.scrollHeight + "px";
+        },
+    },
+};
 </script>
