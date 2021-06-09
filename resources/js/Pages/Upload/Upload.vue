@@ -211,25 +211,24 @@ export default {
     },
     created() {
         // fetch tags lazily from server
-        this.fetchTags(route("tags.get_tags"));
-
-        this.filesArray.push(
-            {
-                id: 0,
-                title: "test file",
-                tags: [],
-                //thumbnail_link: "http://placekitten.com/200/100",
-            }
-            // {
-            //     id: 1,
-            //     title: "test file",
-            //     tags: [],
-            //     //thumbnail_link: "http://placekitten.com/200/100",
-            // }
-        );
-        setInterval(() => {
-            console.log(this.filesArray[0].title);
-        }, 1000);
+        // this.fetchTags(route("tags.get_tags"));
+        // this.filesArray.push(
+        //     {
+        //         id: 0,
+        //         title: "test file",
+        //         tags: [],
+        //         //thumbnail_link: "http://placekitten.com/200/100",
+        //     }
+        //     // {
+        //     //     id: 1,
+        //     //     title: "test file",
+        //     //     tags: [],
+        //     //     //thumbnail_link: "http://placekitten.com/200/100",
+        //     // }
+        // );
+        // setInterval(() => {
+        //     console.log(this.filesArray[0].title);
+        // }, 1000);
     },
     mounted() {
         // event listener for updating individual progress bar
@@ -253,11 +252,11 @@ export default {
             console.log(fileId);
 
             // send axios request to save title
-            this.sendPhotoDetailsReq({ title: title }, fileId);
+            this.sendPhotoDetailsReq({ title: title, id: fileId });
         },
-        sendPhotoDetailsReq(data, fileId) {
+        sendPhotoDetailsReq(data) {
             axios
-                .post(route("uploads.update-details", fileId), data)
+                .post(route("uploads.update-details"), data)
                 .then((resp) => {
                     notify("Photo Updated");
                 })
