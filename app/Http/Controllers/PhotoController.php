@@ -15,7 +15,7 @@ class PhotoController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('PhotoView');
     }
 
     /**

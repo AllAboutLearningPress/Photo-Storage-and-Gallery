@@ -1,6 +1,7 @@
 <template>
     <div>
-        <div class="wrapper">
+        <slot></slot>
+        <div v-if="!photoView" class="wrapper">
             <div class="js-selected-toolbar selected-toolbar toolbar">
                 <div class="toolbar__main">
                     <button
@@ -80,9 +81,8 @@
             <Header></Header>
             <div class="content">
                 <sidebar></sidebar>
-                <main class="main">
-                    <slot></slot>
-                </main>
+
+                <main class="main"></main>
             </div>
         </div>
 
@@ -133,6 +133,7 @@ export default {
         let total = ref(0);
         const filesArray = ref([]);
         const uploadedCount = ref(0);
+        const photoView = ref(false);
         const pushToFilesArray = (files) => {
             console.log("pushing to files");
 
@@ -151,9 +152,11 @@ export default {
         provide("pushToFilesArray", pushToFilesArray);
         provide("uploadedCount", uploadedCount);
         provide("increaseUploadedCount", increaseUploadedCount);
+        provide("photoView", photoView);
         return {
             total,
             filesArray,
+            photoView,
         };
     },
     created() {
@@ -161,6 +164,12 @@ export default {
         //     console.log("total in main: ", this.total);
         //     this.total++;
         // }, 1000);
+        // window.addEventListener("beforeunload", function (e) {
+        //     // Cancel the event
+        //     e.preventDefault(); // If you prevent default behavior in Mozilla Firefox prompt will always be shown
+        //     // Chrome requires returnValue to be set
+        //     e.returnValue = "";
+        // });
     },
     // provide() {
     //     return {

@@ -47,7 +47,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
 
     /* Routes related to photos */
-    Route::get("/photo/{name}", [PhotoController::class, 'show'])->name('photos.show');
+    Route::resource('photo', PhotoController::class);
     Route::get("/trash", [PhotoController::class, 'trash'])->name('trash');
 
 
