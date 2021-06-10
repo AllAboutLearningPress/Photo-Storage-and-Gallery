@@ -17,7 +17,7 @@ export default {
     },
     layout: MainLayout,
     props: {
-        photos: [],
+        photos: Array,
         photo: Object,
         jetstream: Object,
         user: Object,
@@ -221,8 +221,9 @@ export default {
             urlForSize: function (filename, size) {
                 return `/storage/full_size/${filename}`;
             },
-            onClickHandler(filename) {
-                alert(`select ${filename}`);
+            onClickHandler: (filename) => {
+                //alert(`select ${filename}`);
+                this.$inertia.visit;
             },
             figureTagName: "a",
         };
