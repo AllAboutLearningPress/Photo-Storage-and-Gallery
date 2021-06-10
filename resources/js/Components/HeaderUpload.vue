@@ -50,11 +50,15 @@ export default {
         const filesArray = inject("filesArray");
         const total = inject("total");
         const updateTotal = inject("updateTotal");
+        const uploadedCount = inject("uploadedCount");
+        const increaseUploadedCount = inject("increaseUploadedCount");
         return {
             pushToFilesArray,
             filesArray,
             total,
             updateTotal,
+            uploadedCount,
+            increaseUploadedCount,
         };
     },
     data() {
@@ -85,7 +89,7 @@ export default {
                 "image/tiff",
                 "image/vnd.adobe.photoshop",
             ],
-            cancelTokens: [],
+            completedCount: 0,
         };
     },
     created() {
@@ -299,16 +303,6 @@ export default {
                 .post(route("uploads.store_file"), formData, {
                     cancelToken: this.filesArray[filePostion].cancelToken.token,
                     onUploadProgress: (e) => {
-                        // console.log(
-                        //     "priv loaded: ",
-                        //     this.filesArray[filePostion].privLoaded
-                        // );
-                        // this.dispatchUploadProgress(
-                        //     e,
-                        //     fileId,
-                        //     e.loaded - this.filesArray[filePostion].privLoaded
-                        // );
-
                         this.filesArray[filePostion].loaded = e.loaded;
                         this.filesArray[filePostion].width =
                             (e.loaded / e.total) * 100 + "%";
@@ -318,14 +312,10 @@ export default {
                     console.log(response);
                     this.uploadCount--;
 
-                    // dispatching event for /upload page
-                    // If the upload details page is open
-                    // then it will use this data to process
-                    // user updated details
-
                     // this will be used to show the tick on /upload page
                     this.filesArray[filePostion].uploadCompleted = true;
-
+                    this.increaseUploadedCount(1);
+                    this.checkAllUploaded();
                     // upload finished. Now it will check and
                     // start a new upload
                     //this.uploadFiles();
@@ -366,6 +356,15 @@ export default {
             return [...new Uint8Array(buffer)]
                 .map((x) => x.toString(16).padStart(2, "0"))
                 .join("");
+        },
+        checkAllUploaded() {
+            if (this.uploadedCount == this.filesArray.length) {
+                // all upload completed
+                notify("Upload finishes. Please complete the upload");
+                // showing use the /upload page. So they can do a final
+                // Editing of file details.
+                this.$inertia.visit(route("uploads.index"));
+            }
         },
     },
 };

@@ -6,7 +6,11 @@
                     <button
                         type="button"
                         title="Unselect"
-                        class="js-unselect selected-toolbar__unselect btn btn-lg btn-subtle"
+                        class="
+                            js-unselect
+                            selected-toolbar__unselect
+                            btn btn-lg btn-subtle
+                        "
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -127,20 +131,26 @@ export default {
     // },
     setup() {
         let total = ref(0);
-        const filesArray = reactive([]);
+        const filesArray = ref([]);
+        const uploadedCount = ref(0);
         const pushToFilesArray = (files) => {
             console.log("pushing to files");
 
-            filesArray.push(files);
+            filesArray.value.push(files);
             console.log(filesArray);
         };
         const updateTotal = (newTotal) => {
             total.value = newTotal;
         };
+        const increaseUploadedCount = (value) => {
+            uploadedCount.value += value;
+        };
         provide("total", total);
+        provide("updateTotal", updateTotal);
         provide("filesArray", filesArray);
         provide("pushToFilesArray", pushToFilesArray);
-        provide("updateTotal", updateTotal);
+        provide("uploadedCount", uploadedCount);
+        provide("increaseUploadedCount", increaseUploadedCount);
         return {
             total,
             filesArray,

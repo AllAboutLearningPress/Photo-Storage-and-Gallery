@@ -20,7 +20,7 @@ class IndexController extends Controller
         $photos =  Photo::limit(5)->get();
         // //dd($photos);
         return Inertia::render('Index', [
-            'photos' => Photo::all()
+            'photos' => Photo::where('file_name', "!=", null)->get()
         ]);
         //$this->add_temp_url($photos)
         return view('index');
