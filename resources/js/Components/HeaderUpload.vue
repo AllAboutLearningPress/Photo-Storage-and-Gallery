@@ -361,7 +361,10 @@ export default {
         checkAllUploaded() {
             if (this.uploadedCount == this.filesArray.length) {
                 // all upload completed
-                notify("Upload finishes. Please complete the upload");
+                notify(
+                    "Upload finished. Please complete the upload",
+                    "success"
+                );
                 // showing use the /upload page. So they can do a final
                 // Editing of file details.
                 this.$inertia.visit(route("uploads.index"));
