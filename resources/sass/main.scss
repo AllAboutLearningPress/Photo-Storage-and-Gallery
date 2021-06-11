@@ -807,7 +807,8 @@ $selected-toolbar-transition-duration: .2s;
 $image-view-sidebar-width: 400px;
 
 .image-view {
-  height:100%;
+  height:100vh;
+  width: 100vw;
   display: flex;
   position: relative;
   overflow: hidden;
