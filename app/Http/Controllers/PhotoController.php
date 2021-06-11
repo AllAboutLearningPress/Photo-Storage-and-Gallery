@@ -45,10 +45,10 @@ class PhotoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($name)
+    public function show(Request $request, $id, $slug)
     {
-        return  Inertia::render('Photo/Show', [
-            'photo' => Photo::where('name', "=", $name)->first()
+        return  Inertia::render('PhotoView/PhotoView', [
+            'photo' => Photo::findOrFail($id)
         ]);
     }
 
