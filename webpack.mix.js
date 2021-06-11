@@ -12,8 +12,8 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js').vue()
-    .copy('resources/js/vendor/pig.min.js', 'public/js/vendor/pig.min.js')
-    .copy('resources/js/vendor/pig.js', 'public/js/vendor/pig.js')
+    //.copy('resources/js/vendor/pig.min.js', 'public/js/vendor/pig.min.js')
+    .copy('resources/js/vendor/pig.js', 'public/js/vendor/pig.min.js')
     .js('resources/js/frontend/index.js', 'public/js/frontend/bundle.js')
     .postCss('resources/css/app.css', 'public/css', [
         require('postcss-import'),

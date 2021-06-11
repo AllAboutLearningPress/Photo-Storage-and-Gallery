@@ -801,6 +801,16 @@ $selected-toolbar-transition-duration: .2s;
 
 $image-view-sidebar-width: 400px;
 
+
+.image-view-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: 200;
+    background-color: $page-bg;
+}
 .image-view {
   height: 100%;
   display: flex;
