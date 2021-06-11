@@ -221,20 +221,26 @@ export default {
             urlForSize: function (filename, size) {
                 return `/storage/full_size/${filename}`;
             },
-            onClickHandler: (filename) => {
+            onClickHandler: (filename, id, slug) => {
                 //alert(`select ${filename}`);
+                this.$inertia.visit(
+                    route("photos.show", {
+                        id: id,
+                        slug: slug,
+                    })
+                );
                 // temporary solution
-                this.photos.forEach((photo) => {
-                    if (photo.file_name == filename) {
-                        this.$inertia.visit(
-                            route("photos.show", {
-                                id: photo.id,
-                                slug: photo.slug,
-                            })
-                        );
-                        return;
-                    }
-                });
+                // this.photos.forEach((photo) => {
+                //     if (photo.file_name == filename) {
+                //         this.$inertia.visit(
+                //             route("photos.show", {
+                //                 id: photo.id,
+                //                 slug: photo.slug,
+                //             })
+                //         );
+                //         return;
+                //     }
+                // });
             },
             figureTagName: "a",
         };

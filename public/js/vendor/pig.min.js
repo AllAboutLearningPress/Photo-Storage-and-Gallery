@@ -741,6 +741,8 @@
         // Instance information
         this.aspectRatio = singleImageData.aspectRatio;  // Aspect Ratio
         this.filename = singleImageData.filename;  // Filename
+        this.id = singleImageData.id; // Id from server
+        this.slug = singleImageData.slug; // Slug for server
         this.index = index;  // The index in the list of images
 
         // The Pig instance
@@ -858,7 +860,9 @@
         if (!this.element) {
             this.element = document.createElement(this.pig.settings.figureTagName);
             this.element.className = this.classNames.figure;
-            this.element.addEventListener("click", function () { this.pig.settings.onClickHandler(this.filename); }.bind(this));
+            this.element.addEventListener("click", function () {
+                this.pig.settings.onClickHandler(this.filename, this.id, this.slug);
+            }.bind(this));
             this._updateStyles();
         }
 
