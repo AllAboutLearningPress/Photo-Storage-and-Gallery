@@ -223,7 +223,18 @@ export default {
             },
             onClickHandler: (filename) => {
                 //alert(`select ${filename}`);
-                this.$inertia.visit(route("photo.index"));
+                // temporary solution
+                this.photos.forEach((photo) => {
+                    if (photo.file_name == filename) {
+                        this.$inertia.visit(
+                            route("photos.show", {
+                                id: photo.id,
+                                slug: photo.slug,
+                            })
+                        );
+                        return;
+                    }
+                });
             },
             figureTagName: "a",
         };
