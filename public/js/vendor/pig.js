@@ -1,4 +1,4 @@
-(function(global) {
+(function (global) {
     'use strict';
 
     /**
@@ -8,7 +8,7 @@
      * optimizedResize is adapted from Mozilla code:
      * https://developer.mozilla.org/en-US/docs/Web/Events/resize
      */
-    var optimizedResize = (function() {
+    var optimizedResize = (function () {
         var callbacks = [];
         var running = false;
 
@@ -26,7 +26,7 @@
 
         // run the actual callbacks
         function runCallbacks() {
-            callbacks.forEach(function(callback) {
+            callbacks.forEach(function (callback) {
                 callback();
             });
 
@@ -39,7 +39,7 @@
              *
              * @param {function} callback - the callback to run on resize.
              */
-            add: function(callback) {
+            add: function (callback) {
                 if (!callbacks.length) {
                     window.addEventListener('resize', resize);
                 }
@@ -50,14 +50,14 @@
             /**
              * Disables all resize handlers.
              */
-            disable: function() {
+            disable: function () {
                 window.removeEventListener('resize', resize);
             },
 
             /**
              * Enables all resize handlers, if they were disabled.
              */
-            reEnable: function() {
+            reEnable: function () {
                 window.addEventListener('resize', resize);
             },
         };
@@ -269,7 +269,7 @@
              *
              * @returns {string} The URL of the image at the given size.
              */
-            urlForSize: function(filename, size) {
+            urlForSize: function (filename, size) {
                 return '/img/' + size + '/' + filename;
             },
 
@@ -279,7 +279,8 @@
              *
              * @param {string} filename - The filename of the image.
              */
-            onClickHandler: function(filename) {},
+            onClickHandler: function (filename) {
+            },
 
             /**
              * Get the minimum required aspect ratio for a valid row of images. The
@@ -295,7 +296,7 @@
              *
              * @returns {Number} The minimum aspect ratio at this window width.
              */
-            getMinAspectRatio: function(lastWindowWidth) {
+            getMinAspectRatio: function (lastWindowWidth) {
                 if (lastWindowWidth <= 640)
                     return 2;
                 else if (lastWindowWidth <= 1280)
@@ -316,7 +317,7 @@
              *
              * @returns {Number} The size (height in pixels) of the images to load.
              */
-            getImageSize: function(lastWindowWidth) {
+            getImageSize: function (lastWindowWidth) {
                 if (lastWindowWidth <= 640)
                     return 100;
                 else if (lastWindowWidth <= 1920)
@@ -360,7 +361,7 @@
      * @returns {Number} Time in milliseconds before we can consider a resize to
      *   have been completed.
      */
-    Pig.prototype._getTransitionTimeout = function() {
+    Pig.prototype._getTransitionTimeout = function () {
         var transitionTimeoutScaleFactor = 1.5;
         return this.settings.transitionSpeed * transitionTimeoutScaleFactor;
     };
@@ -371,7 +372,7 @@
      *
      * @returns {string} a value for the `transition` CSS property.
      */
-    Pig.prototype._getTransitionString = function() {
+    Pig.prototype._getTransitionString = function () {
         if (this.isTransitioning) {
             return (this.settings.transitionSpeed / 1000) + 's transform ease';
         }
@@ -385,7 +386,7 @@
      * `this.minAspectRatioRequiresTransition` will be set, depending on whether
      * or not the value of this.minAspectRatio has changed.
      */
-    Pig.prototype._recomputeMinAspectRatio = function() {
+    Pig.prototype._recomputeMinAspectRatio = function () {
         var oldMinAspectRatio = this.minAspectRatio;
         this.minAspectRatio = this.settings.getMinAspectRatio(this.lastWindowWidth);
 
@@ -407,10 +408,10 @@
      * @returns {Array[ProgressiveImage]} - An array of ProgressiveImage
      *                                      instances that we created.
      */
-    Pig.prototype._parseImageData = function(imageData) {
+    Pig.prototype._parseImageData = function (imageData) {
         var progressiveImages = [];
 
-        imageData.forEach(function(image, index) {
+        imageData.forEach(function (image, index) {
             var progressiveImage = new ProgressiveImage(image, index, this);
             progressiveImages.push(progressiveImage);
         }.bind(this));
@@ -433,14 +434,14 @@
      *
      * All DOM manipulation occurs in `_doLayout`.
      */
-    Pig.prototype._computeLayout = function() {
+    Pig.prototype._computeLayout = function () {
         // Constants
         var wrapperWidth = parseInt(this.container.clientWidth);
 
         // State
-        var row = []; // The list of images in the current row.
-        var translateX = 0; // The current translateX value that we are at
-        var translateY = 0; // The current translateY value that we are at
+        var row = [];           // The list of images in the current row.
+        var translateX = 0;     // The current translateX value that we are at
+        var translateY = 0;     // The current translateY value that we are at
         var rowAspectRatio = 0; // The aspect ratio of the row we are building
 
         // Compute the minimum aspect ratio that should be applied to the rows.
@@ -456,7 +457,7 @@
         // future calls to `_computeLayout` will set "transition: none".
         if (!this.isTransitioning && this.minAspectRatioRequiresTransition) {
             this.isTransitioning = true;
-            setTimeout(function() {
+            setTimeout(function () {
                 this.isTransitioning = false;
             }, this._getTransitionTimeout());
         }
@@ -466,7 +467,7 @@
 
         // Loop through all our images, building them up into rows and computing
         // the working rowAspectRatio.
-        [].forEach.call(this.images, function(image, index) {
+        [].forEach.call(this.images, function (image, index) {
             rowAspectRatio += parseFloat(image.aspectRatio);
             row.push(image);
 
@@ -490,7 +491,7 @@
                 // NOTE: This does not manipulate the DOM, rather it just sets the
                 //       style values on the ProgressiveImage instance. The DOM nodes
                 //       will be updated in _doLayout.
-                row.forEach(function(img) {
+                row.forEach(function (img) {
 
                     var imageWidth = rowHeight * img.aspectRatio;
 
@@ -584,7 +585,7 @@
      * |                           |
      *
      */
-    Pig.prototype._doLayout = function() {
+    Pig.prototype._doLayout = function () {
 
         // Set the container height
         this.container.style.height = this.totalHeight + 'px';
@@ -592,12 +593,12 @@
         // Get the top and bottom buffers heights.
         var bufferTop =
             (this.scrollDirection === 'up') ?
-            this.settings.primaryImageBufferHeight :
-            this.settings.secondaryImageBufferHeight;
+                this.settings.primaryImageBufferHeight :
+                this.settings.secondaryImageBufferHeight;
         var bufferBottom =
             (this.scrollDirection === 'down') ?
-            this.settings.secondaryImageBufferHeight :
-            this.settings.primaryImageBufferHeight;
+                this.settings.secondaryImageBufferHeight :
+                this.settings.primaryImageBufferHeight;
 
         // Now we compute the location of the top and bottom buffers:
         var containerOffset = _getOffsetTop(this.container);
@@ -613,7 +614,7 @@
 
         // Here, we loop over every image, determine if it is inside our buffers or
         // no, and either insert it or remove it appropriately.
-        this.images.forEach(function(image) {
+        this.images.forEach(function (image) {
 
             if (image.style.translateY + image.style.height < minTranslateYPlusHeight ||
                 image.style.translateY > maxTranslateY) {
@@ -631,7 +632,7 @@
      *
      * @returns {function} Our optimized onScroll handler.
      */
-    Pig.prototype._getOnScroll = function() {
+    Pig.prototype._getOnScroll = function () {
         var _this = this;
 
         /**
@@ -645,7 +646,7 @@
          *
          * @returns {function} The onScroll handler that we should attach.
          */
-        var onScroll = function() {
+        var onScroll = function () {
             // Compute the scroll direction using the latestYOffset and the
             // previousYOffset
             var newYOffset = _this.scroller === window ? window.pageYOffset : _this.scroller.scrollTop;
@@ -656,7 +657,7 @@
             // Call _this.doLayout, guarded by window.requestAnimationFrame
             if (!_this.inRAF) {
                 _this.inRAF = true;
-                window.requestAnimationFrame(function() {
+                window.requestAnimationFrame(function () {
                     _this._doLayout();
                     _this.inRAF = false;
                 });
@@ -672,7 +673,7 @@
      *
      * @returns {object} The Pig instance, for easy chaining with the constructor.
      */
-    Pig.prototype.enable = function() {
+    Pig.prototype.enable = function () {
         this.onScroll = this._getOnScroll();
 
         this.scroller.addEventListener('scroll', this.onScroll);
@@ -681,7 +682,7 @@
         this._computeLayout();
         this._doLayout();
 
-        optimizedResize.add(function() {
+        optimizedResize.add(function () {
             this.lastWindowWidth = this.scroller === window ? window.innerWidth : this.scroller.offsetWidth;
             this._computeLayout();
             this._doLayout();
@@ -695,7 +696,7 @@
      *
      * @returns {object} The Pig instance.
      */
-    Pig.prototype.disable = function() {
+    Pig.prototype.disable = function () {
         this.scroller.removeEventListener('scroll', this.onScroll);
         optimizedResize.disable();
         return this;
@@ -738,9 +739,9 @@
         this.existsOnPage = false; // True if the element exists on the page.
 
         // Instance information
-        this.aspectRatio = singleImageData.aspectRatio; // Aspect Ratio
-        this.filename = singleImageData.filename; // Filename
-        this.index = index; // The index in the list of images
+        this.aspectRatio = singleImageData.aspectRatio;  // Aspect Ratio
+        this.filename = singleImageData.filename;  // Filename
+        this.index = index;  // The index in the list of images
 
         // The Pig instance
         this.pig = pig;
@@ -760,7 +761,7 @@
      * This function will append the figure into the DOM, create and insert the
      * thumbnail, and create and insert the full image.
      */
-    ProgressiveImage.prototype.load = function() {
+    ProgressiveImage.prototype.load = function () {
         // Create a new image element, and insert it into the DOM. It doesn't
         // matter the order of the figure elements, because all positioning
         // is done using transforms.
@@ -772,7 +773,7 @@
         // user is scrolling down the page very fast and hide() is called within
         // 100ms of load(), the hide() function will set this.existsOnPage to false
         // and we can exit.
-        setTimeout(function() {
+        setTimeout(function () {
 
             // The image was hidden very quickly after being loaded, so don't bother
             // loading it at all.
@@ -785,7 +786,7 @@
                 this.thumbnail = new Image();
                 this.thumbnail.src = this.pig.settings.urlForSize(this.filename, this.pig.settings.thumbnailSize);
                 this.thumbnail.className = this.classNames.thumbnail;
-                this.thumbnail.onload = function() {
+                this.thumbnail.onload = function () {
 
                     // We have to make sure thumbnail still exists, we may have already been
                     // deallocated if the user scrolls too fast.
@@ -801,7 +802,7 @@
             if (!this.fullImage) {
                 this.fullImage = new Image();
                 this.fullImage.src = this.pig.settings.urlForSize(this.filename, this.pig.settings.getImageSize(this.pig.lastWindowWidth));
-                this.fullImage.onload = function() {
+                this.fullImage.onload = function () {
 
                     // We have to make sure fullImage still exists, we may have already been
                     // deallocated if the user scrolls too fast.
@@ -821,7 +822,7 @@
      * deletes the this.thumbnail and this.fullImage properties off of the
      * ProgressiveImage object.
      */
-    ProgressiveImage.prototype.hide = function() {
+    ProgressiveImage.prototype.hide = function () {
         // Remove the images from the element, so that if a user is scrolling super
         // fast, we won't try to load every image we scroll past.
         if (this.getElement()) {
@@ -853,11 +854,11 @@
      *
      * @returns {HTMLElement} The DOM element associated with this instance.
      */
-    ProgressiveImage.prototype.getElement = function() {
+    ProgressiveImage.prototype.getElement = function () {
         if (!this.element) {
             this.element = document.createElement(this.pig.settings.figureTagName);
             this.element.className = this.classNames.figure;
-            this.element.addEventListener("click", function() { this.pig.settings.onClickHandler(this.filename); }.bind(this));
+            this.element.addEventListener("click", function () { this.pig.settings.onClickHandler(this.filename); }.bind(this));
             this._updateStyles();
         }
 
@@ -868,7 +869,7 @@
     /**
      * Updates the style attribute to reflect this style property on this object.
      */
-    ProgressiveImage.prototype._updateStyles = function() {
+    ProgressiveImage.prototype._updateStyles = function () {
         this.getElement().style.transition = this.style.transition;
         this.getElement().style.width = this.style.width + 'px';
         this.getElement().style.height = this.style.height + 'px';
@@ -879,7 +880,7 @@
 
     // Export Pig into the global scope.
     if (typeof define === 'function' && define.amd) {
-        define([], function() { return { Pig: Pig }; });
+        define([], function () { return { Pig: Pig }; });
     } else if (typeof module !== 'undefined' && module.exports) {
         module.exports = Pig;
     } else {
