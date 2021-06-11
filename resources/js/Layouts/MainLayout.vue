@@ -1,7 +1,7 @@
 <template>
     <div>
-        <slot></slot>
-        <div v-if="!photoView" class="wrapper">
+        <slot name="photo"></slot>
+        <div class="wrapper">
             <div class="js-selected-toolbar selected-toolbar toolbar">
                 <div class="toolbar__main">
                     <button
@@ -78,11 +78,13 @@
                     </div>
                 </div>
             </div>
-            <Header></Header>
-            <div class="content">
-                <sidebar></sidebar>
+            <Header v-if="showHeader"></Header>
+            <div :class="(showHeader ? 'show-toolbar ' : '') + 'content'">
+                <sidebar v-if="showHeader"></sidebar>
 
-                <main class="main"></main>
+                <main :class="(showHeader ? 'show-sidebar ' : '') + 'main'">
+                    <slot></slot>
+                </main>
             </div>
         </div>
 
@@ -130,33 +132,46 @@ export default {
     //     // };
     // },
     setup() {
+        // this ref will hold the total bytes of full upload
         let total = ref(0);
+        const updateTotal = (newTotal) => {
+            total.value = newTotal;
+        };
+
+        // this ref will store the file objects that is being uploaded
         const filesArray = ref([]);
-        const uploadedCount = ref(0);
-        const photoView = ref(false);
         const pushToFilesArray = (files) => {
             console.log("pushing to files");
 
             filesArray.value.push(files);
             console.log(filesArray);
         };
-        const updateTotal = (newTotal) => {
-            total.value = newTotal;
-        };
+
+        // will be used to keep track on how many files are uploaded
+        const uploadedCount = ref(0);
         const increaseUploadedCount = (value) => {
             uploadedCount.value += value;
         };
+
+        // will be used to hide header in image view page
+        const showHeader = ref(true);
+        const toggleHeader = (value) => {
+            showHeader.value = value;
+            console.log(showHeader);
+        };
+
         provide("total", total);
         provide("updateTotal", updateTotal);
         provide("filesArray", filesArray);
         provide("pushToFilesArray", pushToFilesArray);
         provide("uploadedCount", uploadedCount);
         provide("increaseUploadedCount", increaseUploadedCount);
-        provide("photoView", photoView);
+        provide("showHeader", showHeader);
+        provide("toggleHeader", toggleHeader);
         return {
             total,
             filesArray,
-            photoView,
+            showHeader,
         };
     },
     created() {
@@ -170,23 +185,6 @@ export default {
         //     // Chrome requires returnValue to be set
         //     e.returnValue = "";
         // });
-    },
-    // provide() {
-    //     return {
-    //         total: this.total,
-    //         filesArray: this.filesArray,
-    //         pushToFilesArray: this.pushToFilesArray,
-    //         updateTotal: this.updateTotal,
-    //     };
-    // },
-    methods: {
-        pushToFilesArray(files) {
-            console.log("pushing to files");
-            this.filesArray.push(files);
-        },
-        updateTotal(total) {
-            this.total = total;
-        },
     },
 };
 </script>

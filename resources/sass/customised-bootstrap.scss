@@ -110,6 +110,7 @@ select:-webkit-autofill,
 select:-webkit-autofill:hover,
 select:-webkit-autofill:focus {
     border-color: $input-border-color;
+    box-shadow: 0 0 0 40px $input-bg inset;
     -webkit-text-fill-color: $body-color;
     -webkit-box-shadow: 0 0 0 40px $input-bg inset;
     transition: background-color 5000s ease-in-out 0s;
