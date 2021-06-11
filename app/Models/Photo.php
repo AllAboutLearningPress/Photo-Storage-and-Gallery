@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\Events\PhotoCreating;
+use App\Events\PhotoDeleting;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Str;
 
 class Photo extends Model
 {
@@ -26,6 +29,10 @@ class Photo extends Model
             // add code to delete the file
             // add code to remove download links
 
+        });
+        static::created(function ($photo) {
+            $photo->slug = Str::slug($photo->title, '-');
+            $photo->save();
         });
     }
 
