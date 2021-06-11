@@ -1,6 +1,5 @@
 <template>
     <div>
-        <slot name="photo"></slot>
         <div class="wrapper">
             <div class="js-selected-toolbar selected-toolbar toolbar">
                 <div class="toolbar__main">
@@ -78,14 +77,14 @@
                     </div>
                 </div>
             </div>
-            <slot></slot>
+
             <Header v-if="showHeader"></Header>
             <div :class="(showHeader ? 'show-toolbar ' : '') + 'content'">
                 <sidebar v-if="showHeader"></sidebar>
 
-                <main
-                    :class="(showHeader ? 'show-sidebar ' : '') + 'main'"
-                ></main>
+                <main :class="(showHeader ? 'show-sidebar ' : '') + 'main'">
+                    <slot></slot>
+                </main>
             </div>
         </div>
 

@@ -1,5 +1,5 @@
 <template >
-    <div>
+    <div class="image-view-wrapper">
         <div class="image-view">
             <div class="image-view__picture-area">
                 <div class="image-view__toolbar toolbar">
@@ -290,7 +290,15 @@
         </datalist>
     </div>
 </template>
-
+<style lang="scss">
+.image-view-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+}
+</style>
 <script>
 import { inject } from "@vue/runtime-core";
 import MainLayout from "../Layouts/MainLayout.vue";
@@ -316,7 +324,7 @@ export default {
     },
     beforeUnmount() {
         // Showing header again for othert pages
-        //this.toggleHeader(true);
+        this.toggleHeader(true);
     },
 };
 </script>

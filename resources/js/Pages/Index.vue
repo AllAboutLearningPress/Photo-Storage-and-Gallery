@@ -223,7 +223,7 @@ export default {
             },
             onClickHandler: (filename) => {
                 //alert(`select ${filename}`);
-                this.$inertia.visit(route("photo.index"));
+                this.$inertia.visit(route("photo.show"));
             },
             figureTagName: "a",
         };
