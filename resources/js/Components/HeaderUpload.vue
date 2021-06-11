@@ -52,6 +52,7 @@ export default {
         const updateTotal = inject("updateTotal");
         const uploadedCount = inject("uploadedCount");
         const increaseUploadedCount = inject("increaseUploadedCount");
+
         return {
             pushToFilesArray,
             filesArray,
