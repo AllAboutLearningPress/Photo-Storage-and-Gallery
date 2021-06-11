@@ -1,4 +1,4 @@
-<template v-slot:photo>
+<template >
     <div>
         <div class="image-view">
             <div class="image-view__picture-area">

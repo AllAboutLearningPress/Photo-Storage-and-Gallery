@@ -1,6 +1,6 @@
 <template>
     <inertia-link
-        v-if="total"
+        v-if="true"
         :href="route('uploads.index')"
         class="js-upload-bar upload-bar"
     >

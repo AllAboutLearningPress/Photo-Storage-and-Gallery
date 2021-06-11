@@ -78,13 +78,14 @@
                     </div>
                 </div>
             </div>
+            <slot></slot>
             <Header v-if="showHeader"></Header>
             <div :class="(showHeader ? 'show-toolbar ' : '') + 'content'">
                 <sidebar v-if="showHeader"></sidebar>
 
-                <main :class="(showHeader ? 'show-sidebar ' : '') + 'main'">
-                    <slot></slot>
-                </main>
+                <main
+                    :class="(showHeader ? 'show-sidebar ' : '') + 'main'"
+                ></main>
             </div>
         </div>
 
