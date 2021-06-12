@@ -31,7 +31,7 @@ class Photo extends Model
 
         });
         static::created(function ($photo) {
-            $photo->slug = Str::slug($photo->title, '-');
+            $photo->slug = $photo->generateSlug($photo->title);
             $photo->save();
         });
     }
@@ -50,5 +50,42 @@ class Photo extends Model
     public function parent()
     {
         return $this->hasOne(Photo::class, 'parent_id');
+    }
+    /**
+     * Set the proper slug attribute.
+     *
+     * @param string $value
+     */
+    public function generateSlug($title)
+    {
+        // creating the initial slug
+        $slug = Str::slug($title, '-');
+        // if this slug already exists then we will
+        // create an incrementing slug
+        $priv_slug = static::where('slug', '=', $slug)->value('slug');
+        if ($priv_slug) {
+            $slug = $this->incrementSlug($priv_slug);
+        }
+
+        return $slug;
+    }
+
+    /* Increment slug
+     *
+     * @param   string $slug
+     * @return  string
+     **/
+    public function incrementSlug($slug)
+    {
+        // get the slug of the latest created post
+        $max = static::whereTitle($this->title)->latest('id')->skip(1)->value('slug');
+
+        if ($max && is_numeric($max[-1])) {
+            return preg_replace_callback('/(\d+)$/', function ($matches) {
+                return $matches[1] + 1;
+            }, $max);
+        }
+
+        return "{$slug}-2";
     }
 }
