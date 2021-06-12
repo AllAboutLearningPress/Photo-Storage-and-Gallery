@@ -2,8 +2,9 @@
     <button
         title="Delete image"
         type="button"
-        class="js-image-delete btn-subtle btn"
-        v-on:click="$emit('open-modal')"
+        class="btn-subtle btn"
+        id="Asdafs"
+        v-on:click="openModal"
     >
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -26,5 +27,12 @@
 </template>
 
 <script>
-export default {};
+export default {
+    methods: {
+        openModal(e) {
+            console.log(e);
+            this.$emit("open-modal");
+        },
+    },
+};
 </script>

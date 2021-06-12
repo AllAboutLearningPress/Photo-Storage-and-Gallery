@@ -213,7 +213,7 @@ My title title title title title title title title title title title title title
                                 <share-button></share-button>
                                 <download-button></download-button>
                                 <delete-button
-                                    v-on:delete-modal="openDeleteModal"
+                                    v-on:click="toggleDeleteModal"
                                 ></delete-button>
                             </span>
                             <show-details-button
@@ -306,7 +306,7 @@ My title title title title title title title title title title title title title
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalToggleLabel">
-                            Modal 1
+                            Delete Photo
                         </h5>
                         <button
                             type="button"
@@ -316,8 +316,7 @@ My title title title title title title title title title title title title title
                         ></button>
                     </div>
                     <div class="modal-body">
-                        Show a second modal and hide this one with the button
-                        below.
+                        Are you sure about deleting "{{ photo.title }}" ?
                     </div>
                     <div class="modal-footer">
                         <button
@@ -325,8 +324,17 @@ My title title title title title title title title title title title title title
                             data-bs-target="#exampleModalToggle2"
                             data-bs-toggle="modal"
                             data-bs-dismiss="modal"
+                            v-on:click="toggleDeleteModal"
                         >
-                            Open second modal
+                            Cancel
+                        </button>
+                        <button
+                            class="btn btn-danger"
+                            data-bs-target="#exampleModalToggle2"
+                            data-bs-toggle="modal"
+                            data-bs-dismiss="modal"
+                        >
+                            Delete
                         </button>
                     </div>
                 </div>
@@ -374,9 +382,10 @@ export default {
     data() {
         return {
             // imgUrl: "//placekitten.com/800/800",
+            deleteModal: null,
         };
     },
-    mounted() {
+    onMounted() {
         // this.photoView.value = true;
         // this.toggleHeader(false);
         // console.log(this.photo);
@@ -398,8 +407,13 @@ export default {
 
             return d.toString();
         },
-        openDeleteModal(e) {
-            let modal = new Modal(this.$refs["deleteModal"]);
+        toggleDeleteModal(e) {
+            if (!this.deleteModal) {
+                this.deleteModal = new Modal(this.$refs["deleteModal"], {
+                    backdrop: false,
+                });
+            }
+            this.deleteModal.toggle();
         },
         deletePhoto(e) {
             axios

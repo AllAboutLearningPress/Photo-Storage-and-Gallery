@@ -17,7 +17,7 @@ export default {
         return { tags };
     },
     created() {
-        console.log(this.tags);
+        //
     },
 };
 </script>
