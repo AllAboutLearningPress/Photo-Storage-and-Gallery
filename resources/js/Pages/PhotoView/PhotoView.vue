@@ -1,6 +1,436 @@
 <template >
     <div class="image-view-wrapper">
         <div class="image-view">
+            <aside
+                id="image-details-sidebar"
+                ref="sidebar"
+                class="
+                    js-image-details-sidebar
+                    sidebar_always-hideable sidebar_right sidebar
+                    image-view__details
+                "
+                tabindex="-1"
+                aria-labelledby="sidebar"
+            >
+                <div class="image-view__details-head sidebar__head">
+                    <button
+                        title="Close details"
+                        type="button"
+                        class="
+                            js-sidebar-toggle
+                            image-view__details-toggle
+                            btn-subtle btn-lg btn-close
+                        "
+                        data-sidebar="#image-details-sidebar"
+                        aria-label="Close details"
+                        v-on:click="toggleSidebar"
+                    >
+                        <span class="visually-hidden">Close details</span>
+                    </button>
+                </div>
+                <div class="sidebar__body scrollbar">
+                    <div class="image-view__details-content">
+                        <ul class="nolist">
+                            <li class="js-editable editable">
+                                <dl class="editable__content dlist_0 dlist">
+                                    <dt class="mr-1">Title:</dt>
+                                    <dd>
+                                        <span class="js-editable__val">
+                                            {{ photo.title }}
+                                        </span>
+                                        <edit-pen></edit-pen>
+                                    </dd>
+                                </dl>
+                                <form
+                                    class="js-editable__form editable__form"
+                                    action="#"
+                                >
+                                    <textarea
+                                        placeholder="Write here"
+                                        class="
+                                            js-editable__area
+                                            editable__area
+                                            form-control
+                                            form-control-lg
+                                            form-control-plaintext
+                                        "
+                                    >
+My title title title title title title title title title title title title title title title title title title title title</textarea
+                                    >
+                                    <button
+                                        type="submit"
+                                        class="
+                                            js-editable__confirm
+                                            btn btn-outline-secondary
+                                        "
+                                    >
+                                        Ok
+                                    </button>
+                                </form>
+                            </li>
+                            <li>
+                                <dl class="dlist_0 dlist">
+                                    <dt>Created:</dt>
+                                    <dd>21.21.21</dd>
+                                </dl>
+                            </li>
+                            <li>
+                                <dl class="dlist_0 dlist">
+                                    <dt>Uploaded:</dt>
+                                    <dd>
+                                        {{ formatTimestamp(photo.created_at) }}
+                                    </dd>
+                                </dl>
+                            </li>
+                            <li>
+                                <dl class="dlist_0 dlist">
+                                    <dt>Dimensions:</dt>
+                                    <dd>
+                                        {{ photo.height }}x{{ photo.width }}
+                                    </dd>
+                                </dl>
+                            </li>
+                            <li>
+                                <dl class="dlist_0 dlist">
+                                    <dt>File size:</dt>
+                                    <dd>{{ photo.size / 1000 }} Mb</dd>
+                                </dl>
+                            </li>
+                            <li>
+                                <dl class="dlist_0 dlist">
+                                    <dt>Family tree:</dt>
+                                    <dd>
+                                        <a class="link-action" href="#">Show</a>
+                                    </dd>
+                                </dl>
+                            </li>
+                            <li>
+                                <dl class="dlist_0 dlist">
+                                    <dt>Uploaded by:</dt>
+                                    <dd>{{ photo.user.name }}</dd>
+                                </dl>
+                            </li>
+                            <li v-if="photo.location">
+                                <dl class="dlist_0 dlist">
+                                    <dt>Location map:</dt>
+                                    <dd>
+                                        LocationLocationLocationLocationLocationLocationLocationLocationLocation
+                                    </dd>
+                                </dl>
+                            </li>
+                            <li>
+                                <dl class="dlist_0 dlist">
+                                    <dt>Licensing and attribution:</dt>
+                                    <dd>
+                                        Whether the photographer and/or models
+                                        has signed an agreement with us; Whether
+                                        we need to give attribution; Whether
+                                        someone owns the copyright other than
+                                        us; Whether it is stock photography
+                                    </dd>
+                                </dl>
+                            </li>
+                            <li>
+                                <dl class="dlist_0 dlist">
+                                    <dt>
+                                        <label for="tag-input">Tags:</label>
+                                    </dt>
+                                    <dd>
+                                        <div class="js-tags tags">
+                                            <form
+                                                class="js-tags__form tags__form"
+                                                onsubmit="this.elements['tag-input'].value && alert(`add tag: ${this.elements['tag-input'].value}`);return false;"
+                                                action="#"
+                                            >
+                                                <div
+                                                    class="
+                                                        input-group
+                                                        mt-1
+                                                        mb-3
+                                                    "
+                                                >
+                                                    <input
+                                                        id="tag-input"
+                                                        name="tag-input"
+                                                        list="tag-list"
+                                                        class="
+                                                            js-tags__input
+                                                            form-control
+                                                            form-control-lg
+                                                        "
+                                                        type="text"
+                                                        placeholder="Specify tag"
+                                                        autocomplete="off"
+                                                    />
+                                                    <button
+                                                        title="Add tag"
+                                                        class="
+                                                            btn
+                                                            btn-lg
+                                                            btn-outline-secondary
+                                                        "
+                                                        type="submit"
+                                                    >
+                                                        Add
+                                                    </button>
+                                                </div>
+                                            </form>
+
+                                            <div
+                                                class="js-tags__list tags__list"
+                                            >
+                                                <a
+                                                    class="
+                                                        tags__tag
+                                                        tag tag_deletable
+                                                        btn btn-secondary
+                                                    "
+                                                    href="#"
+                                                >
+                                                    Tag
+                                                    <object type="no/suchtype">
+                                                        <button
+                                                            title="Delete tag"
+                                                            type="button"
+                                                            class="
+                                                                js-tag-delete
+                                                                tag__delete
+                                                                btn-close
+                                                            "
+                                                            aria-label="Delete tag"
+                                                        >
+                                                            <span
+                                                                class="
+                                                                    visually-hidden
+                                                                "
+                                                                >Delete
+                                                                tag</span
+                                                            >
+                                                        </button>
+                                                    </object>
+                                                </a>
+                                                <a
+                                                    class="
+                                                        tags__tag
+                                                        tag tag_deletable
+                                                        btn btn-secondary
+                                                    "
+                                                    href="#"
+                                                >
+                                                    Some tag
+                                                    <object type="no/suchtype">
+                                                        <button
+                                                            title="Delete tag"
+                                                            type="button"
+                                                            class="
+                                                                js-tag-delete
+                                                                tag__delete
+                                                                btn-close
+                                                            "
+                                                            aria-label="Delete tag"
+                                                        >
+                                                            <span
+                                                                class="
+                                                                    visually-hidden
+                                                                "
+                                                                >Delete
+                                                                tag</span
+                                                            >
+                                                        </button>
+                                                    </object>
+                                                </a>
+                                                <a
+                                                    class="
+                                                        tags__tag
+                                                        tag tag_deletable
+                                                        btn btn-secondary
+                                                    "
+                                                    href="#"
+                                                >
+                                                    Another tag
+                                                    <object type="no/suchtype">
+                                                        <button
+                                                            title="Delete tag"
+                                                            type="button"
+                                                            class="
+                                                                js-tag-delete
+                                                                tag__delete
+                                                                btn-close
+                                                            "
+                                                            aria-label="Delete tag"
+                                                        >
+                                                            <span
+                                                                class="
+                                                                    visually-hidden
+                                                                "
+                                                                >Delete
+                                                                tag</span
+                                                            >
+                                                        </button>
+                                                    </object>
+                                                </a>
+                                                <a
+                                                    class="
+                                                        tags__tag
+                                                        tag tag_deletable
+                                                        btn btn-secondary
+                                                    "
+                                                    href="#"
+                                                >
+                                                    Tag
+                                                    <object type="no/suchtype">
+                                                        <button
+                                                            title="Delete tag"
+                                                            type="button"
+                                                            class="
+                                                                js-tag-delete
+                                                                tag__delete
+                                                                btn-close
+                                                            "
+                                                            aria-label="Delete tag"
+                                                        >
+                                                            <span
+                                                                class="
+                                                                    visually-hidden
+                                                                "
+                                                                >Delete
+                                                                tag</span
+                                                            >
+                                                        </button>
+                                                    </object>
+                                                </a>
+                                                <a
+                                                    class="
+                                                        tags__tag
+                                                        tag tag_deletable
+                                                        btn btn-secondary
+                                                    "
+                                                    href="#"
+                                                >
+                                                    My test tag
+                                                    <object type="no/suchtype">
+                                                        <button
+                                                            title="Delete tag"
+                                                            type="button"
+                                                            class="
+                                                                js-tag-delete
+                                                                tag__delete
+                                                                btn-close
+                                                            "
+                                                            aria-label="Delete tag"
+                                                        >
+                                                            <span
+                                                                class="
+                                                                    visually-hidden
+                                                                "
+                                                                >Delete
+                                                                tag</span
+                                                            >
+                                                        </button>
+                                                    </object>
+                                                </a>
+                                                <a
+                                                    class="
+                                                        tags__tag
+                                                        tag tag_deletable
+                                                        btn btn-secondary
+                                                    "
+                                                    href="#"
+                                                >
+                                                    Tag
+                                                    <object type="no/suchtype">
+                                                        <button
+                                                            title="Delete tag"
+                                                            type="button"
+                                                            class="
+                                                                js-tag-delete
+                                                                tag__delete
+                                                                btn-close
+                                                            "
+                                                            aria-label="Delete tag"
+                                                        >
+                                                            <span
+                                                                class="
+                                                                    visually-hidden
+                                                                "
+                                                                >Delete
+                                                                tag</span
+                                                            >
+                                                        </button>
+                                                    </object>
+                                                </a>
+
+                                                <a
+                                                    class="
+                                                        tags__tag
+                                                        tag tag_deletable
+                                                        btn btn-secondary
+                                                    "
+                                                    href="#"
+                                                >
+                                                    Sometagometagometagometagometagometagometagometagometagometagometagometagometagometagometagometag
+                                                    <object type="no/suchtype">
+                                                        <button
+                                                            title="Delete tag"
+                                                            type="button"
+                                                            class="
+                                                                js-tag-delete
+                                                                tag__delete
+                                                                btn-close
+                                                            "
+                                                            aria-label="Delete tag"
+                                                        >
+                                                            <span
+                                                                class="
+                                                                    visually-hidden
+                                                                "
+                                                                >Delete
+                                                                tag</span
+                                                            >
+                                                        </button>
+                                                    </object>
+                                                </a>
+                                                <a
+                                                    class="
+                                                        tags__tag
+                                                        tag tag_deletable
+                                                        btn btn-secondary
+                                                    "
+                                                    href="#"
+                                                >
+                                                    Some tag ometagomet agomet
+                                                    agometa etag
+                                                    <object type="no/suchtype">
+                                                        <button
+                                                            title="Delete tag"
+                                                            type="button"
+                                                            class="
+                                                                js-tag-delete
+                                                                tag__delete
+                                                                btn-close
+                                                            "
+                                                            aria-label="Delete tag"
+                                                        >
+                                                            <span
+                                                                class="
+                                                                    visually-hidden
+                                                                "
+                                                                >Delete
+                                                                tag</span
+                                                            >
+                                                        </button>
+                                                    </object>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </dd>
+                                </dl>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </aside>
+            <div class="sidebar-backdrop"></div>
             <div class="image-view__picture-area">
                 <div class="image-view__toolbar toolbar">
                     <div class="toolbar__main">
@@ -60,7 +490,9 @@
                                 <download-button></download-button>
                                 <delete-button></delete-button>
                             </span>
-                            <show-details-button></show-details-button>
+                            <show-details-button
+                                v-on:open-sidebar="toggleSidebar"
+                            ></show-details-button>
                         </div>
                         <div class="toolbar__main-actions">
                             <label
@@ -165,6 +597,8 @@ import DownloadButton from "./Componenets/DownloadButton.vue";
 import ShareButton from "./Componenets/ShareButton.vue";
 import DeleteButton from "./Componenets/DeleteButton.vue";
 import ShowDetailsButton from "./Componenets/ShowDetailsButton.vue";
+import EditPen from "../../CommonButtons/EditPen.vue";
+import FileTag from "@/Components/FileTag.vue";
 export default {
     props: ["photo"],
     components: {
@@ -174,6 +608,8 @@ export default {
         DeleteButton,
         ShareButton,
         DownloadButton,
+        EditPen,
+        FileTag,
     },
     layout: MainLayout,
 
@@ -203,6 +639,16 @@ export default {
     beforeUnmount() {
         // Showing header again for othert pages
         this.toggleHeader(true);
+    },
+    methods: {
+        toggleSidebar(e) {
+            this.$refs["sidebar"].classList.toggle("is-open");
+        },
+        formatTimestamp(timestamp) {
+            let d = new Date(timestamp);
+            console.log(d.toString());
+            return d.toString();
+        },
     },
 };
 </script>

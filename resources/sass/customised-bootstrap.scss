@@ -1,5 +1,6 @@
 // 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
 @import "node_modules/bootstrap/scss/functions";
+
 // 1.1 Include your custom variables needed prior bootstrap default variable overrides
 $contrast1: #333333;
 $contrast2: #424242;
@@ -7,57 +8,77 @@ $page-bg: #212121;
 $page-text-color: #e2e2e2;
 $primary-color: #bb86fc;
 $secondary-color: #848484;
+
 // 2. Include any bootstrap default variable overrides here
 $body-bg: $page-bg;
 $body-color: $page-text-color;
 $primary: $primary-color;
 $secondary: $secondary-color;
+
 $dark: $page-bg;
+
 $spacer: 1.4rem;
+
 $headings-margin-bottom: $spacer;
 $paragraph-margin-bottom: .7rem;
+
 $input-btn-focus-color-opacity: .5;
 $input-btn-focus-color: rgba(#fff, $input-btn-focus-color-opacity);
+
 $card-title-spacer-y: $spacer;
 $card-bg: $contrast1;
+
 $input-bg: $contrast2;
 $input-disabled-bg: tint-color($contrast2, 10%);
 $input-border-color: tint-color($contrast2, 20%);
 $input-focus-border-color: $contrast2;
 $input-placeholder-color: shade-color($body-color, 50%);
+
 //$form-check-input-width: 1.4em;
 $form-check-input-checked-color: #000;
 $form-check-input-border: 1px solid tint-color($contrast2, 20%);
+
 $form-switch-focus-color: rgba(0, 0, 0, .25);
+
 $btn-close-padding-x: .5em;
 $btn-close-padding-x: .5em;
+
 $modal-content-bg: $body-bg;
 $modal-header-border-color: $contrast2;
 $modal-backdrop-opacity: .7;
 $modal-fade-transform: scale(.9);
+
 $btn-close-color: $page-text-color;
 $btn-close-opacity: 1;
 $btn-close-hover-opacity: 1;
 $btn-close-disabled-opacity: .5;
+
 $spinner-animation-speed: .5s !default;
 $spinner-border-width-sm: .1em !default;
+
 $table-cell-padding-y: .8rem;
 $table-color: $body-color;
 $table-border-color: $contrast1;
+
 $alert-margin-bottom: 1.2rem;
+
 $toast-background-color: $contrast2;
 $toast-color: $page-text-color;
+
 $toast-header-background-color: $toast-background-color;
 $toast-header-border-color: $contrast1;
 $toast-header-color: transparentize($page-text-color, .3);
+
 $progress-bg: $contrast2;
 $progress-bar-bg: $contrast1;
 $progress-bar-color: $page-text-color;
 $progress-bar-transition: none;
+
 // 3. Include remainder of required Bootstrap stylesheets
 @import "node_modules/bootstrap/scss/variables";
 @import "node_modules/bootstrap/scss/mixins";
 @import "node_modules/bootstrap/scss/utilities";
+
 // 4. Include any optional Bootstrap components as you like
 // Layout & components
 @import "node_modules/bootstrap/scss/root";
@@ -90,16 +111,18 @@ $progress-bar-transition: none;
 @import "node_modules/bootstrap/scss/carousel";
 @import "node_modules/bootstrap/scss/spinners";
 @import "node_modules/bootstrap/scss/offcanvas";
+
 // Helpers
 @import "node_modules/bootstrap/scss/helpers";
+
 // Utilities
 @import "node_modules/bootstrap/scss/utilities/api";
+
 // 5. Add additional custom code here
 
 /*
   Make autofill styles consistent in Chrome & FF
 */
-
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
@@ -109,38 +132,32 @@ textarea:-webkit-autofill:focus,
 select:-webkit-autofill,
 select:-webkit-autofill:hover,
 select:-webkit-autofill:focus {
-    border-color: $input-border-color;
-    box-shadow: 0 0 0 40px $input-bg inset;
-    -webkit-text-fill-color: $body-color;
-    -webkit-box-shadow: 0 0 0 40px $input-bg inset;
-    transition: background-color 5000s ease-in-out 0s;
+  border-color: $input-border-color;
+  box-shadow:0 0 0 40px $input-bg inset;
+  -webkit-text-fill-color: $body-color;
+  -webkit-box-shadow: 0 0 0 40px $input-bg inset;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
-input,
-textarea,
-select {
-    filter: none;
+input, textarea, select {
+  filter: none;
 }
-
 
 /*
   Make disabled fields text look muted
 */
-
 input:disabled,
 textarea:disabled,
 select:disabled,
-input:disabled~label,
-textarea:disabled~label,
-select:disabled~label {
-    color: $text-muted;
+input:disabled ~ label,
+textarea:disabled ~ label,
+select:disabled ~ label {
+  color: $text-muted;
 }
-
 
 /*
   Show focus styles only for `:focus-visible`
 */
-
 a[href]:not([tabindex^="-"]):focus:not(:focus-visible),
 area[href]:not([tabindex^="-"]):focus:not(:focus-visible),
 input:not([type="hidden"]):not([type="radio"]):not([disabled]):not([tabindex^="-"]):focus:not(:focus-visible),
@@ -153,19 +170,17 @@ audio[controls]:not([tabindex^="-"]):focus:not(:focus-visible),
 video[controls]:not([tabindex^="-"]):focus:not(:focus-visible),
 [contenteditable]:not([tabindex^="-"]):focus:not(:focus-visible),
 [tabindex]:not([tabindex^="-"]):focus:not(:focus-visible) {
-    box-shadow: none !important;
+  box-shadow: none !important;
 }
 
 // For toggle buttons (https://getbootstrap.com/docs/5.0/forms/checks-radios/#toggle-buttons) only show focus styles on `:focus-visible`
-.btn-check:focus:not(:focus-visible)+.btn {
-    box-shadow: none !important;
+.btn-check:focus:not(:focus-visible) + .btn {
+  box-shadow: none !important;
 }
-
 
 /*
   Define generic transition for all focusable elements
 */
-
 a[href]:not([tabindex^="-"]),
 area[href]:not([tabindex^="-"]),
 button:not([disabled]):not([tabindex^="-"]),
@@ -173,38 +188,36 @@ iframe:not([tabindex^="-"]),
 audio[controls]:not([tabindex^="-"]),
 video[controls]:not([tabindex^="-"]),
 [tabindex]:not([tabindex^="-"]) {
-    @include transition($btn-transition);
+  @include transition($btn-transition);
 }
-
 input:not([type="hidden"]):not([type="radio"]):not([disabled]):not([tabindex^="-"]),
 input[type="radio"]:not([disabled]):not([tabindex^="-"]):checked,
 select:not([disabled]):not([tabindex^="-"]),
 textarea:not([disabled]):not([tabindex^="-"]),
 [contenteditable]:not([tabindex^="-"]) {
-    @include transition($input-transition);
+  @include transition($input-transition);
 }
 
 // keep link outlines sane
 a[href]:not([tabindex^="-"]):focus-visible {
-    outline-color: currentColor;
-    outline-style: solid;
+  outline-color: currentColor;
+  outline-style: solid;
 }
-
 
 /*
   Custom button style
 */
-
 $btn-hover-subtle-bg: transparentize($secondary-color, .8);
-.btn-subtle:hover {
-    background-color: $btn-hover-subtle-bg;
-}
 
+.btn-subtle:hover {
+  background-color: $btn-hover-subtle-bg;
+}
 
 /*
   Misc modifications
 */
 
+
 p:last-child {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }

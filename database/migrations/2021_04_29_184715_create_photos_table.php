@@ -24,6 +24,8 @@ class CreatePhotosTable extends Migration
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('parent_id')->nullable()->constrained('photos');
             $table->string('file_name')->nullable();
+            $table->string('location')->nullable();
+            $table->string('license')->nullable();
             $table->boolean('should_process')->default(false);
             $table->dateTime('time_taken')->nullable();
             $table->softDeletes();

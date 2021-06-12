@@ -51,6 +51,11 @@ class Photo extends Model
     {
         return $this->hasOne(Photo::class, 'parent_id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
     /**
      * Set the proper slug attribute.
      *

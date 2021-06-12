@@ -4,6 +4,7 @@
         type="button"
         class="js-sidebar-toggle image-view__show-details btn-subtle btn"
         data-sidebar="#image-details-sidebar"
+        v-on:click="$emit('open-sidebar')"
     >
         <svg
             xmlns="http://www.w3.org/2000/svg"

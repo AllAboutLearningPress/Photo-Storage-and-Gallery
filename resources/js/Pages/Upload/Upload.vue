@@ -116,7 +116,7 @@ import { addEventListener } from "@/frontend/util/utils.js";
 import { inject } from "@vue/runtime-core";
 import FileNotes from "./Components/ FileNotes.vue";
 import FileTitle from "./Components/FileTitle.vue";
-import FileTag from "./Components/FileTag.vue";
+import FileTag from "@/Components/FileTag.vue";
 import CompletedTick from "./Components/CompletedTick.vue";
 export default {
     components: { UploadToolbar, FileNotes, FileTitle, FileTag, CompletedTick },
