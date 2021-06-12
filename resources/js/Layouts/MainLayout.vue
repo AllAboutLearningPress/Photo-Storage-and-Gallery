@@ -160,6 +160,36 @@ export default {
             console.log(showHeader);
         };
 
+        const tags = ref([]);
+        /*
+        Fetches the tags from server in chunks.
+        Server returns 100 tags at each request then
+        It is all loaded to the datalist element.
+        We need to replace the logic if the tags list is
+        Very long. That would create memory issues.
+        */
+        const fetchTags = (url = route("tags.get_tags")) => {
+            console.log("fetching tags");
+            axios
+                .get(url)
+                .then((resp) => {
+                    tags.value.push(...resp.data.data);
+
+                    // checking if there is more tags to fetch
+                    // if there are more tags then server will
+                    // return the next url to fetch data
+                    if (resp.data.next_page_url) {
+                        fetchTags(resp.data.next_page_url);
+                    } else {
+                        console.log(tags.value.length);
+                        console.log("All tags fetched");
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        };
+
         provide("total", total);
         provide("updateTotal", updateTotal);
         provide("filesArray", filesArray);
@@ -168,13 +198,16 @@ export default {
         provide("increaseUploadedCount", increaseUploadedCount);
         provide("showHeader", showHeader);
         provide("toggleHeader", toggleHeader);
+        provide("tags", tags);
+        provide("fetchTags", fetchTags);
         return {
             total,
-            filesArray,
+            fetchTags,
             showHeader,
         };
     },
-    created() {
+    mounted() {
+        this.fetchTags();
         // setInterval(() => {
         //     console.log("total in main: ", this.total);
         //     this.total++;
