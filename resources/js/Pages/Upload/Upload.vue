@@ -105,14 +105,22 @@
 import MainLayout from "@/Layouts/MainLayout.vue";
 import UploadToolbar from "./Components/UploadToolbar.vue";
 import { notify } from "@/util.js";
-import { addEventListener } from "@/frontend/util/utils.js";
+//import { addEventListener } from "@/frontend/util/utils.js";
 import { inject } from "@vue/runtime-core";
 import FileNotes from "./Components/ FileNotes.vue";
 import FileTitle from "./Components/FileTitle.vue";
 import FileTag from "@/Components/FileTag.vue";
 import CompletedTick from "./Components/CompletedTick.vue";
+import TagsDatalist from "@/Components/TagsDatalist.vue";
 export default {
-    components: { UploadToolbar, FileNotes, FileTitle, FileTag, CompletedTick },
+    components: {
+        UploadToolbar,
+        FileNotes,
+        FileTitle,
+        FileTag,
+        CompletedTick,
+        TagsDatalist,
+    },
     layout: MainLayout,
     setup() {
         const pushToFilesArray = inject("pushToFilesArray");
