@@ -58,6 +58,8 @@ class Photo extends Model
      */
     public function generateSlug($title)
     {
+        // removing the file extension Ex: abc.jpeg -> abc
+        $title = substr($title, 0, (strrpos($title, ".")));
         // creating the initial slug
         $slug = Str::slug($title, '-');
         // if this slug already exists then we will
