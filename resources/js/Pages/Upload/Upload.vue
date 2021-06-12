@@ -96,14 +96,7 @@
                 </li>
             </ul>
         </div>
-        <datalist id="tag-list">
-            <option
-                v-for="tag in tags"
-                :key="tag.id"
-                :value="tag.name"
-                :data-id="tag.id"
-            ></option>
-        </datalist>
+        <tags-datalist :tags="tags"></tags-datalist>
     </div>
 </template>
 
@@ -195,34 +188,6 @@ export default {
                 })
                 .catch((err) => {
                     notify("Something went Wrong", "danger");
-                });
-        },
-
-        /*
-        Fetches the tags from server in chunks.
-        Server returns 100 tags at each request then
-        It is all loaded to the datalist element.
-        We need to replace the logic if the tags list is
-        Very long. That would create memory issues.
-        */
-        fetchTags(url) {
-            axios
-                .get(url)
-                .then((resp) => {
-                    this.tags.push(...resp.data.data);
-
-                    // checking if there is more tags to fetch
-                    // if there are more tags then server will
-                    // return the next url to fetch data
-                    if (resp.data.next_page_url) {
-                        this.fetchTags(resp.data.next_page_url);
-                    } else {
-                        console.log(this.tags.length);
-                        console.log("All tags fetched");
-                    }
-                })
-                .catch((err) => {
-                    console.log(err);
                 });
         },
 
