@@ -48,7 +48,7 @@ class PhotoController extends Controller
     public function show(Request $request, $id, $slug)
     {
         return  Inertia::render('PhotoView/PhotoView', [
-            'photo' => Photo::findOrFail($id)
+            'photo' => Photo::with('user')->findOrFail($id)
         ]);
     }
 
