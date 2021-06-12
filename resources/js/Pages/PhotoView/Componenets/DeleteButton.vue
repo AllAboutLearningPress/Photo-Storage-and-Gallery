@@ -3,6 +3,7 @@
         title="Delete image"
         type="button"
         class="js-image-delete btn-subtle btn"
+        v-on:click="$emit('open-modal')"
     >
         <svg
             xmlns="http://www.w3.org/2000/svg"

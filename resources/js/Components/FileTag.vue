@@ -85,7 +85,7 @@ export default {
                         tagId: tagId,
                     })
                     .then((resp) => {
-                        notify("Tag Added");
+                        notify("Tag Added", "success");
                     });
             }
         },
@@ -98,7 +98,7 @@ export default {
                     tagId: tag.id,
                 })
                 .then((resp) => {
-                    notify("Tag removed");
+                    notify("Tag removed", "success");
                 })
                 .catch((err) => {
                     notify("Something went wrong. Please try again", "danger");
@@ -109,7 +109,7 @@ export default {
         },
         uniqueTag(newTag) {
             this.tags.forEach((tag) => {
-                if (Tag.name == newTag) {
+                if (tag.name == newTag) {
                     return;
                 }
             });

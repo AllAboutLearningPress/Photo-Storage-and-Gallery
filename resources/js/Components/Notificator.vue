@@ -1,7 +1,11 @@
 <template>
     <div aria-live="polite" aria-atomic="true" class="notification-area">
         <div
-            class="js-notification-container notification-area__container toast-container"
+            class="
+                js-notification-container
+                notification-area__container
+                toast-container
+            "
         >
             <!-- Put toasts here -->
 
@@ -35,7 +39,6 @@
 
 <script>
 import Toast from "bootstrap/js/dist/toast";
-import { Inertia } from "@inertiajs/inertia";
 export default {
     data() {
         return {
@@ -113,9 +116,8 @@ export default {
             });
         },
         hide(toastSelector) {
-            const { instance } = this.getElemAndInstanceBySelector(
-                toastSelector
-            );
+            const { instance } =
+                this.getElemAndInstanceBySelector(toastSelector);
 
             instance && instance.hide();
         },

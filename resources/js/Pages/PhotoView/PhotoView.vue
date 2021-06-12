@@ -212,7 +212,9 @@ My title title title title title title title title title title title title title
                             <span class="toolbar__specific-actions-more">
                                 <share-button></share-button>
                                 <download-button></download-button>
-                                <delete-button></delete-button>
+                                <delete-button
+                                    v-on:delete-modal="openDeleteModal"
+                                ></delete-button>
                             </span>
                             <show-details-button
                                 v-on:open-sidebar="toggleSidebar"
@@ -291,7 +293,45 @@ My title title title title title title title title title title title title title
             </div>
         </div>
 
-        <tags-datalist :tags="tags"></tags-datalist>
+        <tags-datalist></tags-datalist>
+        <div
+            ref="deleteModal"
+            class="modal fade"
+            id="exampleModalToggle"
+            aria-hidden="true"
+            aria-labelledby="exampleModalToggleLabel"
+            tabindex="-1"
+        >
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalToggleLabel">
+                            Modal 1
+                        </h5>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                        ></button>
+                    </div>
+                    <div class="modal-body">
+                        Show a second modal and hide this one with the button
+                        below.
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            class="btn btn-primary"
+                            data-bs-target="#exampleModalToggle2"
+                            data-bs-toggle="modal"
+                            data-bs-dismiss="modal"
+                        >
+                            Open second modal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -307,6 +347,7 @@ import ShowDetailsButton from "./Componenets/ShowDetailsButton.vue";
 import EditPen from "../../CommonButtons/EditPen.vue";
 import FileTag from "@/Components/FileTag.vue";
 import TagsDatalist from "@/Components/TagsDatalist.vue";
+import Modal from "bootstrap/js/dist/modal";
 export default {
     props: ["photo"],
     components: {
@@ -327,20 +368,18 @@ export default {
         const showHeader = inject("showHeader");
 
         // hiding header
-        console.log(showHeader);
         toggleHeader(false);
-        console.log(showHeader);
         return { showHeader, toggleHeader };
     },
     data() {
         return {
-            imgUrl: "//placekitten.com/800/800",
+            // imgUrl: "//placekitten.com/800/800",
         };
     },
     mounted() {
         // this.photoView.value = true;
-        //this.toggleHeader(false);
-        console.log(this.photo);
+        // this.toggleHeader(false);
+        // console.log(this.photo);
     },
 
     beforeMount() {
@@ -356,8 +395,21 @@ export default {
         },
         formatTimestamp(timestamp) {
             let d = new Date(timestamp);
-            console.log(d.toString());
+
             return d.toString();
+        },
+        openDeleteModal(e) {
+            let modal = new Modal(this.$refs["deleteModal"]);
+        },
+        deletePhoto(e) {
+            axios
+                .post(route("photo.delete", { id: this.photo.id }))
+                .then((resp) => {
+                    if (resp.status == 204) {
+                        // photo deleted successfully
+                        this.$inertia.visit(route("home"));
+                    }
+                });
         },
     },
 };

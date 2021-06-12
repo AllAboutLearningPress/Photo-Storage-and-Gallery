@@ -141,10 +141,7 @@ export default {
         // this ref will store the file objects that is being uploaded
         const filesArray = ref([]);
         const pushToFilesArray = (files) => {
-            console.log("pushing to files");
-
             filesArray.value.push(files);
-            console.log(filesArray);
         };
 
         // will be used to keep track on how many files are uploaded
@@ -157,7 +154,6 @@ export default {
         const showHeader = ref(true);
         const toggleHeader = (value) => {
             showHeader.value = value;
-            console.log(showHeader);
         };
 
         const tags = ref([]);
@@ -169,7 +165,6 @@ export default {
         Very long. That would create memory issues.
         */
         const fetchTags = (url = route("tags.get_tags")) => {
-            console.log("fetching tags");
             axios
                 .get(url)
                 .then((resp) => {
@@ -180,13 +175,10 @@ export default {
                     // return the next url to fetch data
                     if (resp.data.next_page_url) {
                         fetchTags(resp.data.next_page_url);
-                    } else {
-                        console.log(tags.value.length);
-                        console.log("All tags fetched");
                     }
                 })
                 .catch((err) => {
-                    console.log(err);
+                    notify("Error fetching tags", "danger");
                 });
         };
 
