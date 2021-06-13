@@ -126,10 +126,12 @@ export default {
         const pushToFilesArray = inject("pushToFilesArray");
         const filesArray = inject("filesArray");
         const uploadedCount = inject("uploadedCount");
+        const fetchTags = inject("fetchTags");
         return {
             pushToFilesArray,
             filesArray,
             uploadedCount,
+            fetchTags,
         };
     },
     data() {

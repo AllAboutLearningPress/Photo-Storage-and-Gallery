@@ -27,7 +27,7 @@ class PhotoController extends Controller
     public function show(Request $request, $id, $slug)
     {
         return  Inertia::render('PhotoView/PhotoView', [
-            'photo' => Photo::with('user', 'tags')->findOrFail($id)
+            'photo' => Photo::withTrashed()->with('user', 'tags')->findOrFail($id)
         ]);
     }
 
@@ -40,7 +40,15 @@ class PhotoController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        Photo::findOrFail($id)->delete();
+        $data = $request->validate(['force' => 'required|boolean']);
+        // if force is set to true then the photo will
+        // be permamnently deleted
+        if ($data['force']) {
+            Photo::withTrashed()->findOrFail($id)->forceDelete();
+        } else {
+            Photo::findOrFail($id)->delete();
+        }
+        // add code to delete elastic search data
         return response('', 204);
     }
 }

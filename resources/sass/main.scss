@@ -1388,3 +1388,19 @@ img-comparison-slider:focus-visible {
 .login__submit-btn {
   width: 100%;
 }
+
+
+.image-view-trash-info{
+    position: absolute;
+    @include media-breakpoint-up(lg) {
+        bottom: 1rem;
+        left: 1rem;
+        z-index: 2;
+      }
+    @include media-breakpoint-down(sm) {
+        bottom: calc(#{$image-view-picture-nav-size} + 15px * 2);
+        left: 1rem;
+        z-index: 2;
+      }
+
+}
