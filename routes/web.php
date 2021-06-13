@@ -33,6 +33,8 @@ use Inertia\Inertia;
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get("/", [IndexController::class, 'index'])->name('home');
     Route::post("/load-more", [IndexController::class, 'load_more'])->name('index.load_more');
+    //Route::resource('photo', PhotoController::class);
+    Route::get("/trash", [IndexController::class, 'trash'])->name('trash');
 
     /* Routes related to uploading files */
     Route::prefix('upload')->name("uploads.")->group(function () {
@@ -47,9 +49,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
 
     /* Routes related to photos */
-    Route::get('photo/{id}/{slug}', [PhotoController::class, 'show'])->name('photos.show');
-    Route::resource('photo', PhotoController::class);
-    Route::get("/trash", [PhotoController::class, 'trash'])->name('trash');
+    Route::get('photo/{id}/{slug}', [PhotoController::class, 'show'])->name('photo.show');
+    Route::post('photo/{id}/delete', [PhotoController::class, 'destroy'])->name('photo.delete');
+
 
 
     /* Routes related to tags */

@@ -223,8 +223,15 @@ export default {
             },
             onClickHandler: (filename, id, slug) => {
                 //alert(`select ${filename}`);
+                console.log(slug);
+                console.log(
+                    route("photo.show", {
+                        id: id,
+                        slug: slug,
+                    })
+                );
                 this.$inertia.visit(
-                    route("photos.show", {
+                    route("photo.show", {
                         id: id,
                         slug: slug,
                     })
