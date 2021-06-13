@@ -17,13 +17,12 @@ class IndexController extends Controller
     public function index()
     {
 
-        $photos =  Photo::limit(5)->get();
-        // //dd($photos);
+
         return Inertia::render('Index', [
             'photos' => Photo::where('file_name', "!=", null)->get()
         ]);
         //$this->add_temp_url($photos)
-        return view('index');
+
     }
 
     /**
@@ -55,5 +54,13 @@ class IndexController extends Controller
             );
         }
         return $photos;
+    }
+
+
+    public function trash()
+    {
+        return Inertia::render('Index', [
+            'photos' => Photo::onlyTrashed()->where('file_name', "!=", null)->get()
+        ])->withViewData(['title' => 'Trashed Photos']);
     }
 }

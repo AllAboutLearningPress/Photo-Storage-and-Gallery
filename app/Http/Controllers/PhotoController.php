@@ -38,14 +38,9 @@ class PhotoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Photo $photo)
+    public function destroy(Request $request, $id)
     {
-        $photo->delete();
+        Photo::findOrFail($id)->delete();
         return response('', 204);
-    }
-
-    public function trash()
-    {
-        return Inertia::render('Index');
     }
 }

@@ -297,15 +297,16 @@ My title title title title title title title title title title title title title
         <div
             ref="deleteModal"
             class="modal fade"
-            id="exampleModalToggle"
+            id="deleteModal"
             aria-hidden="true"
-            aria-labelledby="exampleModalToggleLabel"
+            aria-labelledby="deleteModalToggleLabel"
             tabindex="-1"
+            data-backdrop="false"
         >
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalToggleLabel">
+                        <h5 class="modal-title" id="deleteModalToggleLabel">
                             Delete Photo
                         </h5>
                         <button
@@ -321,19 +322,13 @@ My title title title title title title title title title title title title title
                     <div class="modal-footer">
                         <button
                             class="btn btn-primary"
-                            data-bs-target="#exampleModalToggle2"
+                            data-bs-target="#deleteModal"
                             data-bs-toggle="modal"
                             data-bs-dismiss="modal"
-                            v-on:click="toggleDeleteModal"
                         >
                             Cancel
                         </button>
-                        <button
-                            class="btn btn-danger"
-                            data-bs-target="#exampleModalToggle2"
-                            data-bs-toggle="modal"
-                            data-bs-dismiss="modal"
-                        >
+                        <button v-on:click="deletePhoto" class="btn btn-danger">
                             Delete
                         </button>
                     </div>
@@ -342,7 +337,11 @@ My title title title title title title title title title title title title title
         </div>
     </div>
 </template>
-
+<style lang="scss" >
+.modal-backdrop {
+    z-index: 100;
+}
+</style>
 <script>
 import { inject } from "@vue/runtime-core";
 import MainLayout from "@/Layouts/MainLayout.vue";
@@ -356,6 +355,7 @@ import EditPen from "../../CommonButtons/EditPen.vue";
 import FileTag from "@/Components/FileTag.vue";
 import TagsDatalist from "@/Components/TagsDatalist.vue";
 import Modal from "bootstrap/js/dist/modal";
+import { notify } from "@/util.js";
 export default {
     props: ["photo"],
     components: {
@@ -408,21 +408,29 @@ export default {
             return d.toString();
         },
         toggleDeleteModal(e) {
-            if (!this.deleteModal) {
+            if (this.deleteModal == null) {
                 this.deleteModal = new Modal(this.$refs["deleteModal"], {
-                    backdrop: false,
+                    backdrop: "static",
                 });
+                console.log(this.deleteModal);
             }
             this.deleteModal.toggle();
         },
         deletePhoto(e) {
+            e.preventDefault();
+            this.deleteModal.toggle();
+            console.log(e);
             axios
                 .post(route("photo.delete", { id: this.photo.id }))
                 .then((resp) => {
                     if (resp.status == 204) {
                         // photo deleted successfully
+                        notify("Photo deleted successfully", "success");
                         this.$inertia.visit(route("home"));
                     }
+                })
+                .catch((err) => {
+                    notify("Something went wrong. Please try again.", "danger");
                 });
         },
     },
