@@ -124,13 +124,15 @@ export default {
         UploadProgressBar,
         Notificator,
     },
-    // data() {
 
-    //     // return {
-    //     //     total: ref(4),
-    //     //     filesArray: ref([]),
-    //     // };
-    // },
+    created() {
+        //this.changeTitle();
+        // this will change the title when a new page is visited
+        // we need this because inertia does a partial request
+        // so the title is not updated from server
+        this.$inertia.on("navigate", this.changeTitle);
+    },
+
     setup() {
         // this ref will hold the total bytes of full upload
         let total = ref(0);
@@ -210,6 +212,13 @@ export default {
         //     // Chrome requires returnValue to be set
         //     e.returnValue = "";
         // });
+    },
+    methods: {
+        changeTitle() {
+            document.title = this.$page.props.title
+                ? this.$page.props.title
+                : "AALP Photos";
+        },
     },
 };
 </script>

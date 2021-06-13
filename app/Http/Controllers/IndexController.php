@@ -19,7 +19,8 @@ class IndexController extends Controller
 
 
         return Inertia::render('Index', [
-            'photos' => Photo::where('file_name', "!=", null)->get()
+            'photos' => Photo::where('file_name', "!=", null)->get(),
+            'title' => 'AALP Photos Index'
         ]);
         //$this->add_temp_url($photos)
 
@@ -60,7 +61,8 @@ class IndexController extends Controller
     public function trash()
     {
         return Inertia::render('Index', [
-            'photos' => Photo::onlyTrashed()->where('file_name', "!=", null)->get()
+            'photos' => Photo::onlyTrashed()->where('file_name', "!=", null)->get(),
+            'title' => 'Trashed Photos',
         ])->withViewData(['title' => 'Trashed Photos']);
     }
 }
