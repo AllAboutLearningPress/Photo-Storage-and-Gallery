@@ -52,6 +52,7 @@ export default {
         const updateTotal = inject("updateTotal");
         const uploadedCount = inject("uploadedCount");
         const increaseUploadedCount = inject("increaseUploadedCount");
+        const fetchTags = inject("fetchTags");
 
         return {
             pushToFilesArray,
@@ -60,6 +61,7 @@ export default {
             updateTotal,
             uploadedCount,
             increaseUploadedCount,
+            fetchTags,
         };
     },
     data() {

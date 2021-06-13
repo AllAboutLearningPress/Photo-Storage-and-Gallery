@@ -209,6 +209,7 @@ My title title title title title title title title title title title title title
                                     >Show more actions</span
                                 >
                             </label>
+
                             <span class="toolbar__specific-actions-more">
                                 <share-button></share-button>
                                 <download-button></download-button>
@@ -261,10 +262,7 @@ My title title title title title title title title title title title title title
 
           Add any elements inside (for preloading/etc.) but keep existing elements intact
         -->
-                <div
-                    style="padding-top: min(100%, 800px); width: 800px"
-                    class="image-view__pic"
-                >
+                <div :style="style" class="image-view__pic">
                     <img
                         draggable="false"
                         class="image-view__img"
@@ -273,6 +271,9 @@ My title title title title title title title title title title title title title
                         :src="'/storage/full_size/' + photo.file_name"
                         alt=""
                     />
+                </div>
+                <div class="image-view-trash-info">
+                    You are viewing a trashed photo
                 </div>
                 <a
                     href="#"
@@ -299,7 +300,7 @@ My title title title title title title title title title title title title title
             class="modal fade"
             id="deleteModal"
             aria-hidden="true"
-            aria-labelledby="deleteModalToggleLabel"
+            aria-labelledby
             tabindex="-1"
             data-backdrop="false"
         >
@@ -317,7 +318,11 @@ My title title title title title title title title title title title title title
                         ></button>
                     </div>
                     <div class="modal-body">
-                        Are you sure about deleting "{{ photo.title }}" ?
+                        Are you sure about
+                        <span class="text-danger">{{
+                            photo.deleted_at ? "permanently" : ""
+                        }}</span>
+                        deleting "{{ photo.title }}" ?
                     </div>
                     <div class="modal-footer">
                         <button
@@ -329,7 +334,7 @@ My title title title title title title title title title title title title title
                             Cancel
                         </button>
                         <button v-on:click="deletePhoto" class="btn btn-danger">
-                            Delete
+                            {{ photo.deleted_at ? "Permanently" : "" }} Delete
                         </button>
                     </div>
                 </div>
@@ -383,22 +388,33 @@ export default {
         return {
             // imgUrl: "//placekitten.com/800/800",
             deleteModal: null,
+            deleteModalText: "",
+            style: this.genStyle(),
         };
     },
-    onMounted() {
+    mounted() {
         // this.photoView.value = true;
         // this.toggleHeader(false);
-        // console.log(this.photo);
+        console.log(this.photo);
     },
 
     beforeMount() {
         // this.toggleHeader(false);
     },
     beforeUnmount() {
-        // Showing header again for othert pages
+        // Showing header again for other pages
         this.toggleHeader(true);
     },
     methods: {
+        genStyle() {
+            return (
+                "padding-top: min(" +
+                `${(this.photo.height / this.photo.width) * 100}%` +
+                ", " +
+                `${this.photo.height}px` +
+                `); width: ${this.photo.width}px`
+            );
+        },
         toggleSidebar(e) {
             this.$refs["sidebar"].classList.toggle("is-open");
         },
@@ -421,7 +437,12 @@ export default {
             this.deleteModal.toggle();
             console.log(e);
             axios
-                .post(route("photo.delete", { id: this.photo.id }))
+                .post(
+                    route("photo.delete", {
+                        id: this.photo.id,
+                        force: this.photo.deleted_at ? true : false,
+                    })
+                )
                 .then((resp) => {
                     if (resp.status == 204) {
                         // photo deleted successfully
