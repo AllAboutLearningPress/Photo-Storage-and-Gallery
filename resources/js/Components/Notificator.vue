@@ -56,6 +56,16 @@ export default {
     },
     created() {
         document.addEventListener("notify", this.show);
+        this.$inertia.on("navigate", () => {
+            if (this.$page.props.flash.success) {
+                this.show({
+                    detail: {
+                        body: this.$page.props.flash.success,
+                        level: "success",
+                    },
+                });
+            }
+        });
     },
     mounted() {
         this.container = document.querySelector(".js-notification-container");

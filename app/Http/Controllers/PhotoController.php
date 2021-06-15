@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Photo;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Redirect;
 
 class PhotoController extends Controller
 {
@@ -50,5 +51,17 @@ class PhotoController extends Controller
         }
         // add code to delete elastic search data
         return response('', 204);
+    }
+
+    public function restore(Request $request)
+    {
+
+        $data = $request->validate([
+            'id' => 'required|exists:photos,id',
+        ]);
+
+        Photo::withTrashed()->find($data['id'])->restore();
+        $request->session()->flash('success', 'Photo restored');
+        return  Redirect::route('trash');
     }
 }

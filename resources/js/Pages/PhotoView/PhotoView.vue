@@ -216,6 +216,9 @@ My title title title title title title title title title title title title title
                                 <delete-button
                                     v-on:click="toggleDeleteModal"
                                 ></delete-button>
+                                <restore-button
+                                    v-on:click="restorePhoto"
+                                ></restore-button>
                             </span>
                             <show-details-button
                                 v-on:open-sidebar="toggleSidebar"
@@ -272,7 +275,7 @@ My title title title title title title title title title title title title title
                         alt=""
                     />
                 </div>
-                <div class="image-view-trash-info">
+                <div v-if="photo.deleted_at" class="image-view-trash-info">
                     You are viewing a trashed photo
                 </div>
                 <a
@@ -361,6 +364,8 @@ import FileTag from "@/Components/FileTag.vue";
 import TagsDatalist from "@/Components/TagsDatalist.vue";
 import Modal from "bootstrap/js/dist/modal";
 import { notify } from "@/util.js";
+import RestoreButton from "./Componenets/RestoreButton.vue";
+import { Inertia } from "@inertiajs/inertia";
 export default {
     props: ["photo"],
     components: {
@@ -373,6 +378,7 @@ export default {
         EditPen,
         FileTag,
         TagsDatalist,
+        RestoreButton,
     },
     layout: MainLayout,
 
@@ -395,7 +401,7 @@ export default {
     mounted() {
         // this.photoView.value = true;
         // this.toggleHeader(false);
-        console.log(this.photo);
+        //console.log(this.photo);
     },
 
     beforeMount() {
@@ -446,13 +452,24 @@ export default {
                 .then((resp) => {
                     if (resp.status == 204) {
                         // photo deleted successfully
-                        notify("Photo deleted successfully", "success");
-                        this.$inertia.visit(route("home"));
+
+                        if (this.photo.deleted_at) {
+                            notify("Photo permanenetly deleted", "success");
+                            console.log("deleted");
+                            this.$inertia.visit(route("trash"));
+                        } else {
+                            notify("Photo moved to trash", "success");
+                            this.$inertia.visit(route("home"));
+                        }
                     }
                 })
                 .catch((err) => {
                     notify("Something went wrong. Please try again.", "danger");
+                    console.error(err);
                 });
+        },
+        restorePhoto(e) {
+            this.$inertia.post(route("photo.restore"), { id: this.photo.id });
         },
     },
 };
