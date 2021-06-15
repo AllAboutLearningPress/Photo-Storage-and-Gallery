@@ -74,6 +74,7 @@
                             </div>
                             <div class="file__header">
                                 <file-title
+                                    :id="file.id"
                                     v-bind:title="file.title"
                                     v-on:title-change="
                                         file.title = $event;
@@ -108,7 +109,7 @@ import { notify } from "@/util.js";
 //import { addEventListener } from "@/frontend/util/utils.js";
 import { inject } from "@vue/runtime-core";
 import FileNotes from "./Components/ FileNotes.vue";
-import FileTitle from "./Components/FileTitle.vue";
+import FileTitle from "@/Components/FileTitle.vue";
 import FileTag from "@/Components/FileTag.vue";
 import CompletedTick from "./Components/CompletedTick.vue";
 import TagsDatalist from "@/Components/TagsDatalist.vue";
@@ -183,23 +184,6 @@ export default {
         //     console.log(e);
         //     window.requestAnimationFrame(() => this.updateUploadBar(e));
         // },
-        updateTitle(title, fileId) {
-            console.log(title);
-            console.log(fileId);
-
-            // send axios request to save title
-            this.sendPhotoDetailsReq({ title: title, id: fileId });
-        },
-        sendPhotoDetailsReq(data) {
-            axios
-                .post(route("uploads.update-details"), data)
-                .then((resp) => {
-                    notify("Photo Updated");
-                })
-                .catch((err) => {
-                    notify("Something went Wrong", "danger");
-                });
-        },
 
         /**Cancels the full upload */
         cancelUpload() {
