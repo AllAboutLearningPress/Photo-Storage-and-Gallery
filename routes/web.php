@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\TagController;
@@ -45,6 +46,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::post("add-tag", [UploadController::class, 'addTag'])->name('add_tag');
         Route::post("remove-tag", [UploadController::class, 'removeTag'])->name('remove_tag');
         Route::post('update-details', [UploadController::class, 'updateDetails'])->name('update-details');
+    });
+
+    Route::prefix('download')->name('downloads.')->group(function () {
+        Route::post('generate-link', [DownloadController::class, 'generateLink'])->name('generate_link');
     });
 
 
