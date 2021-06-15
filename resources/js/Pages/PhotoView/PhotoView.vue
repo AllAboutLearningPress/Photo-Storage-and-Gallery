@@ -32,7 +32,7 @@
                     <div class="image-view__details-content">
                         <ul class="nolist">
                             <li class="js-editable editable">
-                                <dl class="editable__content dlist_0 dlist">
+                                <!-- <dl class="editable__content dlist_0 dlist">
                                     <dt class="mr-1">Title:</dt>
                                     <dd>
                                         <span class="js-editable__val">
@@ -40,33 +40,13 @@
                                         </span>
                                         <edit-pen></edit-pen>
                                     </dd>
-                                </dl>
-                                <form
-                                    class="js-editable__form editable__form"
-                                    action="#"
-                                >
-                                    <textarea
-                                        placeholder="Write here"
-                                        class="
-                                            js-editable__area
-                                            editable__area
-                                            form-control
-                                            form-control-lg
-                                            form-control-plaintext
-                                        "
-                                    >
-My title title title title title title title title title title title title title title title title title title title title</textarea
-                                    >
-                                    <button
-                                        type="submit"
-                                        class="
-                                            js-editable__confirm
-                                            btn btn-outline-secondary
-                                        "
-                                    >
-                                        Ok
-                                    </button>
-                                </form>
+                                </dl> -->
+                                <file-title
+                                    v-on:title-change="photo.title = $event"
+                                    :id="photo.id"
+                                    :title="photo.title"
+                                    >Title:
+                                </file-title>
                             </li>
                             <li>
                                 <dl class="dlist_0 dlist">
@@ -360,12 +340,13 @@ import DownloadButton from "./Componenets/DownloadButton.vue";
 import ShareButton from "./Componenets/ShareButton.vue";
 import DeleteButton from "./Componenets/DeleteButton.vue";
 import ShowDetailsButton from "./Componenets/ShowDetailsButton.vue";
-import EditPen from "../../CommonButtons/EditPen.vue";
 import FileTag from "@/Components/FileTag.vue";
 import TagsDatalist from "@/Components/TagsDatalist.vue";
 import Modal from "bootstrap/js/dist/modal";
-import { notify } from "@/util.js";
+import { notify, updatePhotoDetails } from "@/util.js";
 import RestoreButton from "./Componenets/RestoreButton.vue";
+import FileTitle from "@/Components/FileTitle.vue";
+
 export default {
     props: ["photo"],
     components: {
@@ -375,10 +356,11 @@ export default {
         DeleteButton,
         ShareButton,
         DownloadButton,
-        EditPen,
+
         FileTag,
         TagsDatalist,
         RestoreButton,
+        FileTitle,
     },
     layout: MainLayout,
 

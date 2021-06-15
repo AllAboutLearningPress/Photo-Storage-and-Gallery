@@ -10,3 +10,14 @@ export const notify = (body, level) => {
 export const axiosError = (err) => {
     notify("Something went wrong. Please try again")
 }
+
+export const updatePhotoDetails = (data) => {
+    axios
+        .post(route("uploads.update-details"), data)
+        .then((resp) => {
+            notify("Photo Updated");
+        })
+        .catch((err) => {
+            notify("Something went Wrong", "danger");
+        });
+}
