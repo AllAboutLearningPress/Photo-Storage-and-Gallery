@@ -80,7 +80,8 @@
                                         file.title = $event;
                                         updateTitle($event, file.id);
                                     "
-                                ></file-title>
+                                >
+                                </file-title>
                                 <file-notes
                                     :hasDuplicate="file.hasDuplicate"
                                 ></file-notes>
