@@ -50,7 +50,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     /* Routes related to photos */
     Route::get('photo/{id}/{slug}', [PhotoController::class, 'show'])->name('photo.show');
-    Route::post('photo/{id}/delete', [PhotoController::class, 'destroy'])->name('photo.delete');
+    Route::post('photo/delete', [PhotoController::class, 'destroy'])->name('photo.delete');
     Route::post('photo/restore', [PhotoController::class, 'restore'])->name('photo.restore');
 
 

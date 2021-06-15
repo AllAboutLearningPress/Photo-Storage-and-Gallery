@@ -39,18 +39,27 @@ class PhotoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request)
     {
-        $data = $request->validate(['force' => 'required|boolean']);
+        $data = $request->validate([
+            'id' => 'required|exists:photos,id',
+            'force' => 'required|boolean'
+        ]);
+
         // if force is set to true then the photo will
         // be permamnently deleted
         if ($data['force']) {
-            Photo::withTrashed()->findOrFail($id)->forceDelete();
+            Photo::withTrashed()->findOrFail($data['id'])->forceDelete();
+            $flash_msg = 'Photo permanenetly deleted';
+            $redirect_route = 'trash';
         } else {
-            Photo::findOrFail($id)->delete();
+            Photo::findOrFail($data['id'])->delete();
+            $flash_msg = 'Photo moved to trash';
+            $redirect_route = 'home';
         }
         // add code to delete elastic search data
-        return response('', 204);
+        $request->session()->flash('success', $flash_msg);
+        return Redirect::route($redirect_route);
     }
 
     public function restore(Request $request)
