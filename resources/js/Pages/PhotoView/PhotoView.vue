@@ -194,7 +194,9 @@
 
                             <span class="toolbar__specific-actions-more">
                                 <share-button></share-button>
-                                <download-button></download-button>
+                                <download-button
+                                    v-on:click="downloadPhoto"
+                                ></download-button>
                                 <delete-button
                                     v-on:click="toggleDeleteModal"
                                 ></delete-button>
@@ -437,6 +439,14 @@ export default {
         /**Restores a photo from trash to photos */
         restorePhoto(e) {
             this.$inertia.post(route("photo.restore"), { id: this.photo.id });
+        },
+        downloadPhoto(e) {
+            axios
+                .post(route("downloads.generate_link"), { id: this.photo.id })
+                .then((resp) => {
+                    console.log(resp.data);
+                    window.open("/" + resp.data);
+                });
         },
     },
 };
