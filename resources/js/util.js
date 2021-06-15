@@ -15,7 +15,7 @@ export const updatePhotoDetails = (data) => {
     axios
         .post(route("uploads.update-details"), data)
         .then((resp) => {
-            notify("Photo Updated");
+            notify("Photo Updated", 'success');
         })
         .catch((err) => {
             notify("Something went Wrong", "danger");

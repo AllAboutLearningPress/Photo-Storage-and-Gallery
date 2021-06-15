@@ -41,10 +41,12 @@
                                         <edit-pen></edit-pen>
                                     </dd>
                                 </dl> -->
+
                                 <file-title
                                     v-on:title-change="photo.title = $event"
                                     :id="photo.id"
                                     :title="photo.title"
+                                    name="title"
                                     >Title:
                                 </file-title>
                             </li>
