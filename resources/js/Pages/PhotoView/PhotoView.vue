@@ -93,7 +93,7 @@ My title title title title title title title title title title title title title
                             <li>
                                 <dl class="dlist_0 dlist">
                                     <dt>File size:</dt>
-                                    <dd>{{ photo.size / 1000 }} Mb</dd>
+                                    <dd>{{ bytesToSize(photo.size) }}</dd>
                                 </dl>
                             </li>
                             <li>
@@ -217,6 +217,7 @@ My title title title title title title title title title title title title title
                                     v-on:click="toggleDeleteModal"
                                 ></delete-button>
                                 <restore-button
+                                    v-if="photo.deleted_at"
                                     v-on:click="restorePhoto"
                                 ></restore-button>
                             </span>
@@ -365,7 +366,6 @@ import TagsDatalist from "@/Components/TagsDatalist.vue";
 import Modal from "bootstrap/js/dist/modal";
 import { notify } from "@/util.js";
 import RestoreButton from "./Componenets/RestoreButton.vue";
-import { Inertia } from "@inertiajs/inertia";
 export default {
     props: ["photo"],
     components: {
@@ -392,26 +392,23 @@ export default {
     },
     data() {
         return {
-            // imgUrl: "//placekitten.com/800/800",
             deleteModal: null,
             deleteModalText: "",
             style: this.genStyle(),
         };
     },
-    mounted() {
-        // this.photoView.value = true;
-        // this.toggleHeader(false);
-        //console.log(this.photo);
-    },
 
-    beforeMount() {
-        // this.toggleHeader(false);
-    },
     beforeUnmount() {
         // Showing header again for other pages
         this.toggleHeader(true);
     },
     methods: {
+        bytesToSize(bytes) {
+            var sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+            if (bytes == 0) return "0 Byte";
+            var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+            return Math.round(bytes / Math.pow(1024, i), 2) + " " + sizes[i];
+        },
         genStyle() {
             return (
                 "padding-top: min(" +
@@ -421,6 +418,7 @@ export default {
                 `); width: ${this.photo.width}px`
             );
         },
+        /**Toggles the photo info sidebar */
         toggleSidebar(e) {
             this.$refs["sidebar"].classList.toggle("is-open");
         },
@@ -438,36 +436,21 @@ export default {
             }
             this.deleteModal.toggle();
         },
+        /** Moves a photo to trash and deletes permanenetly from trash
+         * Executed when clicking on the deletePhoto button.
+         * Performs a softdelete on first request and performs
+         * a force delete on 2nd request
+         */
         deletePhoto(e) {
             e.preventDefault();
+            // hiding the delete modal
             this.deleteModal.toggle();
-            console.log(e);
-            axios
-                .post(
-                    route("photo.delete", {
-                        id: this.photo.id,
-                        force: this.photo.deleted_at ? true : false,
-                    })
-                )
-                .then((resp) => {
-                    if (resp.status == 204) {
-                        // photo deleted successfully
-
-                        if (this.photo.deleted_at) {
-                            notify("Photo permanenetly deleted", "success");
-                            console.log("deleted");
-                            this.$inertia.visit(route("trash"));
-                        } else {
-                            notify("Photo moved to trash", "success");
-                            this.$inertia.visit(route("home"));
-                        }
-                    }
-                })
-                .catch((err) => {
-                    notify("Something went wrong. Please try again.", "danger");
-                    console.error(err);
-                });
+            this.$inertia.post(route("photo.delete"), {
+                id: this.photo.id,
+                force: this.photo.deleted_at ? true : false,
+            });
         },
+        /**Restores a photo from trash to photos */
         restorePhoto(e) {
             this.$inertia.post(route("photo.restore"), { id: this.photo.id });
         },
