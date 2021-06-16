@@ -12,6 +12,11 @@ class DownloadController extends Controller
     {
         $data = $request->validate(['id' => 'required|exists:photos,id']);
         $photo = Photo::select('file_name')->find($data['id']);
+        // return redirect(Storage::disk('s3')->temporaryUrl(
+        //     $filePath,
+        //     now()->addHour(),
+        //     ['ResponseContentDisposition' => 'attachment']
+        // ));
         return 'storage/full_size/' . $photo['file_name'];
     }
 

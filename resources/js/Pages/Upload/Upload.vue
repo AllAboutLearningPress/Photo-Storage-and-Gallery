@@ -32,7 +32,11 @@
                     :key="file.id"
                     class="file-list__item"
                 >
-                    <div class="file" :id="'file' + file.id">
+                    <div
+                        v-if="!file.cancelled"
+                        class="file"
+                        :id="'file' + file.id"
+                    >
                         <div class="file__thumb">
                             <div
                                 :style="`background-image: url('${
@@ -208,11 +212,15 @@ export default {
         cancelSingleUpload(index) {
             let file = this.filesArray[index];
             // removing the file from filesArray
-            this.filesArray.splice(index, 1);
+            //this.filesArray.splice(index, 1);
+            // cancelling the upload
+            this.filesArray[index].cancelToken.cancel();
+            console.log("cancelling ", this.filesArray[index]);
+            this.filesArray[index].cancelled = true;
             // sending request to remove the file entry
             this.sendPhotoDetailsReq([{ id: file.id }], () => {
                 // adding the file again to exact location
-                this.filesArray.splice(index, 0, file);
+                // zthis.filesArray.splice(index, 0, file);
             });
         },
         sendCancelUploadReq(ids, errCallback) {
