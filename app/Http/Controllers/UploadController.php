@@ -51,7 +51,7 @@ class UploadController extends Controller
     {
 
         $files = $request->validate([
-            '*.token' => 'required|string',
+            '*.tempId' => 'required|integer',
             '*.title' => 'required|string',
             '*.size' => 'required|integer',
 
@@ -68,7 +68,7 @@ class UploadController extends Controller
                 'user_id' => Auth::user()->id,
                 'size' => $file['size']
             ])->id;
-            array_push($resp_data, ['token' => $file['token'], 'id' => $id]);
+            array_push($resp_data, ['tempId' => $file['tempId'], 'id' => $id]);
         }
         return $resp_data;
     }

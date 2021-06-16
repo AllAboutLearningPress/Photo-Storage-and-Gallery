@@ -9,23 +9,7 @@
                 btn btn-subtle btn-lg
             "
         >
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="26"
-                height="26"
-                fill="currentColor"
-                class="bi bi-cloud-upload"
-                viewBox="0 0 16 16"
-            >
-                <path
-                    fill-rule="evenodd"
-                    d="M4.406 1.342A5.53 5.53 0 0 1 8 0c2.69 0 4.923 2 5.166 4.579C14.758 4.804 16 6.137 16 7.773 16 9.569 14.502 11 12.687 11H10a.5.5 0 0 1 0-1h2.688C13.979 10 15 8.988 15 7.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 2.825 10.328 1 8 1a4.53 4.53 0 0 0-2.941 1.1c-.757.652-1.153 1.438-1.153 2.055v.448l-.445.049C2.064 4.805 1 5.952 1 7.318 1 8.785 2.23 10 3.781 10H6a.5.5 0 0 1 0 1H3.781C1.708 11 0 9.366 0 7.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383z"
-                ></path>
-                <path
-                    fill-rule="evenodd"
-                    d="M7.646 4.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V14.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3z"
-                ></path>
-            </svg>
+            <cloud-upload-icon></cloud-upload-icon>
             <span class="header__action-btn__txt">Upload</span>
             <input
                 class="js-upload__input button-file__input"
@@ -41,10 +25,12 @@
 <script>
 import axios from "axios";
 import SingleImageDropManager from "../frontend/components/SingleImageDropManager.js";
+import CloudUploadIcon from "@/Icons/CloudUploadIcon.vue";
 import { notify } from "@/util.js";
 import { inject } from "@vue/runtime-core";
 export default {
     // inject: ["filesArray", "pushToFilesArray"],
+    components: { CloudUploadIcon },
     setup() {
         const pushToFilesArray = inject("pushToFilesArray");
         const filesArray = inject("filesArray");
@@ -52,7 +38,7 @@ export default {
         const updateTotal = inject("updateTotal");
         const uploadedCount = inject("uploadedCount");
         const increaseUploadedCount = inject("increaseUploadedCount");
-
+        const dropManager = new SingleImageDropManager();
         return {
             pushToFilesArray,
             filesArray,
@@ -60,6 +46,7 @@ export default {
             updateTotal,
             uploadedCount,
             increaseUploadedCount,
+            dropManager,
         };
     },
     data() {
@@ -93,9 +80,7 @@ export default {
             completedCount: 0,
         };
     },
-    created() {
-        this.dropManager = new SingleImageDropManager();
-    },
+
     mounted() {
         // event gets triggerd when new files are dragged
         // or selected by user
@@ -159,37 +144,37 @@ export default {
             console.log("uploading");
             console.log("files available: ", filesArray.length);
             let total = 0;
+            let tempId = 0;
+            let requestPhotos = [];
             // generating filesArray for handling user modification
             filesArray.forEach((file) => {
                 total += file.size;
                 this.pushToFilesArray({
                     file: file,
                     title: file.name,
-                    serverId: null,
-                    tags: [],
+                    tags: [], // used to store tags for this file
                     hasDuplicate: false,
-                    token: this.randHexToken(128),
-                    id: null,
+                    tempId: tempId, // is used to match server id to this object
+                    id: null, // id returned by server
                     total: file.size, // this total is larger than file size due the other datas
-                    loaded: 0,
+                    loaded: 0, // used to calculate progress bar in /upload page
                     isUploading: false,
-                    width: "0%",
+                    width: "0%", // used to show progress bar
                     uploadCompleted: false,
-                    cancelToken: axios.CancelToken.source(),
+                    cancelToken: axios.CancelToken.source(), // used to cancel axios request
+                    cancelled: false,
                 });
+                requestPhotos.push({
+                    tempId: tempId,
+                    title: file.name,
+                    size: file.size,
+                });
+                tempId++;
             });
             this.updateTotal(total);
             console.log("total in headerupload ", this.total);
 
-            let requestPhotos = [];
-            this.filesArray.forEach((file) => {
-                requestPhotos.push({
-                    token: file.token,
-                    title: file.file.name,
-                    size: file.file.size,
-                });
-            });
-            // sending reqeust to server to create the rows for photos
+            // sending request to server to create the rows for photos
             // we will use the server returned id for additional requests
             axios
                 .post(route("uploads.store"), requestPhotos)
@@ -201,6 +186,7 @@ export default {
                                 // related file found
                                 // adding the photo id returned by server
                                 this.filesArray[i].id = photo.id;
+                                break;
                             }
                         }
                     });
@@ -210,8 +196,6 @@ export default {
                     console.log(err);
                     notify("Upload Failed");
                 });
-            // start uploading
-            this.uploadFiles();
 
             // go to upload details page where user can modify file details
             this.$inertia.get("/upload");
