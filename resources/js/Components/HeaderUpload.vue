@@ -221,20 +221,21 @@ export default {
         uploadFiles() {
             console.log("upload started");
             if (this.uploadingCount < this.maxUploadingCount) {
-                if (this.uploadedCount < this.filesArray.length) {
+                if (this.fileIndex < this.filesArray.length) {
                     console.log(this.uploadedCount);
                     console.log(this.fileCount);
-                    this.uploadSingleFile(this.uploadedCount);
-                    //this.fileIndex++;
+                    this.uploadSingleFile(this.fileIndex);
+                    this.fileIndex++;
                     this.uploadingCount++;
-                } else {
+                    setTimeout(this.uploadFiles, 0);
+                } else if (this.uploadedCount == this.filesArray.length) {
                     // all files uploaded
                     notify(
                         "Upload finished. Please complete the upload",
                         "success"
                     );
-                    // showing the /upload page. So they can do a final
-                    // Editing of file details.
+                    // If user is not on the /upload then visiting /upload page
+                    // So they can do a final editing of file details.
                     if (route().current() != route("uploads.index")) {
                         this.$inertia.visit(route("uploads.index"));
                     }
