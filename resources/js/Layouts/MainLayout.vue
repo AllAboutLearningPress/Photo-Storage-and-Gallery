@@ -90,7 +90,7 @@
 
         <div class="js-drop-target drop-target">
             <div class="drop-target__message">
-                \where
+                Drop anywhere
                 <div class="js-drop-manager drop-manager">
                     <div class="drop-manager__note_search drop-manager__note">
                         (hold the Shift key to search)
