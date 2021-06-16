@@ -2,7 +2,7 @@
     <div>
         <!-- <upload-toolbar></upload-toolbar> -->
         <h2 v-if="filesArray.length" class="fw-light mb-5">
-            <div v-if="filesArray.length == uploadedCount">
+            <div v-if="filesArray.length != uploadedCount">
                 Uploading {{ filesArray.len }} pictures, please take a moment to
                 add details, or keep using a site
                 <button
@@ -129,11 +129,13 @@ export default {
         const filesArray = inject("filesArray");
         const uploadedCount = inject("uploadedCount");
         const fetchTags = inject("fetchTags");
+        const resetUpload = inject("resetUpload");
         return {
             pushToFilesArray,
             filesArray,
             uploadedCount,
             fetchTags,
+            resetUpload,
         };
     },
     data() {
@@ -225,6 +227,11 @@ export default {
                     notify("Something went wrong. Please try again");
                     errCallback();
                 });
+        },
+        completeUpload(e) {
+            this.resetUpload();
+            notify("Uploaded complete", "success");
+            this.$inertia.visit(route("home"));
         },
     },
     beforeUnmount() {
