@@ -65,7 +65,8 @@ export default {
             //     // },
             // ],
             tags: [],
-            maxUploadCount: 40,
+            maxUploadingCount: 40,
+            uploadingCount: 0,
             uploadCount: 0,
             fileCount: 0,
             fileIndex: 0,
@@ -143,6 +144,10 @@ export default {
         handleUpload(filesArray) {
             console.log("uploading");
             console.log("files available: ", filesArray.length);
+            if (!filesArray.length) {
+                // to handle empty events
+                return;
+            }
             let total = 0;
             let tempId = 0;
             let requestPhotos = [];
@@ -182,7 +187,7 @@ export default {
                     console.log(resp.data);
                     resp.data.forEach((photo) => {
                         for (let i = 0; i < this.filesArray.length; i++) {
-                            if (this.filesArray[i].token == photo.token) {
+                            if (this.filesArray[i].tempId == photo.tempId) {
                                 // related file found
                                 // adding the photo id returned by server
                                 this.filesArray[i].id = photo.id;
@@ -215,13 +220,13 @@ export default {
          */
         uploadFiles() {
             console.log("upload started");
-            if (this.maxUploadCount < this.filesArray.length) {
+            if (this.uploadingCount < this.maxUploadingCount) {
                 if (this.uploadedCount < this.filesArray.length) {
                     console.log(this.uploadedCount);
                     console.log(this.fileCount);
                     this.uploadSingleFile(this.uploadedCount);
                     //this.fileIndex++;
-                    this.maxUploadCount++;
+                    this.uploadingCount++;
                 } else {
                     // all files uploaded
                     notify(
@@ -230,7 +235,7 @@ export default {
                     );
                     // showing the /upload page. So they can do a final
                     // Editing of file details.
-                    if (route().current() != route("upload")) {
+                    if (route().current() != route("uploads.index")) {
                         this.$inertia.visit(route("uploads.index"));
                     }
                 }
@@ -270,7 +275,7 @@ export default {
 
                     // upload finished. Now it will check and
                     // start a new upload
-                    this.fileIndex--;
+                    this.uploadingCount--;
                     this.uploadFiles();
                 })
                 .catch((error) => {
@@ -309,20 +314,6 @@ export default {
             return [...new Uint8Array(buffer)]
                 .map((x) => x.toString(16).padStart(2, "0"))
                 .join("");
-        },
-        checkAllUploaded() {
-            if (this.uploadedCount == this.filesArray.length) {
-                // all upload completed
-                notify(
-                    "Upload finished. Please complete the upload",
-                    "success"
-                );
-                // showing the /upload page. So they can do a final
-                // Editing of file details.
-                if (route().current() != route("upload")) {
-                    this.$inertia.visit(route("uploads.index"));
-                }
-            }
         },
     },
 };

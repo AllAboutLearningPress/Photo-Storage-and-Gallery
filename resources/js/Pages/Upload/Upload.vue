@@ -187,11 +187,6 @@ export default {
     },
 
     methods: {
-        // animateUploadBar(e) {
-        //     console.log(e);
-        //     window.requestAnimationFrame(() => this.updateUploadBar(e));
-        // },
-
         /**Cancels the full upload */
         cancelUpload() {
             console.log("upload cancelled");
@@ -238,13 +233,12 @@ export default {
         },
         completeUpload(e) {
             this.resetUpload();
-            notify("Uploaded complete", "success");
+            notify("Uploaded completed", "success");
             this.$inertia.visit(route("home"));
         },
     },
     beforeUnmount() {
         // removing the event listener for this page
-        console.log(this.rmlisteners);
         this.rmlisteners.forEach((func) => func());
     },
 };
