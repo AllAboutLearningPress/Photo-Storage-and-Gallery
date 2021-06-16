@@ -183,6 +183,7 @@ $header-search-slot-gap: 1em;
 
 .header__action-btn__txt {
   display: none;
+  margin-left: 0.4rem;
 
   @include media-breakpoint-up(lg) {
     display: inline;
@@ -1023,6 +1024,7 @@ textarea::-webkit-scrollbar-track {
 }
 .tags__tag {
   margin-bottom: .5em;
+  margin-right: 0.5rem;
 }
 
 /*

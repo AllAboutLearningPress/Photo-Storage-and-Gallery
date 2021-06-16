@@ -16,7 +16,7 @@ class TagController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Tag');
+        return Inertia::render('Tag', ['tags' => Tag::limit(100)->get()]);
     }
 
     /**

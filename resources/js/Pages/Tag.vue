@@ -1,38 +1,16 @@
 
 <template>
     <div>
-        <h2 class="fw-light mb-4">Popular tags:</h2>
+        <h2 class="fw-light mb-4">Popular tags</h2>
         <div class="mb-3 tags">
-            <a class="tags__tag tag btn btn-secondary" href="#"> Tag </a>
-            <a class="tags__tag tag btn btn-secondary" href="#"> Some tag </a>
-            <a class="tags__tag tag btn btn-secondary" href="#">
-                Another tag
-            </a>
-            <a class="tags__tag tag btn btn-secondary" href="#"> Tag </a>
-            <a class="tags__tag tag btn btn-secondary" href="#">
-                My test tag
-            </a>
-            <a class="tags__tag tag btn btn-secondary" href="#"> Tag </a>
-            <a class="tags__tag tag btn btn-secondary" href="#"> Tag </a>
-            <a class="tags__tag tag btn btn-secondary" href="#"> Some tag </a>
-            <a class="tags__tag tag btn btn-secondary" href="#">
-                Another tag
-            </a>
-            <a class="tags__tag tag btn btn-secondary" href="#"> Tag </a>
-            <a class="tags__tag tag btn btn-secondary" href="#">
-                My test tag
-            </a>
-            <a class="tags__tag tag btn btn-secondary" href="#"> Tag </a>
-            <a class="tags__tag tag btn btn-secondary" href="#"> Tag </a>
-            <a class="tags__tag tag btn btn-secondary" href="#"> Some tag </a>
-            <a class="tags__tag tag btn btn-secondary" href="#">
-                Another tag
-            </a>
-            <a class="tags__tag tag btn btn-secondary" href="#"> Tag </a>
-            <a class="tags__tag tag btn btn-secondary" href="#">
-                My test tag
-            </a>
-            <a class="tags__tag tag btn btn-secondary" href="#"> Tag </a>
+            <inertia-link
+                v-for="tag in tags"
+                :key="tag.id"
+                class="tags__tag tag btn btn-secondary"
+                :href="route('tags.show', tag.slug)"
+            >
+                {{ tag.name }}
+            </inertia-link>
         </div>
         <button type="button" class="btn btn-outline-primary">Load more</button>
     </div>
@@ -41,6 +19,7 @@
 <script>
 import MainLayout from "../Layouts/MainLayout.vue";
 export default {
+    props: ["tags"],
     layout: MainLayout,
 };
 </script>
