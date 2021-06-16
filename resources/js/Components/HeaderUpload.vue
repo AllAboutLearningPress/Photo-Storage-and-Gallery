@@ -52,7 +52,6 @@ export default {
         const updateTotal = inject("updateTotal");
         const uploadedCount = inject("uploadedCount");
         const increaseUploadedCount = inject("increaseUploadedCount");
-        const fetchTags = inject("fetchTags");
 
         return {
             pushToFilesArray,
@@ -61,7 +60,6 @@ export default {
             updateTotal,
             uploadedCount,
             increaseUploadedCount,
-            fetchTags,
         };
     },
     data() {
@@ -80,7 +78,7 @@ export default {
             //     // },
             // ],
             tags: [],
-            maxUploadCount: 4,
+            maxUploadCount: 40,
             uploadCount: 0,
             fileCount: 0,
             fileIndex: 0,
@@ -97,9 +95,6 @@ export default {
     },
     created() {
         this.dropManager = new SingleImageDropManager();
-
-        // fetch tags lazily from server
-        // this.fetchTags(route("tags.get_tags"));
     },
     mounted() {
         // event gets triggerd when new files are dragged
@@ -185,6 +180,36 @@ export default {
             });
             this.updateTotal(total);
             console.log("total in headerupload ", this.total);
+
+            let requestPhotos = [];
+            this.filesArray.forEach((file) => {
+                requestPhotos.push({
+                    token: file.token,
+                    title: file.file.name,
+                    size: file.file.size,
+                });
+            });
+            // sending reqeust to server to create the rows for photos
+            // we will use the server returned id for additional requests
+            axios
+                .post(route("uploads.store"), requestPhotos)
+                .then((resp) => {
+                    console.log(resp.data);
+                    resp.data.forEach((photo) => {
+                        for (let i = 0; i < this.filesArray.length; i++) {
+                            if (this.filesArray[i].token == photo.token) {
+                                // related file found
+                                // adding the photo id returned by server
+                                this.filesArray[i].id = photo.id;
+                            }
+                        }
+                    });
+                    this.uploadFiles();
+                })
+                .catch((err) => {
+                    console.log(err);
+                    notify("Upload Failed");
+                });
             // start uploading
             this.uploadFiles();
 
@@ -206,61 +231,26 @@ export default {
          */
         uploadFiles() {
             console.log("upload started");
-
-            let requestPhotos = [];
-            this.filesArray.forEach((file) => {
-                requestPhotos.push({
-                    token: file.token,
-                    title: file.file.name,
-                    size: file.file.size,
-                });
-            });
-            // sending reqeust to server to create the rows for photos
-            // we will use the server returned id for additional requests
-            axios
-                .post(route("uploads.store"), requestPhotos)
-                .then((resp) => {
-                    console.log(resp.data);
-                    resp.data.forEach((photo) => {
-                        for (let i = 0; i < this.filesArray.length; i++) {
-                            if (this.filesArray[i].token == photo.token) {
-                                // realted file found
-                                // adding the photo id returned by server
-                                this.filesArray[i].id = photo.id;
-                            }
-                        }
-                    });
-                    notify("Upload Started");
-                    for (let i = 0; i < this.filesArray.length; i++) {
-                        //if (this.filesArray[i].isUploading == false) {
-                        this.uploadSingleFile(i);
-                        //    break;
-                        //}
+            if (this.maxUploadCount < this.filesArray.length) {
+                if (this.uploadedCount < this.filesArray.length) {
+                    console.log(this.uploadedCount);
+                    console.log(this.fileCount);
+                    this.uploadSingleFile(this.uploadedCount);
+                    //this.fileIndex++;
+                    this.maxUploadCount++;
+                } else {
+                    // all files uploaded
+                    notify(
+                        "Upload finished. Please complete the upload",
+                        "success"
+                    );
+                    // showing the /upload page. So they can do a final
+                    // Editing of file details.
+                    if (route().current() != route("upload")) {
+                        this.$inertia.visit(route("uploads.index"));
                     }
-                })
-                .catch((err) => {
-                    console.log(err);
-                    notify("Upload Failed");
-                });
-
-            // while (
-            //     this.uploadCount < this.maxUploadCount &&
-            //     this.fileCount < this.filesArray.length
-            // ) {
-            //     console.log(this.uploadCount);
-            //     console.log(this.fileCount);
-            //     // selecting a file to upload that is
-            //     // not currently uploading
-            //     for (let i = 0; i < this.filesArray.length; i++) {
-            //         if (this.filesArray[i].isUploading == false) {
-            //             this.uploadSingleFile(i);
-            //             break;
-            //         }
-            //     }
-
-            //     this.uploadCount++;
-            //     this.fileCount++;
-            // }
+                }
+            }
         },
         /**
          * Uploads a single file
@@ -289,17 +279,15 @@ export default {
                     },
                 })
                 .then((response) => {
-                    console.log(response);
-                    this.uploadCount--;
-
-                    // this will be used to show the tick on /upload page
+                    // this will be used to show the tick on individual
+                    // files on /upload page
                     this.filesArray[filePostion].uploadCompleted = true;
                     this.increaseUploadedCount(1);
-                    this.checkAllUploaded();
-                    console.log();
+
                     // upload finished. Now it will check and
                     // start a new upload
-                    //this.uploadFiles();
+                    this.fileIndex--;
+                    this.uploadFiles();
                 })
                 .catch((error) => {
                     console.log(error);
@@ -326,7 +314,7 @@ export default {
          * @returns {string}
          */
         randHexToken(length = 64 / 2) {
-            // token shouldn't be more than 128 characters(assuming 8 bits for a character)
+            // token shouldn't be more than 128 charac ters(assuming 8 bits for a character)
             if (length >= 128 / 2) {
                 length = 128 / 2;
             }
