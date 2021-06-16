@@ -145,30 +145,7 @@ export default {
                 })
             );
         },
-        /** Fetches all tags from servers
-         * Server returns 100 tags at one request
-         */
-        fetchTags(url) {
-            axios
-                .get(url)
-                .then((resp) => {
-                    this.tags.push(...resp.data.data);
 
-                    // checking if there is more tags to fetch
-                    // if there are more tags then server will
-                    // return the next url to fetch data
-                    if (resp.data.next_page_url) {
-                        this.fetchTags(resp.data.next_page_url);
-                    } else {
-                        console.log(this.tags.length);
-                        console.log("All tags fetched");
-                    }
-                })
-                .catch((err) => {
-                    console.log(err);
-                    document.dispatchEvent(notify("Error Fetching Tags"));
-                });
-        },
         /**Handles single file drop event */
         handleFileDrop(e) {
             const isUploadDrop =
@@ -206,7 +183,7 @@ export default {
                     cancelToken: axios.CancelToken.source(),
                 });
             });
-            console.log(this.updateTotal(total));
+            this.updateTotal(total);
             console.log("total in headerupload ", this.total);
             // start uploading
             this.uploadFiles();
@@ -319,6 +296,7 @@ export default {
                     this.filesArray[filePostion].uploadCompleted = true;
                     this.increaseUploadedCount(1);
                     this.checkAllUploaded();
+                    console.log();
                     // upload finished. Now it will check and
                     // start a new upload
                     //this.uploadFiles();
@@ -367,9 +345,11 @@ export default {
                     "Upload finished. Please complete the upload",
                     "success"
                 );
-                // showing use the /upload page. So they can do a final
+                // showing the /upload page. So they can do a final
                 // Editing of file details.
-                this.$inertia.visit(route("uploads.index"));
+                if (route().current() != route("upload")) {
+                    this.$inertia.visit(route("uploads.index"));
+                }
             }
         },
     },
