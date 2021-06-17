@@ -33,7 +33,7 @@ use Inertia\Inertia;
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get("/", [IndexController::class, 'index'])->name('home');
-    Route::post("/load-more", [IndexController::class, 'load_more'])->name('index.load_more');
+    Route::post("/fetch-more", [IndexController::class, 'load_more'])->name('index.load_more');
     //Route::resource('photo', PhotoController::class);
     Route::get("/trash", [IndexController::class, 'trash'])->name('trash');
 

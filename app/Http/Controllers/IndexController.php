@@ -17,9 +17,10 @@ class IndexController extends Controller
     public function index()
     {
 
+        $photos = Photo::where('file_name', "!=", null)->get();
 
         return Inertia::render('Index', [
-            'photos' => Photo::where('file_name', "!=", null)->get(),
+            'photos' => $this->add_temp_url($photos),
             'title' => 'AALP Photos Index'
         ]);
         //$this->add_temp_url($photos)
@@ -30,15 +31,9 @@ class IndexController extends Controller
      * Used to load more photos from requested offset
      * @return Illuminate\Database\Eloquent\Collection
      */
-    public function load_more(Request $request)
+    public function fetch_more(Request $request)
     {
-
-        $data = $request->validate([
-            'offset' => "required|integer"
-        ]);
-
-        $photos =  Photo::offset($data['offset'])->limit(5)->get();
-
+        $photos = Photo::orderBy('id')->cursorPaginate(100)->toArray();
         return $this->add_temp_url($photos);
     }
 
@@ -49,10 +44,11 @@ class IndexController extends Controller
     public function add_temp_url($photos)
     {
         foreach ($photos as $photo) {
-            $photo->url = Storage::disk('s3')->temporaryUrl(
-                'full_size/' . $photo->file_name,
-                now()->addMinutes(10)
-            );
+            $photo->url = "/storage/full_size/" . $photo->file_name;
+            // $photo->url = Storage::disk('s3')->temporaryUrl(
+            //     'full_size/' . $photo->file_name,
+            //     now()->addMinutes(10)
+            // );
         }
         return $photos;
     }

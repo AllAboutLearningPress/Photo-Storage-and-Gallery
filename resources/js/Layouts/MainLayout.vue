@@ -112,7 +112,7 @@
 <script>
 import Header from "@/Components/Header";
 import Sidebar from "@/Components/Sidebar.vue";
-//import GlobalDropTarget from "../frontend/components/GlobalDropTarget.js";
+import GlobalDropTarget from "../frontend/components/GlobalDropTarget.js";
 import UploadProgressBar from "../Components/UploadProgressBar.vue";
 import Notificator from "../Components/Notificator.vue";
 import { inject, provide, reactive, ref } from "@vue/runtime-core";
@@ -209,6 +209,15 @@ export default {
     },
     mounted() {
         this.fetchTags();
+        const allowedMimeTypes = [
+            "image/jpeg",
+            "image/png",
+            "image/gif",
+            "image/tiff",
+            "image/vnd.adobe.photoshop",
+        ];
+
+        const globalDropTarget = new GlobalDropTarget(allowedMimeTypes);
         // setInterval(() => {
         //     console.log("total in main: ", this.total);
         //     this.total++;
