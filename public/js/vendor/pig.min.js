@@ -1,3 +1,5 @@
+
+
 (function (global) {
     'use strict';
 
@@ -180,6 +182,7 @@
         this.latestYOffset = 0;
         this.lastWindowWidth = window.innerWidth;
         this.scrollDirection = 'down';
+        this.fetchingMoreImages = false;
 
         // List of images that are loading or completely loaded on screen.
         this.visibleImages = [];
@@ -612,6 +615,25 @@
         // below this line, it will be removed.
         var maxTranslateY = this.latestYOffset - containerOffset + scrollerHeight + bufferBottom;
 
+
+        // if this is the last image is in buffer window then we will try
+        // to load more images from server
+        var lastPos = this.images.length - 1;
+
+        if (this.images[lastPos].style.translateY + this.images[lastPos].style.height > minTranslateYPlusHeight &&
+            this.images[lastPos].style.translateY < maxTranslateY) {
+            if (!this.fetchingMoreImages) {
+                this.fetchingMoreImages = true;
+                console.log('fetch more images');
+            }
+
+            // axios.post(route('fetch-more')).then(resp => {
+            //     this.images.push(resp.data);
+            //     this._doLayout();
+            // }).catch(err => {
+            //     console.log(err);
+            // })
+        }
         // Here, we loop over every image, determine if it is inside our buffers or
         // no, and either insert it or remove it appropriately.
         this.images.forEach(function (image) {
