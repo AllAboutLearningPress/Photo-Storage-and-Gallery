@@ -46,7 +46,7 @@ export default {
                 loaded += this.filesArray[i].loaded;
             }
             //
-            console.log("loaded now ", loaded);
+
             return (loaded / this.total) * 100 + "%";
         },
     },
