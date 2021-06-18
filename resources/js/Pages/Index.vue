@@ -42,6 +42,7 @@ export default {
         // const globalDropTarget = new GlobalDropTarget(allowedMimeTypes);
 
         const options = {
+            fetchMoreUrl: this.photos.next_page_url,
             urlForSize: function (filename, size) {
                 return `/storage/full_size/${filename}`;
             },
@@ -75,7 +76,8 @@ export default {
             },
             figureTagName: "a",
         };
-        let imageData = this.photos.map((photo) => {
+        //console.log(this.photos);
+        let imageData = this.photos.data.map((photo) => {
             photo.aspectRatio = photo.width / photo.height;
             photo.filename = photo.file_name;
             return photo;

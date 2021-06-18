@@ -184,7 +184,6 @@ export default {
             axios
                 .post(route("uploads.store"), requestPhotos)
                 .then((resp) => {
-                    console.log(resp.data);
                     resp.data.forEach((photo) => {
                         for (let i = 0; i < this.filesArray.length; i++) {
                             if (this.filesArray[i].tempId == photo.tempId) {
@@ -219,11 +218,8 @@ export default {
          * is any file left
          */
         uploadFiles() {
-            console.log("upload started");
             if (this.uploadingCount < this.maxUploadingCount) {
                 if (this.fileIndex < this.filesArray.length) {
-                    console.log(this.uploadedCount);
-                    console.log(this.fileCount);
                     this.uploadSingleFile(this.fileIndex);
                     this.fileIndex++;
                     this.uploadingCount++;
@@ -248,7 +244,6 @@ export default {
          * @property {boolean} retry - True if file upload is retried, Defaults to False
          */
         uploadSingleFile(filePostion, retry = false) {
-            console.log("started ", this.filesArray[filePostion].title);
             let fileId = this.filesArray[filePostion].id;
             // marking it as uploading so it wont be
             // picked up again for uploading

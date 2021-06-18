@@ -52,9 +52,11 @@ export default {
             textareaValue: null,
         };
     },
-    mounted() {
-        this.textareaValue = this.title;
-        console.log("mounted");
+    setup(props) {
+        const textareaValue = props.title;
+        return {
+            textareaValue,
+        };
     },
     methods: {
         onBlur(e) {
