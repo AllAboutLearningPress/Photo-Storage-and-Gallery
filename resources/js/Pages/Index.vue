@@ -17,7 +17,7 @@ export default {
     },
     layout: MainLayout,
     props: {
-        photos: Array,
+        photos: Object,
         photo: Object,
         jetstream: Object,
         user: Object,
@@ -42,7 +42,9 @@ export default {
         // const globalDropTarget = new GlobalDropTarget(allowedMimeTypes);
 
         const options = {
-            fetchMoreUrl: this.photos.next_page_url,
+            fetchMoreUrl:
+                route("index.fetch_more") +
+                new URL(this.photos.next_page_url).search,
             urlForSize: function (filename, size) {
                 return `/storage/full_size/${filename}`;
             },
@@ -77,12 +79,12 @@ export default {
             figureTagName: "a",
         };
         //console.log(this.photos);
-        let imageData = this.photos.data.map((photo) => {
-            photo.aspectRatio = photo.width / photo.height;
-            photo.filename = photo.file_name;
-            return photo;
-        });
-        const pig = new Pig(imageData, options).enable();
+        // let imageData = this.photos.data.map((photo) => {
+        //     photo.aspectRatio = photo.width / photo.height;
+        //     photo.filename = photo.file_name;
+        //     return photo;
+        // });
+        const pig = new Pig(this.photos.data, options).enable();
         // WARNING: this is required to fix `pigjs` bug, use after each `Pig` initialisation
         window.dispatchEvent(new Event("resize"));
     },
