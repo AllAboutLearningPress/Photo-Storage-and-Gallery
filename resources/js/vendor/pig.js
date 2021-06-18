@@ -425,6 +425,8 @@
 
         imageData.forEach(function (image, index) {
             var progressiveImage = new ProgressiveImage(image, index, this);
+            progressiveImage.aspectRatio = image.width / image.height;
+
             progressiveImages.push(progressiveImage);
         }.bind(this));
 
@@ -625,14 +627,12 @@
         var maxTranslateY = this.latestYOffset - containerOffset + scrollerHeight + bufferBottom;
 
 
-        // if this is the last image is in buffer window then we will try
-        // to load more images from server
-        var lastPos = this.images.length - 1;
-
         // Here, we loop over every image, determine if it is inside our buffers or
         // no, and either insert it or remove it appropriately.
         this.images.forEach(function (image) {
-
+            if (!image.style) {
+                console.log(image);
+            }
             if (image.style.translateY + image.style.height < minTranslateYPlusHeight ||
                 image.style.translateY > maxTranslateY) {
                 // Hide Image
@@ -643,25 +643,40 @@
             }
         }.bind(this));
 
+        // if the last image is in buffer then we will try to load more images
+        let lastPos = this.images.length - 1;
         if (this.images[lastPos].style.translateY + this.images[lastPos].style.height > minTranslateYPlusHeight &&
             this.images[lastPos].style.translateY < maxTranslateY) {
-            if (!this.fetchingMoreImages && this.fetchMoreUrl) {
-                this.fetchingMoreImages = true;
-                console.log('fetch more images');
-
-                axios.post(this.fetchMoreUrl).then(resp => {
-                    this.images.push(resp.data);
-                    this.fetchMoreUrl = resp.data.next_page_url;
-                    this._doLayout();
-                }).catch(err => {
-                    console.log(err);
-                })
-
-            }
-
+            this._fetcMore();
 
         }
     };
+    Pig.prototype._fetcMore = function () {
+        // if one request is processing or if there are no more images
+        // then we will return from this function
+
+        if (this.fetchingMoreImages || !this.settings.fetchMoreUrl) {
+
+            return
+        }
+        // making sure that new requests wont be send when
+        // one fetch-more request is in progress
+        this.fetchingMoreImages = true;
+
+        axios.post(this.settings.fetchMoreUrl).then(resp => {
+
+            this.images.push(...this._parseImageData(resp.data.data));
+            this.settings.fetchMoreUrl = resp.data.next_page_url;
+            this._computeLayout();
+            this._doLayout();
+
+            // now we can fetch more images
+            this.fetchingMoreImages = false;
+        }).catch(err => {
+            console.log(err);
+        })
+
+    }
 
     /**
      * Create our onScroll handler and return it.
@@ -780,6 +795,8 @@
         this.id = singleImageData.id; // Id from server
         this.slug = singleImageData.slug; // Slug for server
         this.index = index;  // The index in the list of images
+        this.src = singleImageData.src;
+        this.thumbSrc = singleImageData.thumbSrc;
 
         // The Pig instance
         this.pig = pig;
@@ -822,7 +839,7 @@
             // Show thumbnail
             if (!this.thumbnail) {
                 this.thumbnail = new Image();
-                this.thumbnail.src = this.pig.settings.urlForSize(this.filename, this.pig.settings.thumbnailSize);
+                this.thumbnail.src = this.thumbSrc//this.pig.settings.urlForSize(this.filename, this.pig.settings.thumbnailSize);
                 this.thumbnail.className = this.classNames.thumbnail;
                 this.thumbnail.onload = function () {
 
@@ -839,7 +856,7 @@
             // Show full image
             if (!this.fullImage) {
                 this.fullImage = new Image();
-                this.fullImage.src = this.pig.settings.urlForSize(this.filename, this.pig.settings.getImageSize(this.pig.lastWindowWidth));
+                this.fullImage.src = this.src//this.pig.settings.urlForSize(this.filename, this.pig.settings.getImageSize(this.pig.lastWindowWidth));
                 this.fullImage.onload = function () {
 
                     // We have to make sure fullImage still exists, we may have already been

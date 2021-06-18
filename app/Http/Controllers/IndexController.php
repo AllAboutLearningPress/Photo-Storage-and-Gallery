@@ -18,6 +18,7 @@ class IndexController extends Controller
     {
 
         $photos = Photo::where('file_name', "!=", null)->cursorPaginate(30);
+        //dd($photos->nextPageUrl());
         //dd($this->add_temp_url($photos));
         return Inertia::render('Index', [
             'photos' => $this->add_temp_url($photos),
@@ -33,7 +34,7 @@ class IndexController extends Controller
      */
     public function fetch_more(Request $request)
     {
-        $photos = Photo::orderBy('id')->cursorPaginate(30);
+        $photos = Photo::where('file_name', "!=", null)->cursorPaginate(30);
         return $this->add_temp_url($photos);
     }
 
@@ -45,7 +46,8 @@ class IndexController extends Controller
     {
         foreach ($photos as $photo) {
             //dd($photo);
-            $photo->url = "/storage/full_size/" . $photo->file_name;
+            $photo->src = "/storage/full_size/" . $photo->file_name;
+            $photo->thumbSrc =  "/storage/full_size/" . $photo->file_name;
             // $photo->url = Storage::disk('s3')->temporaryUrl(
             //     'full_size/' . $photo->file_name,
             //     now()->addMinutes(10)
