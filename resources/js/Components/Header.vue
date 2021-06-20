@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import HeaderSearch from "./HeaderSearch.vue";
+import HeaderSearch from "./HeaderSearch/HeaderSearch.vue";
 import HeaderUpload from "./HeaderUpload.vue";
 
 export default {
