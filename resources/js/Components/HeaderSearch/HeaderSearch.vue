@@ -57,21 +57,7 @@
                         btn btn-subtle btn-lg
                     "
                 >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="26"
-                        height="26"
-                        fill="currentColor"
-                        class="bi bi-camera"
-                        viewBox="0 0 16 16"
-                    >
-                        <path
-                            d="M15 12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1.172a3 3 0 0 0 2.12-.879l.83-.828A1 1 0 0 1 6.827 3h2.344a1 1 0 0 1 .707.293l.828.828A3 3 0 0 0 12.828 5H14a1 1 0 0 1 1 1v6zM2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2z"
-                        />
-                        <path
-                            d="M8 11a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5zm0 1a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM3 6.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z"
-                        />
-                    </svg>
+                    <camera-button></camera-button>
                     <span class="visually-hidden">Search by image</span>
                     <input
                         class="js-search__image-input button-file__input"
@@ -81,39 +67,7 @@
                 </label>
                 <search-suggest :suggestions="suggestions"></search-suggest>
             </div>
-            <button
-                title="Show search"
-                type="button"
-                class="
-                    js-search__toggle
-                    search__field-show
-                    btn btn-subtle btn-lg
-                "
-            >
-                <span
-                    class="
-                        search__field-image-search-spinner
-                        spinner-border spinner-border-sm
-                        text-secondary
-                    "
-                    role="status"
-                >
-                    <span class="visually-hidden">Loading...</span>
-                </span>
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="22"
-                    height="22"
-                    fill="currentColor"
-                    class="bi bi-search"
-                    viewBox="0 0 16 16"
-                >
-                    <path
-                        d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
-                    ></path>
-                </svg>
-                <span class="visually-hidden">Search</span>
-            </button>
+            <show-search-button></show-search-button>
         </div>
     </div>
 </template>
@@ -122,8 +76,10 @@
 //import Search from "../../frontend/components/Search.js";
 import SingleImageDropManager from "../../frontend/components/SingleImageDropManager.js";
 import SearchSuggest from "./SearchSuggest.vue";
+import CameraButton from "@/Buttons/CameraButton.vue";
+import ShowSearchButton from "./ShowSearchButton.vue";
 export default {
-    components: { SearchSuggest },
+    components: { SearchSuggest, CameraButton, ShowSearchButton },
     data() {
         return {
             dropManager: null,
@@ -131,6 +87,21 @@ export default {
             suggestions: [
                 {
                     id: 1,
+                    title: "cat picture demo",
+                    url: "//placekitten.com/47/47",
+                },
+                {
+                    id: 2,
+                    title: "cat picture demo",
+                    url: "//placekitten.com/47/47",
+                },
+                {
+                    id: 3,
+                    title: "cat picture demo",
+                    url: "//placekitten.com/47/47",
+                },
+                {
+                    id: 4,
                     title: "cat picture demo",
                     url: "//placekitten.com/47/47",
                 },
@@ -146,6 +117,39 @@ export default {
 
         // listen to items-dropped event
         document.addEventListener("items-dropped", this.handleFileDrop);
+        // addEventListener(this.input, "keydown", (e) => {
+        //     if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+        //         e.preventDefault();
+
+        //         const suggesterItems = [].slice.call(
+        //             this.suggester.querySelectorAll(".js-search__suggest-item")
+        //         );
+        //         let highlightedIndex = suggesterItems.findIndex((el) =>
+        //             el.classList.contains(highlightedSuggestionKlass)
+        //         );
+        //         const increment = e.key === "ArrowDown" ? 1 : -1;
+        //         const nextIndex = highlightedIndex + increment;
+        //         const next =
+        //             suggesterItems[
+        //                 nextIndex < -1 ? suggesterItems.length - 1 : nextIndex
+        //             ];
+
+        //         this.unhighlightSuggestion();
+        //         next && this.highlightSuggestion(next);
+        //     }
+
+        //     if (e.key === "Enter") {
+        //         const highlightedItem = this.suggester.querySelector(
+        //             `.${highlightedSuggestionKlass}`
+        //         );
+
+        //         if (highlightedItem) {
+        //             this.selectSuggestion(highlightedItem.dataset.suggestionId);
+        //         } else {
+        //             this.search.submit();
+        //         }
+        //     }
+        // });
     },
     methods: {
         handleFileDrop(e) {

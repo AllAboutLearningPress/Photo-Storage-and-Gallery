@@ -37,7 +37,7 @@
 
 <script>
 import { notify, updatePhotoDetails } from "@/util.js";
-import EditPen from "../CommonButtons/EditPen.vue";
+import EditPen from "../Buttons/EditPen.vue";
 export default {
     components: { EditPen },
     props: ["title", "id", "name"],
