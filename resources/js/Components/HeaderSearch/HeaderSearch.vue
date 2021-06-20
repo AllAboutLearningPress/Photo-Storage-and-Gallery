@@ -79,7 +79,7 @@
                         accept="image/jpeg, image/png, image/gif, image/tiff, image/vnd.adobe.photoshop, .jpg, .jpeg, .png, .gif, .tif, .tiff, .psd"
                     />
                 </label>
-                <search-suggest></search-suggest>
+                <search-suggest :suggestions="suggestions"></search-suggest>
             </div>
             <button
                 title="Show search"
@@ -119,13 +119,22 @@
 </template>
 
 <script>
-import Search from "../../frontend/components/Search.js";
+//import Search from "../../frontend/components/Search.js";
 import SingleImageDropManager from "../../frontend/components/SingleImageDropManager.js";
+import SearchSuggest from "./SearchSuggest.vue";
 export default {
+    components: { SearchSuggest },
     data() {
         return {
             dropManager: null,
             val: "sdfsd",
+            suggestions: [
+                {
+                    id: 1,
+                    title: "cat picture demo",
+                    url: "//placekitten.com/47/47",
+                },
+            ],
         };
     },
     created() {
