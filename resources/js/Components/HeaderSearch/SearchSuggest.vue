@@ -3,7 +3,9 @@
         <div class="search__suggest-content scrollbar">
             <div class="list-group list-group-flush">
                 <a
-                    data-suggestion-id="1"
+                    v-for="(suggestion, index) in suggestions"
+                    :key="suggestion.id"
+                    :data-suggestion-id="index"
                     href="#"
                     tabindex="-1"
                     class="
@@ -14,11 +16,11 @@
                 >
                     <img
                         class="search__suggest-item-thumb"
-                        src="http://placekitten.com/47/47"
+                        :src="suggestion.url"
                         alt=""
                     />
                     <span class="search__suggest-item-thumb-txt">
-                        Suggestion 1
+                        {{ suggestion.title }}
                     </span>
                 </a>
             </div>
@@ -27,5 +29,7 @@
 </template>
 
 <script>
-export default {};
+export default {
+    props: ["suggestions"],
+};
 </script>
