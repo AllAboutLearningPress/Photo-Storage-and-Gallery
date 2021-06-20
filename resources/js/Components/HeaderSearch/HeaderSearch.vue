@@ -1,6 +1,6 @@
 <template>
     <div class="header__slot_search header__slot">
-        <form action="#" class="js-search search">
+        <div action="#" class="js-search search is-suggesting">
             <div class="search__image-progress progress">
                 <div
                     class="js-search__image-progress-bar progress-bar"
@@ -15,7 +15,11 @@
                 <button
                     title="Hide search"
                     type="button"
-                    class="js-search__toggle search__infield-action search__infield-action_hide btn btn-subtle btn-lg"
+                    class="
+                        js-search__toggle
+                        search__infield-action search__infield-action_hide
+                        btn btn-subtle btn-lg
+                    "
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -33,7 +37,11 @@
                     <span class="visually-hidden">Go back</span>
                 </button>
                 <input
-                    class="js-search__input search__input form-control form-control-lg"
+                    class="
+                        js-search__input
+                        search__input
+                        form-control form-control-lg
+                    "
                     type="text"
                     placeholder="Search..."
                     autocomplete="off"
@@ -42,7 +50,12 @@
                 <label
                     tabindex="-1"
                     title="Search by image"
-                    class="search__infield-action search__infield-action_image-search button-file btn btn-subtle btn-lg"
+                    class="
+                        search__infield-action
+                        search__infield-action_image-search
+                        button-file
+                        btn btn-subtle btn-lg
+                    "
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -66,61 +79,23 @@
                         accept="image/jpeg, image/png, image/gif, image/tiff, image/vnd.adobe.photoshop, .jpg, .jpeg, .png, .gif, .tif, .tiff, .psd"
                     />
                 </label>
-                <div class="js-search__suggest search__suggest">
-                    <div class="search__suggest-content scrollbar">
-                        <div class="list-group list-group-flush">
-                            <a
-                                data-suggestion-id="1"
-                                href="#"
-                                tabindex="-1"
-                                class="js-search__suggest-item search__suggest-item list-group-item list-group-item-action"
-                            >
-                                Suggestion 1
-                            </a>
-                            <a
-                                data-suggestion-id="2"
-                                href="#"
-                                tabindex="-1"
-                                class="js-search__suggest-item search__suggest-item list-group-item list-group-item-action"
-                            >
-                                Suggestion Suggestion Suggestion Suggestion
-                                Suggestion Suggestion
-                            </a>
-                            <a
-                                data-suggestion-id="3"
-                                href="#"
-                                tabindex="-1"
-                                class="js-search__suggest-item search__suggest-item list-group-item list-group-item-action"
-                            >
-                                Suggestion 2
-                            </a>
-                            <a
-                                data-suggestion-id="4"
-                                href="#"
-                                tabindex="-1"
-                                class="js-search__suggest-item search__suggest-item list-group-item list-group-item-action"
-                            >
-                                Suggestion 4
-                            </a>
-                            <a
-                                data-suggestion-id="5"
-                                href="#"
-                                tabindex="-1"
-                                class="js-search__suggest-item search__suggest-item list-group-item list-group-item-action"
-                            >
-                                Suggestion 5
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                <search-suggest></search-suggest>
             </div>
             <button
                 title="Show search"
                 type="button"
-                class="js-search__toggle search__field-show btn btn-subtle btn-lg"
+                class="
+                    js-search__toggle
+                    search__field-show
+                    btn btn-subtle btn-lg
+                "
             >
                 <span
-                    class="search__field-image-search-spinner spinner-border spinner-border-sm text-secondary"
+                    class="
+                        search__field-image-search-spinner
+                        spinner-border spinner-border-sm
+                        text-secondary
+                    "
                     role="status"
                 >
                     <span class="visually-hidden">Loading...</span>
@@ -139,13 +114,13 @@
                 </svg>
                 <span class="visually-hidden">Search</span>
             </button>
-        </form>
+        </div>
     </div>
 </template>
 
 <script>
-import Search from "../frontend/components/Search.js";
-import SingleImageDropManager from "../frontend/components/SingleImageDropManager.js";
+import Search from "../../frontend/components/Search.js";
+import SingleImageDropManager from "../../frontend/components/SingleImageDropManager.js";
 export default {
     data() {
         return {
@@ -158,7 +133,7 @@ export default {
     },
     mounted() {
         // this will be fully moved to vue
-        const search = new Search(document.querySelector(".js-search"));
+        //const search = new Search(document.querySelector(".js-search"));
 
         // listen to items-dropped event
         document.addEventListener("items-dropped", this.handleFileDrop);
