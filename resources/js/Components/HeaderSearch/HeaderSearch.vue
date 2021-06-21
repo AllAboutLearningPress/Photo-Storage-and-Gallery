@@ -1,6 +1,6 @@
 <template>
     <div class="header__slot_search header__slot">
-        <div action="#" class="js-search search is-suggesting">
+        <div ref="js-search" action="#" class="js-search search">
             <div class="search__image-progress progress">
                 <div
                     class="js-search__image-progress-bar progress-bar"
@@ -46,6 +46,8 @@
                     placeholder="Search..."
                     autocomplete="off"
                     inputmode="search"
+                    v-on:input="initSearch"
+                    v-on:click="openSuggestions"
                 />
                 <label
                     tabindex="-1"
@@ -84,28 +86,7 @@ export default {
         return {
             dropManager: null,
             val: "sdfsd",
-            suggestions: [
-                {
-                    id: 1,
-                    title: "cat picture demo",
-                    url: "//placekitten.com/47/47",
-                },
-                {
-                    id: 2,
-                    title: "cat picture demo",
-                    url: "//placekitten.com/47/47",
-                },
-                {
-                    id: 3,
-                    title: "cat picture demo",
-                    url: "//placekitten.com/47/47",
-                },
-                {
-                    id: 4,
-                    title: "cat picture demo",
-                    url: "//placekitten.com/47/47",
-                },
-            ],
+            suggestions: [],
         };
     },
     created() {
@@ -117,6 +98,12 @@ export default {
 
         // listen to items-dropped event
         document.addEventListener("items-dropped", this.handleFileDrop);
+        let field = document.querySelector(".js-search__field");
+        field.addEventListener("focusout", () => {
+            if (this.$refs["js-search"].classList.contains("is-suggesting")) {
+                this.$refs["js-search"].classList.toggle("is-suggesting");
+            }
+        });
         // addEventListener(this.input, "keydown", (e) => {
         //     if (e.key === "ArrowUp" || e.key === "ArrowDown") {
         //         e.preventDefault();
@@ -162,6 +149,41 @@ export default {
                 //that.handleImageSearch(e.detail.fileArray[0]);
                 alert("got files for search");
             }
+        },
+        openSuggestions(e) {
+            if (this.suggestions.length) {
+                this.$refs["js-search"].classList.add("is-suggesting");
+            }
+        },
+        initSearch(e) {
+            // showing the suggestion list
+            //this.$refs["js-search"].classList.add("is-suggesting");
+
+            // adding suggestion to the list
+            this.suggestions.push(
+                {
+                    id: 1,
+                    title: "cat picture demo",
+                    url: "//placekitten.com/47/47",
+                },
+                {
+                    id: 2,
+                    title: "cat picture demo",
+                    url: "//placekitten.com/47/47",
+                },
+                {
+                    id: 3,
+                    title: "cat picture demo",
+                    url: "//placekitten.com/47/47",
+                },
+                {
+                    id: 4,
+                    title: "cat picture demo",
+                    url: "//placekitten.com/47/47",
+                }
+            );
+            this.openSuggestions();
+            console.log(this.suggestions);
         },
     },
 };
