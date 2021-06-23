@@ -936,12 +936,16 @@
     };
 
     // Export Pig into the global scope.
-    if (typeof define === 'function' && define.amd) {
-        define([], function () { return { Pig: Pig }; });
-    } else if (typeof module !== 'undefined' && module.exports) {
-        module.exports = Pig;
-    } else {
-        global.Pig = Pig;
-    }
+    global.Pig = Pig;
+    // if (typeof define === 'function' && define.amd) {
+    //     define([], function () { return { Pig: Pig }; });
+    //     console.log('first');
+    // } else if (typeof module !== 'undefined' && module.exports) {
+    //     module.exports = Pig;
+    //     console.log('midd')
+    // } else {
+    //     global.Pig = Pig;
+    //     console.log('last')
+    // }
 
 }(typeof window !== 'undefined' ? window : this));
