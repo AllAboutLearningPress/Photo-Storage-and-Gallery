@@ -11,6 +11,7 @@
 import MainLayout from "../Layouts/MainLayout.vue";
 import SubHeader from "../Components/SubHeader.vue";
 import GlobalDropTarget from "../frontend/components/GlobalDropTarget.js";
+
 export default {
     components: {
         SubHeader,
