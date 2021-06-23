@@ -80,7 +80,7 @@ import SingleImageDropManager from "../../frontend/components/SingleImageDropMan
 import SearchSuggest from "./SearchSuggest.vue";
 import CameraButton from "@/Buttons/CameraButton.vue";
 import ShowSearchButton from "./ShowSearchButton.vue";
-import { debounce } from "../../frontend/util/utils.js";
+import { debounce } from "../../util.js";
 export default {
     components: { SearchSuggest, CameraButton, ShowSearchButton },
     data() {
@@ -88,6 +88,7 @@ export default {
             dropManager: null,
             val: "sdfsd",
             suggestions: [],
+            lastSearchAt: 0,
         };
     },
     created() {
@@ -161,29 +162,32 @@ export default {
             //this.$refs["js-search"].classList.add("is-suggesting");
 
             // adding suggestion to the list
-            this.suggestions.push(
-                {
-                    id: 1,
-                    title: "cat picture demo",
-                    url: "//placekitten.com/47/47",
-                },
-                {
-                    id: 2,
-                    title: "cat picture demo",
-                    url: "//placekitten.com/47/47",
-                },
-                {
-                    id: 3,
-                    title: "cat picture demo",
-                    url: "//placekitten.com/47/47",
-                },
-                {
-                    id: 4,
-                    title: "cat picture demo",
-                    url: "//placekitten.com/47/47",
-                }
-            );
-            //debounce(1500, this.sendSearchReq, e.target.value);
+            // this.suggestions.push(
+            //     {
+            //         id: 1,
+            //         title: "cat picture demo",
+            //         url: "//placekitten.com/47/47",
+            //     },
+            //     {
+            //         id: 2,
+            //         title: "cat picture demo",
+            //         url: "//placekitten.com/47/47",
+            //     },
+            //     {
+            //         id: 3,
+            //         title: "cat picture demo",
+            //         url: "//placekitten.com/47/47",
+            //     },
+            //     {
+            //         id: 4,
+            //         title: "cat picture demo",
+            //         url: "//placekitten.com/47/47",
+            //     }
+            // );
+            if (new Date().getTime() - this.lastSearchAt >= 500) {
+                this.lastSearchAt = new Date().getTime();
+                this.sendSearchReq(e.target.value);
+            }
             //this.sendSearchReq(e.target.value);
             this.openSuggestions();
             console.log(this.suggestions);
