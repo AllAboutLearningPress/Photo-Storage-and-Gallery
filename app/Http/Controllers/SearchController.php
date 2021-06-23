@@ -8,7 +8,7 @@ use Aws\Credentials\Credentials;
 
 class SearchController extends Controller
 {
-    public function search(Request $request)
+    public function searchTitle(Request $request)
     {
         $data = $request->validate(['search' => 'required|string']);
         $credentials = new Credentials(config('services.ses.key'), config('services.ses.secret'));

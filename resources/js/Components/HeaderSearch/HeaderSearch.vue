@@ -80,6 +80,7 @@ import SingleImageDropManager from "../../frontend/components/SingleImageDropMan
 import SearchSuggest from "./SearchSuggest.vue";
 import CameraButton from "@/Buttons/CameraButton.vue";
 import ShowSearchButton from "./ShowSearchButton.vue";
+import { debounce } from "../../frontend/util/utils.js";
 export default {
     components: { SearchSuggest, CameraButton, ShowSearchButton },
     data() {
@@ -182,8 +183,23 @@ export default {
                     url: "//placekitten.com/47/47",
                 }
             );
+            //debounce(1500, this.sendSearchReq, e.target.value);
+            //this.sendSearchReq(e.target.value);
             this.openSuggestions();
             console.log(this.suggestions);
+        },
+
+        sendSearchReq(search) {
+            console.log("sending search req");
+            axios
+                .post(route("search.search_title"), { search: search })
+                .then((resp) => {
+                    console.log(resp);
+                })
+                .catch((err) => {
+                    console.error(err);
+                    notify("Something went wrong with search.", "danger");
+                });
         },
     },
 };

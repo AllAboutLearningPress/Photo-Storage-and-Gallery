@@ -3,6 +3,7 @@
 use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\UploadController;
 use Illuminate\Foundation\Application;
@@ -65,7 +66,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/tags/get-tags', [TagController::class, 'getTags'])->name('tags.get_tags');
     Route::resource('tags', TagController::class);
 
-
+    /** Routes related to search */
+    Route::post("/search/search-title", [SearchController::class, 'searchTitle'])->name('search.search_title');
 
     // Route::get("/dashboard", function () {
     //     return Inertia::render('Dashboard');
