@@ -97,4 +97,19 @@ class Photo extends Model
 
         return "{$slug}-2";
     }
+
+    public function add_temp_url()
+    {
+
+        $this->src = "/storage/full_size/" . $this->file_name;
+        $this->thumbSrc = "/storage/full_size/" . $this->file_name;
+        // $this->src= Storage::disk('s3')->temporaryUrl(
+        // 'full_size/' . $photo->file_name,
+        // now()->addMinutes(10)
+        // );
+        // $this->thumbsrc= Storage::disk('s3')->temporaryUrl(
+        // 'full_size/' . $photo->file_name,
+        // now()->addMinutes(10)
+        // );
+    }
 }

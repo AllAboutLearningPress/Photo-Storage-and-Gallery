@@ -16,8 +16,9 @@
                 >
                     <img
                         class="search__suggest-item-thumb"
-                        :src="suggestion.url"
+                        :src="suggestion.thumbSrc"
                         alt=""
+                        style="width: 4rem"
                     />
                     <span class="search__suggest-item-thumb-txt">
                         {{ suggestion.title }}
