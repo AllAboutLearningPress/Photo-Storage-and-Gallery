@@ -392,6 +392,7 @@ $search-input-x-pad: $input-padding-x-lg;
   margin-right: .6em;
   margin-top: calc(#{-$list-group-item-padding-y} + 4px);
   margin-bottom: calc(#{-$list-group-item-padding-y} + 4px);
+  width: 4rem;
 }
 .search__suggest-item-thumb-txt {
   align-self: center;
