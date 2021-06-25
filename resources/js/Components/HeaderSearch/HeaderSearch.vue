@@ -101,10 +101,23 @@ export default {
         // listen to items-dropped event
         document.addEventListener("items-dropped", this.handleFileDrop);
         let field = document.querySelector(".js-search__field");
-        field.addEventListener("focusout", () => {
-            if (this.$refs["js-search"].classList.contains("is-suggesting")) {
-                this.$refs["js-search"].classList.toggle("is-suggesting");
+        this.$refs["js-search"].addEventListener("focusout", (e) => {
+            console.log(e);
+            if (
+                e.relatedTarget &&
+                e.relatedTarget.classList.contains("search__suggest-item")
+            ) {
+                console.log(e.relatedTarget);
+                return;
             }
+            this.$refs["js-search"].classList.toggle("is-suggesting");
+
+            // if (
+            //     this.$refs["js-search"].classList.contains("is-suggesting") &&
+            //     !e.relatedTarget.classList.contains("search__suggest-item")
+            // ) {
+            //     this.$refs["js-search"].classList.toggle("is-suggesting");
+            // }
         });
         // addEventListener(this.input, "keydown", (e) => {
         //     if (e.key === "ArrowUp" || e.key === "ArrowDown") {

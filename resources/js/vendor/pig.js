@@ -351,6 +351,7 @@
 
         // Our global reference for images in the grid.  Note that not all of these
         // images are necessarily in view or loaded.
+        console.log('parsing images in global', imageData);
         this.images = this._parseImageData(imageData);
 
         // Inject our boilerplate CSS.
@@ -647,14 +648,14 @@
         let lastPos = this.images.length - 1;
         if (this.images[lastPos].style.translateY + this.images[lastPos].style.height > minTranslateYPlusHeight &&
             this.images[lastPos].style.translateY < maxTranslateY) {
-            this._fetcMore();
+            this._fetchMore();
 
         }
     };
-    Pig.prototype._fetcMore = function () {
+    Pig.prototype._fetchMore = function () {
         // if one request is processing or if there are no more images
         // then we will return from this function
-
+        console.log('fetching more: ', this.settings.fetchMoreUrl);
         if (this.fetchingMoreImages || !this.settings.fetchMoreUrl) {
 
             return

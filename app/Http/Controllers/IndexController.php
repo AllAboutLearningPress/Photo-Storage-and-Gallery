@@ -21,7 +21,7 @@ class IndexController extends Controller
         //dd($photos->nextPageUrl());
         //dd($this->add_temp_url($photos));
         return Inertia::render('Index', [
-            'photos' => $this->add_temp_url($photos),
+            'photos' => $this->generateSrc($photos),
             'title' => 'AALP Photos Index'
         ]);
         //$this->add_temp_url($photos)
@@ -35,23 +35,17 @@ class IndexController extends Controller
     public function fetch_more(Request $request)
     {
         $photos = Photo::where('file_name', "!=", null)->cursorPaginate(30);
-        return $this->add_temp_url($photos);
+        return $this->generateSrc($photos);
     }
 
     /**
      * @param Array $photos - The array of photos returned by Laravel eloquet
      * @return Array Returns the same array with added url parameter
      */
-    public function add_temp_url($photos)
+    public function generateSrc($photos)
     {
         foreach ($photos as $photo) {
-            //dd($photo);
-            $photo->src = "/storage/full_size/" . $photo->file_name;
-            $photo->thumbSrc =  "/storage/full_size/" . $photo->file_name;
-            // $photo->url = Storage::disk('s3')->temporaryUrl(
-            //     'full_size/' . $photo->file_name,
-            //     now()->addMinutes(10)
-            // );
+            $photo->add_temp_url();
         }
         return $photos;
     }
@@ -59,8 +53,9 @@ class IndexController extends Controller
 
     public function trash()
     {
+
         return Inertia::render('Index', [
-            'photos' => Photo::onlyTrashed()->where('file_name', "!=", null)->get(),
+            'photos' => $this->generateSrc(Photo::onlyTrashed()->where('file_name', "!=", null)->cursorPaginate(30)),
             'title' => 'Trashed Photos',
         ])->withViewData(['title' => 'Trashed Photos']);
     }

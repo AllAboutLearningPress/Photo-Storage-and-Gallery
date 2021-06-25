@@ -7,6 +7,9 @@
                     :key="suggestion.id"
                     :data-suggestion-id="index"
                     href="#"
+                    v-on:click="
+                        showPhoto($event, suggestion.id, suggestion.slug)
+                    "
                     tabindex="-1"
                     class="
                         js-search__suggest-item
@@ -18,7 +21,7 @@
                         class="search__suggest-item-thumb"
                         :src="suggestion.thumbSrc"
                         alt=""
-                        style="width: 4rem"
+                        style="max-width: 4rem; max-height: 4rem"
                     />
                     <span class="search__suggest-item-thumb-txt">
                         {{ suggestion.title }}
@@ -32,5 +35,17 @@
 <script>
 export default {
     props: ["suggestions"],
+    methods: {
+        showPhoto(e, id, slug) {
+            console.log("open");
+            e.preventDefault();
+            this.$inertia.visit(
+                route("photo.show", {
+                    id: id,
+                    slug: slug,
+                })
+            );
+        },
+    },
 };
 </script>

@@ -41,11 +41,9 @@ export default {
         // ];
 
         // const globalDropTarget = new GlobalDropTarget(allowedMimeTypes);
-
+        console.log(this.photos);
         const options = {
-            fetchMoreUrl:
-                route("index.fetch_more") +
-                new URL(this.photos.next_page_url).search,
+            fetchMoreUrl: this.genFetMoreUrl(),
             urlForSize: function (filename, size) {
                 return `/storage/full_size/${filename}`;
             },
@@ -90,6 +88,15 @@ export default {
         window.dispatchEvent(new Event("resize"));
     },
     methods: {
+        genFetMoreUrl() {
+            if (!this.photos.next_page_url) {
+                return this.photos.next_page_url;
+            }
+            return (
+                route("index.fetch_more") +
+                new URL(this.photos.next_page_url).search
+            );
+        },
         scroll() {
             window.onscroll = () => {
                 let bottomOfWindow =
