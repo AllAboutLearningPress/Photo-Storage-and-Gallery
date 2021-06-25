@@ -80,7 +80,7 @@ import SingleImageDropManager from "../../frontend/components/SingleImageDropMan
 import SearchSuggest from "./SearchSuggest.vue";
 import CameraButton from "@/Buttons/CameraButton.vue";
 import ShowSearchButton from "./ShowSearchButton.vue";
-import { debounce } from "../../util.js";
+import { notify } from "@/util.js";
 export default {
     components: { SearchSuggest, CameraButton, ShowSearchButton },
     data() {
@@ -195,10 +195,15 @@ export default {
 
         sendSearchReq(search) {
             console.log("sending search req");
+            if (search.length == 0) {
+                // empty search initiated
+                return;
+            }
             axios
                 .post(route("search.search_title"), { search: search })
                 .then((resp) => {
                     console.log(resp);
+                    this.suggestions = resp.data;
                 })
                 .catch((err) => {
                     console.error(err);
