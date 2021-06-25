@@ -645,9 +645,10 @@
         }.bind(this));
 
         // if the last image is in buffer then we will try to load more images
-        let lastPos = this.images.length - 1;
-        if (this.images[lastPos].style.translateY + this.images[lastPos].style.height > minTranslateYPlusHeight &&
-            this.images[lastPos].style.translateY < maxTranslateY) {
+
+        let lastImage = this.images[this.images.length - 1];
+        if (lastImage && lastImage.style.translateY + lastImage.style.height > minTranslateYPlusHeight &&
+            lastImage.style.translateY < maxTranslateY) {
             this._fetchMore();
 
         }
