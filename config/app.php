@@ -178,9 +178,7 @@ return [
         App\Providers\JetstreamServiceProvider::class,
         Laravel\Scout\ScoutServiceProvider::class,
         ScoutEngines\Elasticsearch\ElasticsearchProvider::class,
-
-
-
+        Intervention\Image\ImageServiceProvider::class
     ],
 
     /*
@@ -233,7 +231,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-
+        'Image' => Intervention\Image\Facades\Image::class
     ],
 
 ];
