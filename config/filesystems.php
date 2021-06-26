@@ -42,12 +42,12 @@ return [
             'visibility' => 'public',
         ],
 
-        's3' => [
+        's3_fullsize' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
             'region' => env('AWS_DEFAULT_REGION'),
-            'bucket' => env('AWS_BUCKET'),
+            'bucket' => env('FULLSIZE_BUCKET'),
             // 'url' => env('AWS_URL'),
             // 'endpoint' => env('AWS_ENDPOINT'),
             // 'cache' => [

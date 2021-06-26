@@ -7,10 +7,12 @@ use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use Aws\Lambda\LambdaClient;
-use Aws\Credentials\Credentials;
 use Carbon\Carbon;
-use Response;
+use Image;
+use Storage;
+use Aws\Rekognition\RekognitionClient;
+use Aws\Credentials\Credentials;
+
 
 class UploadController extends Controller
 {
@@ -115,10 +117,13 @@ class UploadController extends Controller
             'id' => 'required|exists:photos,id',
 
         ]);
+
         // generating a random filename for photo
         $fileName = bin2hex(random_bytes(32)) . '.' . $data['file']->getClientOriginalExtension(); //
         $imgsize = getimagesize($data['file']->getPathName());
-        $data['file']->storeAs("public/full_size/", $fileName, 'local');
+        //Storage::disk('s3_fullsize')->putFile("full_size/", $fileName, $data['file'],);
+
+        $data['file']->storeAs("full_size/", $fileName, 's3_fullsize');
 
         // updating the photo entry
 
@@ -133,6 +138,39 @@ class UploadController extends Controller
             'should_process' => False,
 
         ]);
+
+        // $full_image = Image::make($data['file']->path());
+        // // resizes the image to have 200px width and preserves aspectRatio
+        // $resizedImage = $full_image->resize(null, 200, function ($constraint) {
+        //     $constraint->aspectRatio();
+        // })->stream();
+        // Storage::disk('local')->put('thumbnail/' . $fileName, $resizedImage->__toString());
+
+        // $resizedImage = $full_image->resize(null, 1000, function ($constraint) {
+        //     $constraint->aspectRatio();
+        // })->encode(
+        //     'jpeg',
+        //     75
+        // )->stream();
+        // Storage::disk('local')->put('preview/' . $fileName, $resizedImage->__toString());
+
+        $credentials = new Credentials(config('services.ses.key'), config('services.ses.secret'));
+        $client = new RekognitionClient(array(
+            'credentials' => $credentials,
+            'region' => config('services.ses.region'),
+            'version' => 'latest'
+        ));
+        $result = $client->detectLabels(
+            [
+                'Image' => [
+                    'S3Object' => [
+                        'Bucket' => config('aws.fullsize_bucket'),
+                        'Name' => 'full_size/' . $fileName,
+                    ],
+                ]
+            ]
+        );
+        dd($result);
 
 
         // $credentials = new Credentials(config('services.ses.key'), config('services.ses.secret'));

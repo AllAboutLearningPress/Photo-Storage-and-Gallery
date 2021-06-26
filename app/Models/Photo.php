@@ -45,6 +45,10 @@ class Photo extends Model
     {
         return $this->belongsToMany(Tag::class)->using(PhotoTag::class)->withTimestamps();
     }
+    public function labels()
+    {
+        return $this->belongsToMany(Label::class);
+    }
 
     /*
     * The parent of this photo
