@@ -9,6 +9,6 @@ class InvitationController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Invitation/Index');
+        return Inertia::render('Invitation/Index', ['title' => 'Sent Invitations']);
     }
 }
