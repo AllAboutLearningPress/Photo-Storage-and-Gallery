@@ -54,7 +54,6 @@
 </template>
 
 <script>
-import { Inertia } from "@inertiajs/inertia";
 import SidebarHelper from "../frontend/components/Sidebar";
 export default {
     data() {
