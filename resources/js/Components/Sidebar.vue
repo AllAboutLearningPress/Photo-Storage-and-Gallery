@@ -9,7 +9,11 @@
             <button
                 title="Close menu"
                 type="button"
-                class="js-sidebar-toggle sidebar__close btn-subtle btn-lg btn-close"
+                class="
+                    js-sidebar-toggle
+                    sidebar__close
+                    btn-subtle btn-lg btn-close
+                "
                 data-sidebar="#content-sidebar"
                 aria-label="Close"
             >
@@ -35,7 +39,10 @@
                 >
                     <button
                         type="submit"
-                        class="navigation__item list-group-item list-group-item-action"
+                        class="
+                            navigation__item
+                            list-group-item list-group-item-action
+                        "
                     >
                         Logout
                     </button>
@@ -65,6 +72,10 @@ export default {
                 {
                     name: "Trash",
                     route: "trash",
+                },
+                {
+                    name: "Invitations",
+                    route: "invitations.index",
                 },
             ],
             currentRoute: route().current(),
