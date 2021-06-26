@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Label;
 use App\Models\Photo;
 use App\Models\Tag;
 use Illuminate\Http\Request;
@@ -127,7 +128,8 @@ class UploadController extends Controller
 
         // updating the photo entry
 
-        Photo::where("id", $data['id'])->update([
+        $photo = Photo::where("id", $data['id'])->first();
+        $photo->update([
             'title' => $data['file']->getClientOriginalName(),
             'file_name' => $fileName,
             'size' => $data['file']->getSize(),
@@ -170,7 +172,20 @@ class UploadController extends Controller
                 ]
             ]
         );
-        dd($result);
+        $label_ids = [];
+        $label_scores = [];
+
+        foreach ($result['Labels'] as $label) {
+
+            $label_id = Label::firstOrCreate([
+                "name" => $label['Name']
+            ])->id;
+            array_push($label_ids, $label_id);
+            array_push($label_scores, ['score' => round($label['Confidence'])]);
+        }
+        //dd(array_combine($label_ids, $label_scores));
+        $photo->labels()->sync(array_combine($label_ids, $label_scores));
+
 
 
         // $credentials = new Credentials(config('services.ses.key'), config('services.ses.secret'));

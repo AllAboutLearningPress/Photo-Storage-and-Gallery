@@ -351,7 +351,6 @@
 
         // Our global reference for images in the grid.  Note that not all of these
         // images are necessarily in view or loaded.
-        console.log('parsing images in global', imageData);
         this.images = this._parseImageData(imageData);
 
         // Inject our boilerplate CSS.
