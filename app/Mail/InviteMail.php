@@ -12,16 +12,18 @@ class InviteMail extends Mailable
     use Queueable, SerializesModels;
 
     public $invited_by;
+    public $invite_url;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($invited_by)
+    public function __construct($invited_by, $invite_url)
     {
 
         $this->invited_by = $invited_by;
+        $this->invite_url = $invite_url;
     }
 
     /**
