@@ -72,7 +72,8 @@
                                 >Email</span
                             >
                             <input
-                                type="text"
+                                ref="invitation-email"
+                                type="email"
                                 class="form-control"
                                 aria-label="Sizing example input"
                                 aria-describedby="inputGroup-sizing-default"
@@ -87,7 +88,11 @@
                         >
                             Close
                         </button>
-                        <button type="button" class="btn btn-primary">
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            v-on:click="sendInvitation"
+                        >
                             Send Invite
                         </button>
                     </div>
@@ -118,6 +123,8 @@
 import MainLayout from "@/Layouts/MainLayout.vue";
 import Button from "../../Jetstream/Button.vue";
 import Modal from "bootstrap/js/dist/modal";
+import axios from "axios";
+import { notify } from "@/util.js";
 export default {
     components: { Button },
     props: ["invitations"],
@@ -133,7 +140,26 @@ export default {
                 });
                 console.log(this.deleteModal);
             }
+            this.$refs["invitation-email"].value = "";
             this.deleteModal.toggle();
+        },
+        sendInvitation(e) {
+            this.deleteModal.toggle;
+            axios
+                .post(route("invitations.send-invite"), {
+                    email: this.$refs["invitation-email"].value,
+                })
+                .then((resp) => {
+                    notify("Invitation send", "success");
+                    this.$refs["invitation-email"].value = "";
+                })
+                .catch((err) => {
+                    notify(
+                        "Something went wrong. Please send invitation again",
+                        "danger"
+                    );
+                    console.error(err);
+                });
         },
     },
 };
