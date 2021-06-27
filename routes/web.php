@@ -73,6 +73,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     /** Routes related to Invitations */
     Route::prefix('invitations')->name('invitations.')->group(function () {
         Route::get('inivtations', [InvitationController::class, 'index'])->name('index');
+        Route::post('send-invite', [InvitationController::class, 'sendInvite'])->name('send-invite');
     });
     // Route::get("/dashboard", function () {
     //     return Inertia::render('Dashboard');
