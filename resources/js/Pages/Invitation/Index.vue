@@ -146,7 +146,7 @@ export default {
         sendInvitation(e) {
             this.deleteModal.toggle;
             axios
-                .post(route("invitations.send-invite"), {
+                .post(route("invitations.send_invite"), {
                     email: this.$refs["invitation-email"].value,
                 })
                 .then((resp) => {
