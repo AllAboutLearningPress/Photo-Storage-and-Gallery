@@ -6,6 +6,7 @@ use App\Actions\Fortify\CreateNewUser;
 use App\Mail\InviteMail;
 use App\Models\Invitation;
 use App\Models\User;
+use Auth;
 use Hash;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -36,11 +37,11 @@ class InvitationController extends Controller
     {
         $invite = Invitation::where('code', '=', $invite_code)->first();
         if ($invite) {
-            return view('auth.signup');
+            return view('auth.signup')->with('code', $invite_code);
         }
         abort(404);
     }
-    public function store(Request $request)
+    public function signup(Request $request)
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -53,18 +54,19 @@ class InvitationController extends Controller
                 'regex:/[0-9]/',      // must contain at least one digit
                 'regex:/[@$!%*#?&]/'  // must contain one special charecter
             ], // must contain a special character],
-            'code' => ['required', 'string', 'digits:512'],
+            'code' => ['required', 'string', 'min:512'],
 
         ]);
         $invite = Invitation::where([['email', '=', $data['email']], ['code', "=", $data['code']]])->first();
         if ($invite) {
-            User::create([
+            $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => Hash::make($data['password']),
             ]);
+            Auth::login($user);
+            return redirect(route('home'));
         }
-        $new_user = new CreateNewUser();
-        $new_user->create($data);
+        return redirect(route('login'));
     }
 }

@@ -1412,3 +1412,12 @@ img-comparison-slider:focus-visible {
       }
 
 }
+
+.password__info {
+    display: none;
+    margin-bottom: 0.5rem;
+}
+
+.password:focus~.password__info {
+    display: block !important;
+}
