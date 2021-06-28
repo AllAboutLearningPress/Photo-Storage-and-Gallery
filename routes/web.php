@@ -74,9 +74,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::prefix('invitations')->name('invitations.')->group(function () {
         Route::get('inivtations', [InvitationController::class, 'index'])->name('index');
         Route::post('send-invite', [InvitationController::class, 'sendInvite'])->name('send_invite');
-        Route::Get('accept-invite/{invite_code}', [InvitationController::class, 'acceptInvite'])->name('accept_invite');
     });
     // Route::get("/dashboard", function () {
     //     return Inertia::render('Dashboard');
     // })->name('dashboard');
 });
+
+Route::get('invitations/accept-invite/{invite_code}', [InvitationController::class, 'acceptInvite'])->name('invitations.accept_invite');
+Route::post('invitations/signup',  [InvitationController::class, 'signup'])->name('invitations.signup');
