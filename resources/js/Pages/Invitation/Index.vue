@@ -17,21 +17,31 @@
                     <th scope="col">#</th>
                     <th scope="col">Email</th>
                     <th scope="col">Sent at</th>
+                    <th scope="col">Status</th>
                     <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="invite in invitations" :key="invite.id">
+                <tr
+                    v-for="(invite, index) in invitations.data"
+                    :key="invite.id"
+                >
                     <th scope="row">1</th>
                     <td>{{ invite.email }}</td>
-                    <td>5th oct, 2021</td>
+                    <td>{{ genSentAt(invite.updated_at) }}</td>
+                    <td>{{ invite.is_accepted ? "accepted" : "pending" }}</td>
                     <td>
-                        <button type="button" class="btn btn-primary resend">
+                        <button
+                            v-on:click="sendInvitation($event, invite.email)"
+                            type="button"
+                            class="btn btn-primary resend"
+                        >
                             Resend
                         </button>
                         <button
                             type="button"
                             class="btn btn-danger delete-invite"
+                            v-on:click="deleteInvite(invite.id, index)"
                         >
                             Delete
                         </button>
@@ -129,9 +139,10 @@ export default {
     components: { Button },
     props: ["invitations"],
     layout: MainLayout,
-    mounted() {
-        window.title = "Invitations";
+    data() {
+        return { deleteModal: null };
     },
+
     methods: {
         toggleInviteModal(e) {
             if (this.deleteModal == null) {
@@ -143,11 +154,13 @@ export default {
             this.$refs["invitation-email"].value = "";
             this.deleteModal.toggle();
         },
-        sendInvitation(e) {
-            this.deleteModal.toggle;
+        sendInvitation(e, email) {
+            if (this.deleteModal) {
+                this.deleteModal.hide();
+            }
             axios
                 .post(route("invitations.send_invite"), {
-                    email: this.$refs["invitation-email"].value,
+                    email: email ? email : this.$refs["invitation-email"].value,
                 })
                 .then((resp) => {
                     notify("Invitation send", "success");
@@ -159,6 +172,30 @@ export default {
                         "danger"
                     );
                     console.error(err);
+                });
+        },
+        /**Generates YYYY-MM-DD date format from mysql datetime */
+        genSentAt(dateTime) {
+            let dateObject = new Date(dateTime);
+            let yyyy = dateObject.getFullYear();
+            let mm = dateObject.getMonth() + 1;
+            let dd = dateObject.getDate();
+
+            return `${yyyy}-${mm}-${dd}`;
+        },
+        /**Deletes an invite if not accepted */
+        deleteInvite(id, index) {
+            let invite = this.invitations.data[index];
+            console.log(this.invitations);
+            this.invitations.data.splice(index, 1);
+            axios
+                .post(route("invitations.delete_invite", { id: id }))
+                .then((resp) => {
+                    notify("Invitation Deleted", "success");
+                })
+                .catch((err) => {
+                    notify("Something went wrong");
+                    this.invitations.data.splice(index, 0, invite);
                 });
         },
     },

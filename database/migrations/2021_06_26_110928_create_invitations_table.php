@@ -17,6 +17,8 @@ class CreateInvitationsTable extends Migration
             $table->id();
             $table->string('email');
             $table->text('code');
+            $table->foreignId('invited_by');
+            $table->boolean('is_accepted')->default(false);
             $table->timestamps();
         });
     }

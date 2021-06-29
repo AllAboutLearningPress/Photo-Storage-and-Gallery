@@ -14,9 +14,12 @@ use Mail;
 
 class InvitationController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Inertia::render('Invitation/Index', ['title' => 'Sent Invitations']);
+        return Inertia::render('Invitation/Index', [
+            'invitations' => Invitation::where('invited_by', "=", $request->user()->id)->cursorPaginate(30),
+            'title' => 'Sent Invitations'
+        ]);
     }
 
     public function sendInvite(Request $request)
@@ -26,7 +29,12 @@ class InvitationController extends Controller
         if (!$invitation) {
             // invitation not found. Generate invitation
             $invite_code =  bin2hex(random_bytes(256)); //;
-            $invitation = Invitation::create(['email' => $data['email'], 'code' => $invite_code]);
+            $invitation = Invitation::create([
+                'email' => $data['email'],
+                'code' => $invite_code,
+                'invited_by' => $request->user()->id,
+                'is_accepted' => false,
+            ]);
         }
         $invite_url = route('invitations.accept_invite', $invitation->code);
         Mail::to($data['email'])->send(new InviteMail($request->user()->name, $invite_url));
@@ -59,6 +67,7 @@ class InvitationController extends Controller
         ]);
         $invite = Invitation::where([['email', '=', $data['email']], ['code', "=", $data['code']]])->first();
         if ($invite) {
+            $invite->update(['is_accepted' => true]);
             $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
@@ -68,5 +77,14 @@ class InvitationController extends Controller
             return redirect(route('home'));
         }
         return redirect(route('login'));
+    }
+    public function deleteInvite(Request $request, $id)
+    {
+        $invite = Invitation::where('id', '=', $id)->firstOrFail();
+        if (!$invite->is_accepted) {
+            $invite->delete();
+            return response($status = 200);
+        }
+        return abort(404);
     }
 }
