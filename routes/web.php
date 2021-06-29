@@ -74,11 +74,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::prefix('invitations')->name('invitations.')->group(function () {
         Route::get('inivtations', [InvitationController::class, 'index'])->name('index');
         Route::post('send-invite', [InvitationController::class, 'sendInvite'])->name('send_invite');
+        Route::post("{id}/delete", [InvitationController::class, 'deleteInvite'])->name('delete_invite');
     });
     // Route::get("/dashboard", function () {
     //     return Inertia::render('Dashboard');
     // })->name('dashboard');
 });
-
+/** Invitations routes that doesnt require authentication */
 Route::get('invitations/accept-invite/{invite_code}', [InvitationController::class, 'acceptInvite'])->name('invitations.accept_invite');
 Route::post('invitations/signup',  [InvitationController::class, 'signup'])->name('invitations.signup');
