@@ -45,7 +45,7 @@ class IndexController extends Controller
     public function generateSrc($photos)
     {
         foreach ($photos as $photo) {
-            $photo->add_temp_url();
+            $photo->add_temp_url('thumbnails');
         }
         return $photos;
     }

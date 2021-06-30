@@ -14,7 +14,7 @@ class SearchController extends Controller
         $data = $request->validate(['search' => 'required|string']);
         $photos = Photo::search($data['search'])->get();
         foreach ($photos as $photo) {
-            $photo->add_temp_url();
+            $photo->add_temp_url('thumbnails');
         }
         return $photos->toArray();
     }
