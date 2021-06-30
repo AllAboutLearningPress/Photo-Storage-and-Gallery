@@ -21,7 +21,7 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN docker-php-ext-install pdo_mysql exif pcntl bcmath gd
 
 # Get latest Composer
-# COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Create system user to run Composer and Artisan Commands
 RUN useradd -G www-data,root -u $uid -d /home/$user $user
@@ -34,10 +34,9 @@ WORKDIR /var/www
 # copy project files
 COPY --chown=$user:www-data . /var/www
 #COPY --chown=$user:www-data ./.env.example /var/www/.env
-
-#RUN composer install
-RUN php artisan key:generate
-RUN php artisan optimize
+# RUN composer install
+# RUN php artisan key:generate
 USER $user
 # updating view
+#CMD bash -c "composer install"
 
