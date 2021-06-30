@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Image;
 use Storage;
 use Aws\Rekognition\RekognitionClient;
+use Aws\Lambda\LambdaClient;
 use Aws\Credentials\Credentials;
 
 
@@ -156,6 +157,8 @@ class UploadController extends Controller
         // )->stream();
         // Storage::disk('local')->put('preview/' . $fileName, $resizedImage->__toString());
 
+        // to-do
+        // move label detection code to queue
         $credentials = new Credentials(config('services.ses.key'), config('services.ses.secret'));
         $client = new RekognitionClient(array(
             'credentials' => $credentials,
@@ -187,25 +190,23 @@ class UploadController extends Controller
         $photo->labels()->sync(array_combine($label_ids, $label_scores));
 
 
+        $client = new LambdaClient(array(
+            'credentials' => $credentials,
+            'region' => config('services.ses.region'),
+            'version' => 'latest'
+        ));
+        $result = $client->invoke(array(
+            // FunctionName is required
+            'FunctionName' => 'arn:aws:lambda:us-east-1:728758055541:function:photo_post_upload',
+            'InvocationType' => 'RequestResponse',
+            'LogType' => 'None',
+            //'ClientContext' => 'string',
+            'Payload' => json_encode(array(
+                'file_name' => $fileName
+            )),
+            //'Qualifier' => 'string',
+        ));
 
-        // $credentials = new Credentials(config('services.ses.key'), config('services.ses.secret'));
-        // $client = new LambdaClient(array(
-        //     'credentials' => $credentials,
-        //     'region' => config('services.ses.region'),
-        //     'version' => 'latest'
-        // ));
-        // $result = $client->invoke(array(
-        //     // FunctionName is required
-        //     'FunctionName' => 'arn:aws:lambda:us-east-1:728758055541:function:photo_post_upload',
-        //     'InvocationType' => 'RequestResponse',
-        //     'LogType' => 'None',
-        //     //'ClientContext' => 'string',
-        //     'Payload' => json_encode(array(
-        //         'photo' => '012c84847602494063e62b1a98e023c05064f333389d5465070d901a4c96408f.jpeg'
-        //     )),
-        //     //'Qualifier' => 'string',
-        // ));
-        // dd($result['Payload']->getContents());
         return http_response_code(204);
     }
     /**
