@@ -159,9 +159,9 @@ class UploadController extends Controller
 
         // to-do
         // move label detection code to queue
-        $credentials = new Credentials(config('services.ses.key'), config('services.ses.secret'));
+        //$credentials = new Credentials(config('services.ses.key'), config('services.ses.secret'));
         $client = new RekognitionClient(array(
-            'credentials' => $credentials,
+            //'credentials' => $credentials,
             'region' => config('services.ses.region'),
             'version' => 'latest'
         ));
@@ -191,7 +191,7 @@ class UploadController extends Controller
 
 
         $client = new LambdaClient(array(
-            'credentials' => $credentials,
+            // 'credentials' => $credentials,
             'region' => config('services.ses.region'),
             'version' => 'latest'
         ));
