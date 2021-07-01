@@ -22,7 +22,7 @@
         "laravel/scout": "^8.0",
         "laravel/tinker": "^2.5",
         "league/flysystem-aws-s3-v3": "~1.0",
-        "lotuashvili/laravel-scout-elastic-aws": "*",
+        "ashrafakon/laravel-scout-elastic-aws": "*",
         "tightenco/ziggy": "^1.0"
     },
     "require-dev": {
