@@ -256,7 +256,7 @@
                         class="image-view__img"
                         width="800"
                         height="800"
-                        :src="photo.src"
+                        :src="photo.s"
                         alt=""
                     />
                 </div>

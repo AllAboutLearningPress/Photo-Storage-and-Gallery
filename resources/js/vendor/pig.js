@@ -840,7 +840,7 @@
             // Show thumbnail
             if (!this.thumbnail) {
                 this.thumbnail = new Image();
-                this.thumbnail.src = this.thumbSrc//this.pig.settings.urlForSize(this.filename, this.pig.settings.thumbnailSize);
+                this.thumbnail.src = this.src//this.pig.settings.urlForSize(this.filename, this.pig.settings.thumbnailSize);
                 this.thumbnail.className = this.classNames.thumbnail;
                 this.thumbnail.onload = function () {
 
