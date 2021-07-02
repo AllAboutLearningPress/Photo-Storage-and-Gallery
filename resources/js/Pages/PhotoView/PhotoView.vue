@@ -256,7 +256,7 @@
                         class="image-view__img"
                         width="800"
                         height="800"
-                        :src="'/storage/full_size/' + photo.file_name"
+                        :src="photo.src"
                         alt=""
                     />
                 </div>

@@ -27,8 +27,10 @@ class PhotoController extends Controller
      */
     public function show(Request $request, $id, $slug)
     {
+        $photo = Photo::withTrashed()->with('user', 'tags')->findOrFail($id);
+        $photo->add_temp_url('full_size');
         return  Inertia::render('PhotoView/PhotoView', [
-            'photo' => Photo::withTrashed()->with('user', 'tags')->findOrFail($id)
+            'photo' => $photo
         ]);
     }
 

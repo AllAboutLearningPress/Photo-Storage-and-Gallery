@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use Storage;
 use Str;
+use Aws\Sts\StsClient;
+
 
 class Photo extends Model
 {
@@ -107,11 +109,20 @@ class Photo extends Model
     public function add_temp_url($version)
     {
 
+        $stsClient = new StsClient([
+            'region' => 'ap-southeast-1',
+            'version' => 'latest',
+        ]);
+
+        $result = $stsClient->getSessionToken();
         //$this->src = "/storage/full_size/" . $this->file_name;
         //$this->thumbSrc = "/storage/full_size/" . $this->file_name;
         $this->src = Storage::disk('s3_fullsize')->temporaryUrl(
             $version . "/" . $this->file_name,
-            now()->addMinutes(10)
+            now()->addMinutes(10),
+            [
+                'x-amz-security-token' => $result['Credentials']['SessionToken'],
+            ]
         );
     }
 
