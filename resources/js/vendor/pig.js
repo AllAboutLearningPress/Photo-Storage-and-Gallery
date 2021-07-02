@@ -655,9 +655,8 @@
     Pig.prototype._fetchMore = function () {
         // if one request is processing or if there are no more images
         // then we will return from this function
-        console.log('fetching more: ', this.settings.fetchMoreUrl);
-        if (this.fetchingMoreImages || !this.settings.fetchMoreUrl) {
 
+        if (this.fetchingMoreImages || !this.settings.fetchMoreUrl) {
             return
         }
         // making sure that new requests wont be send when
