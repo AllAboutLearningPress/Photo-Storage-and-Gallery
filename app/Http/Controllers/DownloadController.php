@@ -12,12 +12,11 @@ class DownloadController extends Controller
     {
         $data = $request->validate(['id' => 'required|exists:photos,id']);
         $photo = Photo::select('file_name')->find($data['id']);
-        // return redirect(Storage::disk('s3')->temporaryUrl(
-        //     $filePath,
-        //     now()->addHour(),
-        //     ['ResponseContentDisposition' => 'attachment']
-        // ));
-        return 'storage/full_size/' . $photo['file_name'];
+        // generating full size temp url for download
+        $photo->add_temp_url('full_size', [
+            'ResponseContentDisposition' => 'attachment' //this will ensure that file starts downloading instead of opening in browser
+        ]);
+        return $photo->src;
     }
 
     public function generateZip(Request $request)
