@@ -102,7 +102,7 @@ class Photo extends Model
         return "{$slug}-2";
     }
 
-    public function add_temp_url($version)
+    public function add_temp_url($version, $options = [])
     {
 
         //$this->src = "/storage/full_size/" . $this->file_name;
@@ -110,9 +110,7 @@ class Photo extends Model
         $this->src = Storage::disk('s3_fullsize')->temporaryUrl(
             $version . "/" . $this->file_name,
             now()->addMinutes(10),
-            [
-                'x-amz-security-token' => '',
-            ]
+            $options
         );
     }
 

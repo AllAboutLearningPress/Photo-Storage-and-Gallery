@@ -256,7 +256,7 @@
                         class="image-view__img"
                         width="800"
                         height="800"
-                        :src="photo.s"
+                        :src="photo.src"
                         alt=""
                     />
                 </div>
@@ -444,8 +444,8 @@ export default {
             axios
                 .post(route("downloads.generate_link"), { id: this.photo.id })
                 .then((resp) => {
-                    console.log(resp.data);
-                    window.open("/" + resp.data);
+                    // open the download link in a new tab. So it can start downloading
+                    window.open(resp.data);
                 });
         },
     },
