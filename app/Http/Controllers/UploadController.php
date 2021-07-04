@@ -58,6 +58,7 @@ class UploadController extends Controller
             '*.tempId' => 'required|integer',
             '*.title' => 'required|string',
             '*.size' => 'required|integer',
+            '*.ext' => 'required|in:jpg,jpeg,png,psd'
 
         ]);
         // will save the file id as an array
@@ -65,14 +66,33 @@ class UploadController extends Controller
         // we will use this token to match the correct
         // photo id
         $resp_data = [];
+        $s3Client = new \Aws\S3\S3Client([
+            'region' => config('filesystems.disks.s3_fullsize.region'),
+            'version' => '2006-03-01',
+        ]);
+        $bucketName = config('filesystems.disks.s3_fullsize.bucket');
 
         foreach ($files as $file) {
+            $fileName = bin2hex(random_bytes(64)) . '.' . $file['ext'];
             $id =  Photo::create([
                 'title' => $file['title'],
                 'user_id' => Auth::user()->id,
-                'size' => $file['size']
+                'size' => $file['size'],
+                'file_name' => $fileName,
+                'user_id' => Auth::user()->id,
+
             ])->id;
-            array_push($resp_data, ['tempId' => $file['tempId'], 'id' => $id]);
+
+            $cmd = $s3Client->getCommand('PutObject', [
+                'Bucket' => $bucketName,
+                'Key' => 'fullsize/' . $fileName
+            ]);
+
+            $request = $s3Client->createPresignedRequest($cmd, now()->addMinutes(20));
+            // Get the actual presigned-url
+            $presignedUrl = (string)$request->getUri();
+
+            array_push($resp_data, ['tempId' => $file['tempId'], 'id' => $id, 'uploadUrl' => $presignedUrl]);
         }
         return $resp_data;
     }
@@ -121,7 +141,7 @@ class UploadController extends Controller
         ]);
 
         // generating a random filename for photo
-        $fileName = bin2hex(random_bytes(32)) . '.' . $data['file']->getClientOriginalExtension(); //
+        $fileName = bin2hex(random_bytes(32)) . '.' . $data['file']->getClientOriginalExtension();
         $imgsize = getimagesize($data['file']->getPathName());
         //Storage::disk('s3_fullsize')->putFile("full_size/", $fileName, $data['file'],);
 
@@ -131,13 +151,13 @@ class UploadController extends Controller
 
         $photo = Photo::where("id", $data['id'])->first();
         $photo->update([
-            'title' => $data['file']->getClientOriginalName(),
-            'file_name' => $fileName,
+
+
             'size' => $data['file']->getSize(),
             'height' => $imgsize[1],
             'width' => $imgsize[0],
             'file_type' => $data['file']->getClientMimeType(),
-            'user_id' => Auth::user()->id,
+
             'should_process' => False,
 
         ]);
@@ -160,52 +180,6 @@ class UploadController extends Controller
         // to-do
         // move label detection code to queue
         //$credentials = new Credentials(config('services.ses.key'), config('services.ses.secret'));
-        $client = new RekognitionClient(array(
-            //'credentials' => $credentials,
-            'region' => config('services.ses.region'),
-            'version' => 'latest'
-        ));
-        $result = $client->detectLabels(
-            [
-                'Image' => [
-                    'S3Object' => [
-                        'Bucket' => config('aws.fullsize_bucket'),
-                        'Name' => 'full_size/' . $fileName,
-                    ],
-                ]
-            ]
-        );
-        $label_ids = [];
-        $label_scores = [];
-
-        foreach ($result['Labels'] as $label) {
-
-            $label_id = Label::firstOrCreate([
-                "name" => $label['Name']
-            ])->id;
-            array_push($label_ids, $label_id);
-            array_push($label_scores, ['score' => round($label['Confidence'])]);
-        }
-        //dd(array_combine($label_ids, $label_scores));
-        $photo->labels()->sync(array_combine($label_ids, $label_scores));
-
-
-        $client = new LambdaClient(array(
-            // 'credentials' => $credentials,
-            'region' => config('services.ses.region'),
-            'version' => 'latest'
-        ));
-        $result = $client->invoke(array(
-            // FunctionName is required
-            'FunctionName' => 'arn:aws:lambda:us-east-1:728758055541:function:photo_post_upload',
-            'InvocationType' => 'RequestResponse',
-            'LogType' => 'None',
-            //'ClientContext' => 'string',
-            'Payload' => json_encode(array(
-                'file_name' => $fileName
-            )),
-            //'Qualifier' => 'string',
-        ));
 
         return http_response_code(204);
     }
