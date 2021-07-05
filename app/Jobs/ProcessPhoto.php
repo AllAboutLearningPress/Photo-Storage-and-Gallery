@@ -22,15 +22,15 @@ class ProcessPhoto implements ShouldQueue
      *
      * @var \App\Models\Photo
      */
-    protected $photo;
+    protected $photoId;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Photo $photo)
+    public function __construct($photoId)
     {
-        $this->photo = $photo;
+        $this->photoId = $photoId;
     }
 
     /**
@@ -40,6 +40,7 @@ class ProcessPhoto implements ShouldQueue
      */
     public function handle()
     {
+        $file_name = Photo::where('id', "=", $this->photoId)->select('file_name')->first();
         $client = new RekognitionClient(array(
             //'credentials' => $credentials,
             'region' => config('services.ses.region'),
@@ -50,7 +51,7 @@ class ProcessPhoto implements ShouldQueue
                 'Image' => [
                     'S3Object' => [
                         'Bucket' => config('aws.fullsize_bucket'),
-                        'Name' => 'full_size/' . $this->photo->file_name
+                        'Name' => 'full_size/' . $file_name
                     ],
                 ]
             ]
@@ -67,9 +68,10 @@ class ProcessPhoto implements ShouldQueue
             array_push($label_scores, ['score' => round($label['Confidence'])]);
         }
         //dd(array_combine($label_ids, $label_scores));
+        // adding the labels to the photo
         $this->photo->labels()->sync(array_combine($label_ids, $label_scores));
 
-
+        // invoking lambda function to generate image previews and thumbnails
         $client = new LambdaClient(array(
             // 'credentials' => $credentials,
             'region' => config('services.ses.region'),

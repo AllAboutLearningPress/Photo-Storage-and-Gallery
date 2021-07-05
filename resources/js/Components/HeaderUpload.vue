@@ -173,6 +173,7 @@ export default {
                     tempId: tempId,
                     title: file.name,
                     size: file.size,
+                    ext: this.getFileExt(file.name),
                 });
                 tempId++;
             });
@@ -190,6 +191,7 @@ export default {
                                 // related file found
                                 // adding the photo id returned by server
                                 this.filesArray[i].id = photo.id;
+                                this.filesArray[i].uploadUrl = photo.uploadUrl;
                                 break;
                             }
                         }
@@ -255,14 +257,19 @@ export default {
 
             // uploading the file
             axios
-                .post(route("uploads.store_file"), formData, {
-                    cancelToken: this.filesArray[filePostion].cancelToken.token,
-                    onUploadProgress: (e) => {
-                        this.filesArray[filePostion].loaded = e.loaded;
-                        this.filesArray[filePostion].width =
-                            (e.loaded / e.total) * 100 + "%";
-                    },
-                })
+                .put(
+                    this.filesArray[filePostion].uploadUrl,
+                    this.filesArray[filePostion].file,
+                    {
+                        cancelToken:
+                            this.filesArray[filePostion].cancelToken.token,
+                        onUploadProgress: (e) => {
+                            this.filesArray[filePostion].loaded = e.loaded;
+                            this.filesArray[filePostion].width =
+                                (e.loaded / e.total) * 100 + "%";
+                        },
+                    }
+                )
                 .then((response) => {
                     // this will be used to show the tick on individual
                     // files on /upload page
@@ -276,19 +283,19 @@ export default {
                 })
                 .catch((error) => {
                     console.log(error);
-                    if (retry == false) {
-                        this.uploadSingleFile(filePostion, (retry = true));
-                    } else {
-                        // Show error notification to user
-                        notify(
-                            "Upload Failed: ",
-                            this.filesArray[filePostion].title
-                        );
-                        console.error(
-                            "File upload failed. File name: ",
-                            this.filesArray[filePostion].title
-                        );
-                    }
+                    // if (retry == false) {
+                    //     this.uploadSingleFile(filePostion, (retry = true));
+                    // } else {
+                    //     // Show error notification to user
+                    //     notify(
+                    //         "Upload Failed: ",
+                    //         this.filesArray[filePostion].title
+                    //     );
+                    //     console.error(
+                    //         "File upload failed. File name: ",
+                    //         this.filesArray[filePostion].title
+                    //     );
+                    // }
                 });
         },
 
@@ -310,6 +317,12 @@ export default {
             return [...new Uint8Array(buffer)]
                 .map((x) => x.toString(16).padStart(2, "0"))
                 .join("");
+        },
+        /** Not a safe way to get file extension
+         * Extension will be checked on the server
+         */
+        getFileExt(name) {
+            return name.split(".").pop();
         },
     },
 };

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ProcessPhoto;
 use App\Models\Label;
 use App\Models\Photo;
 use App\Models\Tag;
@@ -85,7 +86,10 @@ class UploadController extends Controller
 
             $cmd = $s3Client->getCommand('PutObject', [
                 'Bucket' => $bucketName,
-                'Key' => 'fullsize/' . $fileName
+                'Key' => 'fullsize/' . $fileName,
+                // 'ContentType' => 'image/jpeg', //enforce content type in future
+                'Region' => 'ap-southeast-1'
+
             ]);
 
             $request = $s3Client->createPresignedRequest($cmd, now()->addMinutes(20));
@@ -123,6 +127,15 @@ class UploadController extends Controller
         unset($data['token']);
 
         $photo->update($data);
+    }
+
+    public function completeUpload(Request $request)
+    {
+        $data = $request->validate(['ids' => 'required|array', "ids.*" => "exists:photos,id"]);
+        foreach ($data['ids'] as $id) {
+            ProcessPhoto::dispatch($id);
+        }
+        return response('', $status = 200);
     }
 
     /**
