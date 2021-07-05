@@ -100,7 +100,7 @@ class TagController extends Controller
     public function getTags(Request $request)
     {
         if ($request->ajax()) {
-            return DB::table('tags')->select('id', 'name', 'slug')->orderBy('id')->cursorPaginate(100)->toArray();
+            return DB::table('tags')->select('id', 'name', 'slug')->orderBy('id')->cursorPaginate(1000)->toArray();
         }
         return redirect(route('home'));
     }

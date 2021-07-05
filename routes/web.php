@@ -47,7 +47,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::post("cancel-upload", [UploadController::class, 'cancelUpload'])->name('cancel_upload');
         Route::post("add-tag", [UploadController::class, 'addTag'])->name('add_tag');
         Route::post("remove-tag", [UploadController::class, 'removeTag'])->name('remove_tag');
-        Route::post('update-details', [UploadController::class, 'updateDetails'])->name('update-details');
+        Route::post("update-details", [UploadController::class, 'updateDetails'])->name('update-details');
+        Route::post("complete", [UploadController::class, 'completeUpload'])->name('complete');
     });
 
     Route::prefix('download')->name('downloads.')->group(function () {
