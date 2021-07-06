@@ -131,10 +131,13 @@ class UploadController extends Controller
 
     public function completeUpload(Request $request)
     {
-        $data = $request->validate(['ids' => 'required|array', "ids.*" => "exists:photos,id"]);
-        foreach ($data['ids'] as $id) {
-            ProcessPhoto::dispatch($id);
-        }
+        $data = $request->validate([
+            // 'ids' => 'required|array',
+            "id" => "required|exists:photos,id"
+        ]);
+        //foreach ($data['ids'] as $id) {
+        ProcessPhoto::dispatch($data['id']);
+        //}
         return response('', $status = 200);
     }
 
