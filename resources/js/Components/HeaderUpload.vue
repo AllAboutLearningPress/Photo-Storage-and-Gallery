@@ -274,29 +274,33 @@ export default {
                     // this will be used to show the tick on individual
                     // files on /upload page
                     this.filesArray[filePostion].uploadCompleted = true;
-                    this.increaseUploadedCount(1);
-
-                    // upload finished. Now it will check and
-                    // start a new upload
-                    this.uploadingCount--;
-                    this.uploadFiles();
+                    this.sendUploadCompletedReq(
+                        this.filesArray[filePostion].id
+                    );
                 })
                 .catch((error) => {
                     console.log(error);
-                    // if (retry == false) {
-                    //     this.uploadSingleFile(filePostion, (retry = true));
-                    // } else {
-                    //     // Show error notification to user
-                    //     notify(
-                    //         "Upload Failed: ",
-                    //         this.filesArray[filePostion].title
-                    //     );
-                    //     console.error(
-                    //         "File upload failed. File name: ",
-                    //         this.filesArray[filePostion].title
-                    //     );
-                    // }
+                    if (retry == false) {
+                        this.uploadSingleFile(filePostion, (retry = true));
+                    } else {
+                        // Show error notification to user
+                        notify(
+                            "Upload Failed: " +
+                                this.filesArray[filePostion].title,
+                            "danger"
+                        );
+                    }
                 });
+        },
+        sendUploadCompletedReq(id) {
+            axios.post(route("uploads.complete"), { id: id }).then((resp) => {
+                hits.increaseUploadedCount(1);
+
+                // upload finished. Now it will check and
+                // start a new upload
+                this.uploadingCount--;
+                this.uploadFiles();
+            });
         },
 
         /**
