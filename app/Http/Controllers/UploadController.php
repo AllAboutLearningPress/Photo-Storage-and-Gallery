@@ -10,11 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Carbon\Carbon;
-use Image;
-use Storage;
-use Aws\Rekognition\RekognitionClient;
-use Aws\Lambda\LambdaClient;
-use Aws\Credentials\Credentials;
 
 
 class UploadController extends Controller
@@ -74,7 +69,7 @@ class UploadController extends Controller
         $bucketName = config('filesystems.disks.s3_fullsize.bucket');
 
         foreach ($files as $file) {
-            $fileName = bin2hex(random_bytes(64)) . '.' . $file['ext'];
+            $fileName = bin2hex(random_bytes(32)) . '.' . $file['ext'];
             $id =  Photo::create([
                 'title' => $file['title'],
                 'user_id' => Auth::user()->id,
@@ -86,7 +81,7 @@ class UploadController extends Controller
 
             $cmd = $s3Client->getCommand('PutObject', [
                 'Bucket' => $bucketName,
-                'Key' => 'fullsize/' . $fileName,
+                'Key' => 'full_size/' . $fileName,
                 // 'ContentType' => 'image/jpeg', //enforce content type in future
                 'Region' => 'ap-southeast-1'
 
