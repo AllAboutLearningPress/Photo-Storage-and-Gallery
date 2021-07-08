@@ -52,7 +52,7 @@ class ProcessPhoto implements ShouldQueue
                 'Image' => [
                     'S3Object' => [
                         'Bucket' => config('aws.fullsize_bucket'),
-                        'Name' => 'fullsize/' . $photo->file_name
+                        'Name' => 'full_size/' . $photo->file_name
                     ],
                 ]
             ]

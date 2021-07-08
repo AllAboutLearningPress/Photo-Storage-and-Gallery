@@ -294,7 +294,7 @@ export default {
         },
         sendUploadCompletedReq(id) {
             axios.post(route("uploads.complete"), { id: id }).then((resp) => {
-                hits.increaseUploadedCount(1);
+                this.increaseUploadedCount(1);
 
                 // upload finished. Now it will check and
                 // start a new upload

@@ -53,7 +53,6 @@ class IndexController extends Controller
 
     public function trash()
     {
-
         return Inertia::render('Index', [
             'photos' => $this->generateSrc(Photo::onlyTrashed()->where('file_name', "!=", null)->cursorPaginate(30)),
             'title' => 'Trashed Photos',
