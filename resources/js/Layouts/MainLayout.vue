@@ -184,10 +184,12 @@ export default {
                 });
         };
 
+        const resetFuncs = ref([]);
         const resetUpload = () => {
             filesArray.value = [];
             uploadedCount.value = 0;
             total.value = 0;
+            resetFuncs.value.forEach((func) => func());
         };
 
         provide("total", total);
@@ -201,6 +203,7 @@ export default {
         provide("tags", tags);
         provide("fetchTags", fetchTags);
         provide("resetUpload", resetUpload);
+        provide("resetFuncs", resetFuncs);
         return {
             total,
             fetchTags,

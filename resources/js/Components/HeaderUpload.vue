@@ -38,6 +38,7 @@ export default {
         const updateTotal = inject("updateTotal");
         const uploadedCount = inject("uploadedCount");
         const increaseUploadedCount = inject("increaseUploadedCount");
+        const resetFuncs = inject("resetFuncs");
         const dropManager = new SingleImageDropManager();
         return {
             pushToFilesArray,
@@ -47,39 +48,11 @@ export default {
             uploadedCount,
             increaseUploadedCount,
             dropManager,
+            resetFuncs,
         };
     },
     data() {
-        return {
-            // filesArray: [
-            //     // {
-            //     //     file: File,
-            //     //     title: String,
-            //     //     serverId: BigInt,
-            //     //     hasDuplicate: false,
-            //     //     tags: [],
-            //     //     token: String, // this token will be used to uniquely identify this file
-            //     //     id: BigInt,
-            //     //     privLoaded: BigInt,
-            //     //     notificator: null,
-            //     // },
-            // ],
-            tags: [],
-            maxUploadingCount: 40,
-            uploadingCount: 0,
-            uploadCount: 0,
-            fileCount: 0,
-            fileIndex: 0,
-            total: 0,
-            allowedMimeTypes: [
-                "image/jpeg",
-                "image/png",
-                "image/gif",
-                "image/tiff",
-                "image/vnd.adobe.photoshop",
-            ],
-            completedCount: 0,
-        };
+        return this.initialData();
     },
 
     mounted() {
@@ -106,8 +79,45 @@ export default {
         // setInterval(() => {
         //     console.log("total in header upload", this.total);
         // }, 1500);
+
+        this.resetFuncs.push(() => {
+            Object.assign(this.$data, this.initialData());
+            console.log("assigned initial data in headerupload");
+        });
     },
     methods: {
+        initialData() {
+            return {
+                // filesArray: [
+                //     // {
+                //     //     file: File,
+                //     //     title: String,
+                //     //     serverId: BigInt,
+                //     //     hasDuplicate: false,
+                //     //     tags: [],
+                //     //     token: String, // this token will be used to uniquely identify this file
+                //     //     id: BigInt,
+                //     //     privLoaded: BigInt,
+                //     //     notificator: null,
+                //     // },
+                // ],
+                tags: [],
+                maxUploadingCount: 40,
+                uploadingCount: 0,
+                uploadCount: 0,
+                fileCount: 0,
+                fileIndex: 0,
+                total: 0,
+                allowedMimeTypes: [
+                    "image/jpeg",
+                    "image/png",
+                    "image/gif",
+                    "image/tiff",
+                    "image/vnd.adobe.photoshop",
+                ],
+                completedCount: 0,
+            };
+        },
         /** This event is dispatched by axios when data is being
          * sent to server. This event is responsible for matching
          * the global progressbar and single file progress bars
