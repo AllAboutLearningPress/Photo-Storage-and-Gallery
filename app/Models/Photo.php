@@ -27,6 +27,7 @@ class Photo extends Model
         static::deleting(function ($photo) {
             // deleting pivot table tag entries before the photo is deleted
             $photo->tags()->detach();
+            $photo->labels()->detach();
             // add code to delete the file
             // add code to remove download links
 
