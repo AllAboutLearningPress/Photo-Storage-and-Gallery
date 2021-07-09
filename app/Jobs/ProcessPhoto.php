@@ -90,13 +90,15 @@ class ProcessPhoto implements ShouldQueue
             //'Qualifier' => 'string',
         ));
         $payload = $result->get('Payload');
+        // validating details provided by lambda client
         $photoDetails = Validator::make(json_decode($payload, true), [
             'height' => 'required|integer',
             'width' => 'required|integer',
             'file_type' => 'required|in:jpg,jpeg,png,psd',
             'size' => 'required|integer',
         ])->validate();
+
+        // updating the photo details returned by lambda function
         $photo->update($photoDetails);
-        dd($photoDetails);
     }
 }
