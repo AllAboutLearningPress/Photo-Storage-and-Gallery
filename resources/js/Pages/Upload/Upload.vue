@@ -233,7 +233,7 @@ export default {
         },
         completeUpload(e) {
             this.resetUpload();
-            notify("Uploaded completed", "success");
+            notify("Upload completed", "success");
             this.$inertia.visit(route("home"));
         },
     },

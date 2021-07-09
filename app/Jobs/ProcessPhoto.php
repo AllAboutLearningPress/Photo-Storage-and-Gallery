@@ -7,11 +7,11 @@ use App\Models\Photo;
 use Aws\Lambda\LambdaClient;
 use Aws\Rekognition\RekognitionClient;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Validator;
 
 class ProcessPhoto implements ShouldQueue
 {
@@ -89,5 +89,14 @@ class ProcessPhoto implements ShouldQueue
             )),
             //'Qualifier' => 'string',
         ));
+        $payload = $result->get('Payload');
+        $photoDetails = Validator::make(json_decode($payload, true), [
+            'height' => 'required|integer',
+            'width' => 'required|integer',
+            'file_type' => 'required|in:jpg,jpeg,png,psd',
+            'size' => 'required|integer',
+        ])->validate();
+        $photo->update($photoDetails);
+        dd($photoDetails);
     }
 }
