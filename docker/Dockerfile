@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libxml2-dev \
     zip \
-    unzip
+    unzip \
+    supervisor
 
 
 # Clear cache
@@ -38,5 +39,6 @@ COPY --chown=$user:www-data . /var/www
 # RUN php artisan key:generate
 USER $user
 # updating view
-#CMD bash -c "composer install"
+# RUN service start
+#CMD bash -c "php artisan optimize && service supervisord start && supervisorctl start all && php-fpm"
 
