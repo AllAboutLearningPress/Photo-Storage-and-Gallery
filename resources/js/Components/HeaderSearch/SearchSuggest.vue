@@ -19,7 +19,7 @@
                 >
                     <img
                         class="search__suggest-item-thumb"
-                        :src="suggestion.thumbSrc"
+                        :src="suggestion.src"
                         alt=""
                         style="max-width: 4rem; max-height: 4rem"
                     />

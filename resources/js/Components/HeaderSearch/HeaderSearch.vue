@@ -89,6 +89,7 @@ export default {
             val: "sdfsd",
             suggestions: [],
             lastSearchAt: 0,
+            searchTimeout: null,
         };
     },
     created() {
@@ -179,35 +180,38 @@ export default {
             //     {
             //         id: 1,
             //         title: "cat picture demo",
-            //         url: "//placekitten.com/47/47",
+            //         src: "//placekitten.com/47/47",
             //     },
             //     {
             //         id: 2,
             //         title: "cat picture demo",
-            //         url: "//placekitten.com/47/47",
+            //         src: "//placekitten.com/47/47",
             //     },
             //     {
             //         id: 3,
             //         title: "cat picture demo",
-            //         url: "//placekitten.com/47/47",
+            //         src: "//placekitten.com/47/47",
             //     },
             //     {
             //         id: 4,
             //         title: "cat picture demo",
-            //         url: "//placekitten.com/47/47",
+            //         src: "//placekitten.com/47/47",
             //     }
             // );
-            if (new Date().getTime() - this.lastSearchAt >= 500) {
-                this.lastSearchAt = new Date().getTime();
-                this.sendSearchReq(e.target.value);
+
+            // if a new key is pressed within 1 second. Then
+            // the search will be delayed for 1 more second
+            if (this.searchTimeout) {
+                clearTimeout(this.searchTimeout);
             }
-            //this.sendSearchReq(e.target.value);
-            this.openSuggestions();
+            this.searchTimeout = setTimeout(() => {
+                this.sendSearchReq(e.target.value);
+            }, 700);
+
             console.log(this.suggestions);
         },
 
         sendSearchReq(search) {
-            console.log("sending search req");
             if (search.length == 0) {
                 // empty search initiated
                 return;
@@ -217,6 +221,7 @@ export default {
                 .then((resp) => {
                     console.log(resp);
                     this.suggestions = resp.data;
+                    this.openSuggestions();
                 })
                 .catch((err) => {
                     console.error(err);
