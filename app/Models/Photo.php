@@ -119,4 +119,26 @@ class Photo extends Model
     {
         return $query->with('labels')->with('tags');
     }
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array
+     */
+    public function toSearchableArray()
+    {
+        $array = $this->toArray();
+
+        // Customize the data array...
+        $labels = $this->labels->map(function ($data) {
+            return ['name' => $data['name']];
+        });
+        print($labels);
+        return [
+            'title' => $array['title'],
+            'labels' => $labels,
+            'license' => $array['license'],
+            'tags' => $array['tags']
+        ];
+    }
 }
