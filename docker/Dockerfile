@@ -37,8 +37,11 @@ COPY --chown=$user:www-data . /var/www
 #COPY --chown=$user:www-data ./.env.example /var/www/.env
 # RUN composer install
 # RUN php artisan key:generate
+COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
 USER $user
 # updating view
 # RUN service start
 #CMD bash -c "php artisan optimize && service supervisord start && supervisorctl start all && php-fpm"
+CMD ["/usr/bin/supervisord"]
 

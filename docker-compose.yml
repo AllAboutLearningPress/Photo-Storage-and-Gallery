@@ -20,7 +20,7 @@ services:
     volumes:
       - ./:/var/www
       - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
-      - ./docker/supervisor/supervisord.conf:/etc/supervisor/supervisord.conf
+      #- ./docker/supervisor/supervisord.conf:/etc/supervisor/supervisord.conf
     networks:
       - internet
 
@@ -30,7 +30,8 @@ services:
     # #   - supervisord -c /var/www/docker/supervisor/supervisord.conf
     #   - php /var/www/artisan optimize
     #   - supervisorctl start all
-
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
     # ports:
     #   - "9001:9000"
