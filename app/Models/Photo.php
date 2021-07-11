@@ -129,16 +129,20 @@ class Photo extends Model
     {
         $array = $this->toArray();
 
-        // Customize the data array...
-        $labels = $this->labels->map(function ($data) {
+
+        $searchableArray = [
+            'title' => $array['title'],
+        ];
+        $searchableArray['labels'] = $this->labels->map(function ($data) {
             return ['name' => $data['name']];
         });
-        print($labels);
-        return [
-            'title' => $array['title'],
-            'labels' => $labels,
-            'license' => $array['license'],
-            'tags' => $array['tags']
-        ];
+        $searchableArray['tags'] = $this->tags->map(function ($data) {
+            return ['name' => $data['name']];
+        });
+
+        if (isset($array['license'])) {
+            $searchableArray['license'] = $array['license'];
+        }
+        return $searchableArray;
     }
 }
