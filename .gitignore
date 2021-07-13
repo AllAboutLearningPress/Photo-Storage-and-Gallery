@@ -19,3 +19,4 @@ public/css/app.css
 .vscode
 .DS_STORE
 notes.txt
+*.py
