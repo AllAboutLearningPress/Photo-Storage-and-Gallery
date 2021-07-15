@@ -23,35 +23,41 @@ class AwsV4
     private $xAmzDate = null;
     private $currentDate = null;
 
-    public function __construct($creds)
+    public function __construct($creds, $queryParameters)
     {
         $this->accessKeyID = $creds->key;
         $this->secretAccessKey = $creds->secret;
         $this->regionName = 'ap-southeast-1';
+        $this->bucket = 'aalpphotosdev';
         $this->serviceName = 's3';
         $this->httpMethodName = 'GET';
         $this->canonicalURI = '';
-        $this->queryParametes = [];
-        $this->awsHeaders = [];
+        $this->queryParametes = $queryParameters;
+        $this->awsHeaders = [
+            "Host" => "aalpphotosdev.s3.ap-southeast-1.amazonaws.com"
+        ];
         $this->payload = '';
 
         /* Get current timestamp value.(UTC) */
         $this->xAmzDate = $this->getTimeStamp();
         $this->currentDate = $this->getDate();
     }
-
+    private function genCanonicalUri($file_path)
+    {
+        return 'https://' . $this->bucket . "." . $this->regionName . ".amazonaws.com/" . $file_path;
+    }
     /**
      * Task 1: Create a Canonical Request for Signature Version 4.
      *
      * @return
      */
-    private function prepareCanonicalRequest()
+    public function prepareCanonicalRequest($file_path)
     {
         $canonicalURL = "";
 
         /* Step 1.1 Start with the HTTP request method (GET, PUT, POST, etc.), followed by a newline character. */
         $canonicalURL .= $this->httpMethodName . "\n";
-
+        $this->canonicalURI = $this->genCanonicalUri($file_path);
         /* Step 1.2 Add the canonical URI parameter, followed by a newline character. */
         $canonicalURL .= $this->canonicalURI . "\n";
 
@@ -133,7 +139,7 @@ class AwsV4
         $this->awsHeaders['x-amz-date'] = $this->xAmzDate;
 
         /* Execute Task 1: Create a Canonical Request for Signature Version 4. */
-        $canonicalURL = $this->prepareCanonicalRequest();
+        $canonicalURL = $this->prepareCanonicalRequest('a');
 
         /* Execute Task 2: Create a String to Sign for Signature Version 4. */
         $stringToSign = $this->prepareStringToSign($canonicalURL);
