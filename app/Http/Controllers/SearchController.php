@@ -38,8 +38,9 @@ class SearchController extends Controller
             // continue;
 
             $photos[$x]->src = $this->AWS_S3_PresignDownload(
-                $key,
-                $secret,
+                $creds->getAccessKeyId(),
+                $creds->getSecretKey(),
+                $creds->getSecurityToken(),
                 'aalpphotosdev',
                 'ap-southeast-1',
                 "/thumbnails" . "/" . $photos[$x]->file_name
@@ -56,6 +57,7 @@ class SearchController extends Controller
     private function AWS_S3_PresignDownload(
         $AWSAccessKeyId,
         $AWSSecretAccessKey,
+        $securityToken,
         $BucketName,
         $AWSRegion,
         $canonical_uri,
@@ -83,11 +85,12 @@ class SearchController extends Controller
             'X-Amz-Algorithm' => $algorithm,
             'X-Amz-Credential' => $AWSAccessKeyId . '/' . $scope,
             'X-Amz-Date' => $time_text,
-            'X-Amz-SignedHeaders' => $signed_headers_string
+            'X-Amz-Expires' => $expires, // 'Expires' is the number of seconds until the request becomes invalid
+            'X-Amz-Security-Token' => $securityToken,
+            'X-Amz-SignedHeaders' => $signed_headers_string,
         );
 
-        // 'Expires' is the number of seconds until the request becomes invalid
-        $x_amz_params['X-Amz-Expires'] = $expires + 30; // 30seocnds are less
+        // sorting the params in alphabatical order
         ksort($x_amz_params);
 
         $query_string = "";
