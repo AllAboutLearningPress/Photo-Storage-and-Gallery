@@ -39,13 +39,16 @@ class Photo extends Model
     }
 
     /**
-     * The tags that belong to this photo
+     * The user defined tags that belong to this photo
      */
     public function tags()
     {
         return $this->belongsToMany(Tag::class)->using(PhotoTag::class)->withTimestamps();
     }
 
+    /**
+     * Labels returned by aws rekognition
+     */
     public function labels()
     {
         return $this->belongsToMany(Label::class)->using(LabelPhoto::class)->withPivot('score');
@@ -59,9 +62,18 @@ class Photo extends Model
         return $this->hasOne(Photo::class, 'parent_id');
     }
 
+    /**
+     * The user that uploaded this photo
+     */
+
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    /** Generates path for thumbnails */
+    public function genThumbPath()
+    {
+        return '/thumbnails/' . $this->file_name;
     }
     /**
      * Set the proper slug attribute.
