@@ -40,7 +40,7 @@ class ProcessPhoto implements ShouldQueue
      */
     public function handle()
     {
-        $photo = Photo::where('id', "=", $this->photoId)->select('id', 'file_name')->first();
+        $photo = Photo::where('id', "=", $this->photoId)->first();
 
         $client = new RekognitionClient(array(
             //'credentials' => $credentials,

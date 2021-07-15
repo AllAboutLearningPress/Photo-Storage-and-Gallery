@@ -83,11 +83,19 @@ export default {
         //     photo.filename = photo.file_name;
         //     return photo;
         // });
-        const pig = new Pig(this.photos.data, options).enable();
+        this.pig = new Pig(this.photos.data, options);
+        this.pig.enable();
+
+        this.navigationListener = this.$inertia.on("navigate", this.pigDisable);
         // WARNING: this is required to fix `pigjs` bug, use after each `Pig` initialisation
         window.dispatchEvent(new Event("resize"));
     },
     methods: {
+        pigDisable() {
+            this.pig.disable();
+            console.log(this.navigationListener);
+            this.navigationListener();
+        },
         genFetMoreUrl() {
             if (!this.photos.next_page_url) {
                 return this.photos.next_page_url;

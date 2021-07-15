@@ -206,7 +206,7 @@ export default {
             }
             this.searchTimeout = setTimeout(() => {
                 this.sendSearchReq(e.target.value);
-            }, 500);
+            }, 100);
 
             console.log(this.suggestions);
         },
