@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Photo;
 use Illuminate\Http\Request;
 use App\Utils\AwsS3V4;
-
+use Cache;
 
 class SearchController extends Controller
 {
@@ -21,7 +21,10 @@ class SearchController extends Controller
 
             // $photos[$x]->add_temp_url('thumbnails');
             // continue;
-            $photos[$x]->src = $awsS3V4->presignGet($photos[$x]->genThumbPath());
+            $thumbPath = $photos[$x]->genThumbPath();
+            $photos[$x]->src = Cache::remember($thumbPath, 19080, function () use ($awsS3V4, $thumbPath) {
+                return $awsS3V4->presignGet($thumbPath);
+            });
         }
         return $photos->toArray();
     }

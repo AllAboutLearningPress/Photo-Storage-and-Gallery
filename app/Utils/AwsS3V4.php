@@ -7,7 +7,7 @@ class AwsS3V4
 
     private $HMACAlgorithm = "AWS4-HMAC-SHA256";
 
-    public function __construct($bucket, $region)
+    public function __construct($bucket, $region, $expires = 21600)
     {
         $this->region =  $region;
         $this->bucket = $bucket;
@@ -36,7 +36,7 @@ class AwsS3V4
             'X-Amz-Algorithm' => $this->HMACAlgorithm,
             'X-Amz-Credential' => $this->key_id . '/' . $this->scope,
             'X-Amz-Date' => $time_text,
-            'X-Amz-Expires' => 6000, // 'Expires' is the number of seconds until the request becomes invalid
+            'X-Amz-Expires' => $expires, // 'Expires' is the number of seconds until the request becomes invalid
             'X-Amz-SignedHeaders' => 'host',
         );
         if ($token) {
