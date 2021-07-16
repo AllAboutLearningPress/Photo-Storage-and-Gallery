@@ -16,15 +16,16 @@ class SearchController extends Controller
         $region = 'ap-southeast-1';
         $bucket = "aalpphotosdev";
 
-        $awsS3V4 = new AwsS3V4($bucket, $region);
+        $awsS3V4 = new AwsS3V4($bucket, $region, 300);
         for ($x = 0; $x < count($photos); $x++) {
 
             // $photos[$x]->add_temp_url('thumbnails');
             // continue;
             $thumbPath = $photos[$x]->genThumbPath();
-            $photos[$x]->src = Cache::remember($thumbPath, 19080, function () use ($awsS3V4, $thumbPath) {
-                return $awsS3V4->presignGet($thumbPath);
-            });
+            $photos[$x]->src = $awsS3V4->presignGet($thumbPath);
+            // $photos[$x]->src = Cache::remember($thumbPath, 19080, function () use ($awsS3V4, $thumbPath) {
+            //     return $awsS3V4->presignGet($thumbPath);
+            // });
         }
         return $photos->toArray();
     }
