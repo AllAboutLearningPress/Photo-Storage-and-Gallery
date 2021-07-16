@@ -39,6 +39,7 @@ export default {
             document
                 .querySelector(".js-search-header")
                 .classList.toggle("is-searchable");
+
             // addEventListener(this.header, "click", (e) => {
             //     const togglerElem = e.target.closest(".js-search__toggle");
             //     if (togglerElem) {

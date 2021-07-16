@@ -111,7 +111,16 @@ export default {
                 console.log(e.relatedTarget);
                 return;
             }
-            this.$refs["js-search"].classList.toggle("is-suggesting");
+            this.$refs["js-search"].classList.remove("is-suggesting");
+            let header = document.querySelector(".js-search-header");
+            if (
+                !header.contains(e.relatedTarget) &&
+                header.classList.contains("is-searchable")
+            ) {
+                console.log(header);
+                console.log(e.relatedTarget);
+                header.classList.toggle("is-searchable");
+            }
 
             // if (
             //     this.$refs["js-search"].classList.contains("is-suggesting") &&
@@ -168,6 +177,7 @@ export default {
         },
         openSuggestions(e) {
             if (this.suggestions.length) {
+                console.log("adding suggesting");
                 this.$refs["js-search"].classList.add("is-suggesting");
             }
         },
@@ -199,8 +209,8 @@ export default {
             //     }
             // );
 
-            // if a new key is pressed within 1 second. Then
-            // the search will be delayed for 1 more second
+            // if a new key is pressed within 100 second. Then
+            // the search will be delayed for 100 more second
             if (this.searchTimeout) {
                 clearTimeout(this.searchTimeout);
             }
