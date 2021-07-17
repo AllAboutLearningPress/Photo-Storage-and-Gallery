@@ -78,14 +78,14 @@
                                     <dd>{{ bytesToSize(photo.size) }}</dd>
                                 </dl>
                             </li>
-                            <li>
+                            <!-- <li>
                                 <dl class="dlist_0 dlist">
                                     <dt>Family tree:</dt>
                                     <dd>
                                         <a class="link-action" href="#">Show</a>
                                     </dd>
                                 </dl>
-                            </li>
+                            </li> -->
                             <li>
                                 <dl class="dlist_0 dlist">
                                     <dt>Uploaded by:</dt>
@@ -193,11 +193,15 @@
                             </label>
 
                             <span class="toolbar__specific-actions-more">
-                                <share-button></share-button>
+                                <share-button
+                                    v-if="$page.props.user"
+                                    :photo_id="photo.id"
+                                ></share-button>
                                 <download-button
                                     v-on:click="downloadPhoto"
                                 ></download-button>
                                 <delete-button
+                                    v-if="$page.props.user"
                                     v-on:click="toggleDeleteModal"
                                 ></delete-button>
                                 <restore-button
@@ -209,7 +213,10 @@
                                 v-on:open-sidebar="toggleSidebar"
                             ></show-details-button>
                         </div>
-                        <div class="toolbar__main-actions">
+                        <div
+                            v-if="$page.props.user"
+                            class="toolbar__main-actions"
+                        >
                             <label
                                 title="Upload more"
                                 class="js-upload button-file btn-subtle btn"
@@ -352,7 +359,7 @@ import RestoreButton from "./Componenets/RestoreButton.vue";
 import FileTitle from "@/Components/FileTitle.vue";
 
 export default {
-    props: ["photo"],
+    props: ["photo", "downloadUrl"],
     components: {
         BackButton,
         HomeButton,
@@ -360,7 +367,6 @@ export default {
         DeleteButton,
         ShareButton,
         DownloadButton,
-
         FileTag,
         TagsDatalist,
         RestoreButton,
@@ -441,12 +447,18 @@ export default {
             this.$inertia.post(route("photo.restore"), { id: this.photo.id });
         },
         downloadPhoto(e) {
-            axios
-                .post(route("downloads.generate_link"), { id: this.photo.id })
-                .then((resp) => {
-                    // open the download link in a new tab. So it can start downloading
-                    window.open(resp.data);
-                });
+            if (this.downloadUrl) {
+                window.open(this.downloadUrl);
+            } else {
+                axios
+                    .post(route("downloads.generate_link"), {
+                        id: this.photo.id,
+                    })
+                    .then((resp) => {
+                        // open the download link in a new tab. So it can start downloading
+                        window.open(resp.data);
+                    });
+            }
         },
     },
 };

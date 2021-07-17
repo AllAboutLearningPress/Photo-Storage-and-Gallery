@@ -116,7 +116,7 @@ import GlobalDropTarget from "../frontend/components/GlobalDropTarget.js";
 import UploadProgressBar from "../Components/UploadProgressBar.vue";
 import Notificator from "../Components/Notificator.vue";
 import { inject, provide, reactive, ref } from "@vue/runtime-core";
-
+import { notify } from "@/util.js";
 export default {
     components: {
         Header,
@@ -180,7 +180,8 @@ export default {
                     }
                 })
                 .catch((err) => {
-                    notify("Error fetching tags", "danger");
+                    // notify("Error fetching tags", "danger");
+                    console.error(err);
                 });
         };
 
@@ -211,7 +212,6 @@ export default {
         };
     },
     mounted() {
-        this.fetchTags();
         const allowedMimeTypes = [
             "image/jpeg",
             "image/png",
@@ -221,6 +221,9 @@ export default {
         ];
 
         const globalDropTarget = new GlobalDropTarget(allowedMimeTypes);
+        if (this.$page.props.user) {
+            this.fetchTags();
+        }
         // setInterval(() => {
         //     console.log("total in main: ", this.total);
         //     this.total++;

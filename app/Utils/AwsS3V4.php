@@ -7,10 +7,9 @@ class AwsS3V4
 
     private $HMACAlgorithm = "AWS4-HMAC-SHA256";
 
-    public function __construct($bucket, $region, $expires = 21600)
+    public function __construct($expires = 21600)
     {
-        $this->region =  $region;
-        $this->bucket = $bucket;
+        $this->region = config('services.ses.region');
         $this->httpMethodName = 'GET';
         $this->canonicalURI = '';
 
@@ -27,10 +26,10 @@ class AwsS3V4
         $currentTime = time();
         $this->date_text = gmdate('Ymd', $currentTime);
         $this->time_text = $this->date_text . 'T' . gmdate('His', $currentTime) . 'Z';
-        $this->scope = $this->date_text . "/" . $region . "/s3/aws4_request";
+        $this->scope = $this->date_text . "/" . $this->region . "/s3/aws4_request";
         $date_text = gmdate('Ymd', time());
         $time_text = $date_text . 'T' . gmdate('His', time()) . 'Z';
-        $this->scope = $date_text . "/" . $region . "/s3/aws4_request";
+        $this->scope = $date_text . "/" . $this->region . "/s3/aws4_request";
 
         $x_amz_params = array(
             'X-Amz-Algorithm' => $this->HMACAlgorithm,
@@ -54,16 +53,17 @@ class AwsS3V4
 
 
     public function presignGet(
-        $encoded_uri
+        $encoded_uri,
+        $bucket
     ) {
 
 
         // Specify the hostname for the S3 endpoint
         if ($this->region == 'us-east-1') {
-            $hostname = trim($this->bucket . ".s3.amazonaws.com");
+            $hostname = trim($bucket . ".s3.amazonaws.com");
             $header_string = "host:" . $hostname . "\n";
         } else {
-            $hostname =  trim($this->bucket . ".s3-" . $this->region . ".amazonaws.com");
+            $hostname =  trim($bucket . ".s3-" . $this->region . ".amazonaws.com");
             $header_string = "host:" . $hostname . "\n";
         }
         $signed_headers_string = "host";

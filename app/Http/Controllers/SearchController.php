@@ -22,7 +22,7 @@ class SearchController extends Controller
             // $photos[$x]->add_temp_url('thumbnails');
             // continue;
             $thumbPath = $photos[$x]->genThumbPath();
-            $photos[$x]->src = $awsS3V4->presignGet($thumbPath);
+            $photos[$x]->src = $awsS3V4->presignGet($thumbPath, config('aws.fullsize_bucket'));
             // $photos[$x]->src = Cache::remember($thumbPath, 19080, function () use ($awsS3V4, $thumbPath) {
             //     return $awsS3V4->presignGet($thumbPath);
             // });
