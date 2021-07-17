@@ -5,6 +5,7 @@ use App\Http\Controllers\IndexController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\ShareController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\UploadController;
 use Illuminate\Foundation\Application;
@@ -61,7 +62,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('photo/delete', [PhotoController::class, 'destroy'])->name('photo.delete');
     Route::post('photo/restore', [PhotoController::class, 'restore'])->name('photo.restore');
 
-
+    /** Routes related to share */
+    Route::prefix('share')->name('share.')->group(function () {
+        Route::post('create', [ShareController::class, 'create'])->name('create');
+    });
 
     /* Routes related to tags */
     Route::get("/tags/search-by-partial")->name('tags.search_partial');
@@ -84,3 +88,4 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 /** Invitations routes that doesnt require authentication */
 Route::get('invitations/accept-invite/{invite_code}', [InvitationController::class, 'acceptInvite'])->name('invitations.accept_invite');
 Route::post('invitations/signup',  [InvitationController::class, 'signup'])->name('invitations.signup');
+Route::get('share/photo/{id}/{key}', [ShareController::class, 'view'])->name('share.show')->middleware('signed');

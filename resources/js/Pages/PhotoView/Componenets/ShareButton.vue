@@ -1,5 +1,6 @@
 <template>
     <button
+        v-on:click="genShareableUrl"
         title="Share image"
         type="button"
         class="js-image-share btn-subtle btn"
@@ -21,5 +22,22 @@
 </template>
 
 <script>
-export default {};
+import { notify } from "@/util.js";
+export default {
+    props: ["photo_id"],
+    methods: {
+        genShareableUrl() {
+            axios
+                .post(route("share.create"), { photo_id: this.photo_id })
+                .then((resp) => {
+                    console.log(resp);
+                    window.open(resp.data);
+                })
+                .catch((err) => {
+                    console.error(err);
+                    notify("Something went wrong. Please try again", "danger");
+                });
+        },
+    },
+};
 </script>
