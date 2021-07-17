@@ -1,6 +1,10 @@
 <template>
     <div class="js-tags tags">
-        <div class="js-tags__form tags__form" action="#">
+        <div
+            v-if="$page.props.user"
+            class="js-tags__form tags__form"
+            action="#"
+        >
             <div class="input-group mt-1 mb-3">
                 <input
                     name="tag-input"
@@ -32,6 +36,7 @@
                 {{ tag.name }}
 
                 <button
+                    v-if="$page.props.user"
                     title="Delete tag"
                     type="button"
                     class="js-tag-delete tag__delete btn-close"

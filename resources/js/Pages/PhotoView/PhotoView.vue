@@ -115,7 +115,7 @@
                             <li>
                                 <dl class="dlist_0 dlist">
                                     <dt>
-                                        <label for="tag-input">Tags:</label>
+                                        <label for="tag-input">Tags</label>
                                     </dt>
                                     <dd>
                                         <file-tag
