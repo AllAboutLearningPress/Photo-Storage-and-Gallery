@@ -9,11 +9,15 @@
                 <span class="js-editable__val">
                     {{ title }}
                 </span>
-                <edit-pen></edit-pen>
+                <edit-pen v-if="$page.props.user"></edit-pen>
             </dd>
         </dl>
 
-        <div class="js-editable__form editable__form" action="#">
+        <div
+            v-if="$page.props.user"
+            class="js-editable__form editable__form"
+            action="#"
+        >
             <textarea
                 disabled
                 placeholder="Write here"
@@ -72,6 +76,9 @@ export default {
         },
 
         editTitle(e, id) {
+            if (!this.$page.props.user) {
+                return;
+            }
             e.preventDefault();
 
             setTimeout(() => {
