@@ -60,7 +60,7 @@ class PhotoController extends Controller
             $redirect_route = 'home';
         }
         // add code to delete elastic search data
-        $request->session()->flash('success', $flash_msg);
+        ///$request->session()->flash('success', $flash_msg);
         return Redirect::route($redirect_route);
     }
 
@@ -72,7 +72,7 @@ class PhotoController extends Controller
         ]);
 
         Photo::withTrashed()->find($data['id'])->restore();
-        $request->session()->flash('success', 'Photo restored');
-        return  Redirect::route('trash');
+        //$request->session()->flash('success', 'Photo restored');
+        return  Redirect::back();
     }
 }

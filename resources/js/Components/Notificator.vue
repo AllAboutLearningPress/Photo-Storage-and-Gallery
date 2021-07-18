@@ -26,6 +26,17 @@
                         {{ toast.body }}
                     </div>
                     <button
+                        v-if="toast.button"
+                        v-on:click="toast.button.onClick"
+                        type="button"
+                        class="btn btn-primary btn-sm c bg-white me-2 m-auto"
+                        data-bs-dismiss="toast"
+                        aria-label="Close"
+                    >
+                        {{ toast.button.text }}
+                    </button>
+                    <button
+                        v-else
                         type="button"
                         class="btn-close me-2 m-auto"
                         data-bs-dismiss="toast"
@@ -58,9 +69,18 @@ export default {
         document.addEventListener("notify", this.show);
         this.$inertia.on("navigate", () => {
             if (this.$page.props.flash.success) {
+                let button = null;
+                let body = null;
+                if (this.$page.props.flash.success.text) {
+                    body = this.$page.props.flash.success.text;
+                    button = this.$page.props.flash.success.button;
+                } else {
+                    body = this.$page.props.flash.success;
+                }
                 this.show({
                     detail: {
-                        body: this.$page.props.flash.success,
+                        body: body,
+                        button: button,
                         level: "success",
                     },
                 });
@@ -79,13 +99,13 @@ export default {
                 new CustomEvent("notify", {
                     detail: {
                         body: this.ref + this.count,
-                        level: "danger",
+                        level: "success",
                     },
                 })
             );
-            if (this.count < 10) {
+            if (this.count < 1) {
                 this.count++;
-                setTimeout(this.testEvent, 1500);
+                setTimeout(this.testEvent, 150000);
             }
         },
         getElemAndInstanceBySelector(selector) {
@@ -119,6 +139,7 @@ export default {
                 ref: ref,
                 body: e.detail.body,
                 level: this.levels[level],
+                button: e.detail.button,
             });
             this.$nextTick(() => {
                 let toast = new Toast(this.$refs[ref]);
