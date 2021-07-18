@@ -195,7 +195,7 @@
                             <span class="toolbar__specific-actions-more">
                                 <share-button
                                     v-if="$page.props.user"
-                                    :photo_id="photo.id"
+                                    v-on:click="genShareableUrl"
                                 ></share-button>
                                 <download-button
                                     v-on:click="downloadPhoto"
@@ -290,51 +290,55 @@
         </div>
 
         <tags-datalist></tags-datalist>
-        <div
-            ref="deleteModal"
-            class="modal fade"
-            id="deleteModal"
-            aria-hidden="true"
-            aria-labelledby
-            tabindex="-1"
-            data-backdrop="false"
+        <data-modal
+            modalId="deleteModal"
+            title="Delete Photo"
+            :deleted="photo.deleted_at ? true : false"
         >
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="deleteModalToggleLabel">
-                            Delete Photo
-                        </h5>
-                        <button
-                            type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"
-                        ></button>
-                    </div>
-                    <div class="modal-body">
-                        Are you sure about
-                        <span class="text-danger">{{
-                            photo.deleted_at ? "permanently" : ""
-                        }}</span>
-                        deleting "{{ photo.title }}" ?
-                    </div>
-                    <div class="modal-footer">
-                        <button
-                            class="btn btn-primary"
-                            data-bs-target="#deleteModal"
-                            data-bs-toggle="modal"
-                            data-bs-dismiss="modal"
-                        >
-                            Cancel
-                        </button>
-                        <button v-on:click="deletePhoto" class="btn btn-danger">
-                            {{ photo.deleted_at ? "Permanently" : "" }} Delete
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <template v-slot:body
+                >Are you sure about
+                <span class="text-danger">{{
+                    photo.deleted_at ? "permanently" : ""
+                }}</span>
+                deleting "{{ photo.title }}" ?</template
+            >
+            <template v-slot:action_button>
+                <button v-on:click="deletePhoto" class="btn btn-danger">
+                    {{ photo.deleted_at ? "Permanently" : "" }} Delete
+                </button>
+            </template>
+        </data-modal>
+        <data-modal
+            modalId="shareModal"
+            title="Share photo"
+            :deleted="photo.deleted_at ? true : false"
+        >
+            <template v-slot:body
+                ><div class="input-group mb-3">
+                    <input
+                        type="text"
+                        class="form-control"
+                        placeholder=""
+                        aria-label=""
+                        aria-describedby="button-addon2"
+                        :value="shareUrl"
+                    />
+                    <button
+                        class="btn btn-outline-secondary"
+                        type="button"
+                        id="button-addon2"
+                        v-on:click="copyShareUrl"
+                    >
+                        Copy
+                    </button>
+                </div></template
+            >
+            <template v-slot:action_button>
+                <button v-on:click="openShareUrl" class="btn btn-success">
+                    Open Share Link
+                </button>
+            </template>
+        </data-modal>
     </div>
 </template>
 <style lang="scss" >
@@ -357,6 +361,7 @@ import Modal from "bootstrap/js/dist/modal";
 import { notify, updatePhotoDetails } from "@/util.js";
 import RestoreButton from "./Componenets/RestoreButton.vue";
 import FileTitle from "@/Components/FileTitle.vue";
+import DataModal from "@/Components/DataModal.vue";
 
 export default {
     props: ["photo", "downloadUrl"],
@@ -371,6 +376,7 @@ export default {
         TagsDatalist,
         RestoreButton,
         FileTitle,
+        DataModal,
     },
     layout: MainLayout,
 
@@ -387,6 +393,7 @@ export default {
             deleteModal: null,
             deleteModalText: "",
             style: this.genStyle(),
+            shareUrl: "",
         };
     },
 
@@ -421,9 +428,12 @@ export default {
         },
         toggleDeleteModal(e) {
             if (this.deleteModal == null) {
-                this.deleteModal = new Modal(this.$refs["deleteModal"], {
-                    backdrop: "static",
-                });
+                this.deleteModal = new Modal(
+                    document.querySelector("#deleteModal"),
+                    {
+                        backdrop: "static",
+                    }
+                );
                 console.log(this.deleteModal);
             }
             this.deleteModal.toggle();
@@ -459,6 +469,43 @@ export default {
                         window.open(resp.data);
                     });
             }
+        },
+        genShareableUrl() {
+            axios
+                .post(route("share.create"), { photo_id: this.photo.id })
+                .then((resp) => {
+                    console.log(resp);
+                    //window.open(resp.data);
+                    if (this.shareModal == null) {
+                        this.shareModal = new Modal(
+                            document.querySelector("#shareModal"),
+                            {
+                                backdrop: "static",
+                            }
+                        );
+                        this.shareUrl = resp.data;
+                        console.log(this.shareModal);
+                    }
+                    this.shareModal.toggle();
+                    this.copyShareUrl();
+                })
+                .catch((err) => {
+                    console.error(err);
+                    notify("Something went wrong. Please try again", "danger");
+                });
+        },
+        copyShareUrl() {
+            let urlInput = document
+                .querySelector("#shareModal")
+                .querySelector("input");
+            console.log(urlInput);
+            urlInput.select();
+            document.execCommand("copy");
+            urlInput.blur();
+            notify("Link copied in clipboard", "success");
+        },
+        openShareUrl() {
+            window.open(this.shareUrl);
         },
     },
 };
