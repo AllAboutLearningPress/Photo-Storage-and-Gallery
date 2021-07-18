@@ -1,8 +1,9 @@
-export const notify = (body, level) => {
+export const notify = (body, level, button) => {
     document.dispatchEvent(new CustomEvent('notify', {
         detail: {
             body: body,
-            level: level ? level : 'info'
+            level: level ? level : 'info',
+            button: button,
         }
     }))
 }

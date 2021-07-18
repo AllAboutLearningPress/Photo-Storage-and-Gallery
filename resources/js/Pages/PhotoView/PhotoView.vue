@@ -447,14 +447,32 @@ export default {
             e.preventDefault();
             // hiding the delete modal
             this.deleteModal.toggle();
-            this.$inertia.post(route("photo.delete"), {
-                id: this.photo.id,
-                force: this.photo.deleted_at ? true : false,
-            });
+            this.$inertia.post(
+                route("photo.delete"),
+                {
+                    id: this.photo.id,
+                    force: this.photo.deleted_at ? true : false,
+                },
+                {
+                    onSuccess: (resp) => {
+                        console.log("resp", resp);
+                        notify("Photo moved to trash", "success", {
+                            text: "Undo",
+                            onClick: () => this.restorePhoto(),
+                        });
+                    },
+                }
+            );
         },
         /**Restores a photo from trash to photos */
         restorePhoto(e) {
-            this.$inertia.post(route("photo.restore"), { id: this.photo.id });
+            this.$inertia.post(
+                route("photo.restore"),
+                { id: this.photo.id },
+                {
+                    onSuccess: () => notify("Photo restored", "success"),
+                }
+            );
         },
         downloadPhoto(e) {
             if (this.downloadUrl) {
