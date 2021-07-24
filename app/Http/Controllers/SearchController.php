@@ -13,10 +13,9 @@ class SearchController extends Controller
     {
         $data = $request->validate(['search' => 'required|string']);
         $photos = Photo::search($data['search'])->get();
-        $region = 'ap-southeast-1';
-        $bucket = "aalpphotosdev";
+        //$bucket = "aalpphotosdev";
 
-        $awsS3V4 = new AwsS3V4($bucket, $region, 300);
+        $awsS3V4 = new AwsS3V4(300);
         for ($x = 0; $x < count($photos); $x++) {
 
             // $photos[$x]->add_temp_url('thumbnails');
