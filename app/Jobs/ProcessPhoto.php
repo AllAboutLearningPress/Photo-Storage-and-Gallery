@@ -11,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use App\Models\Notification;
 use Validator;
 
 class ProcessPhoto implements ShouldQueue
@@ -90,14 +91,21 @@ class ProcessPhoto implements ShouldQueue
             //'Qualifier' => 'string',
         ));
         $payload = $result->get('Payload');
+        //dd(json_decode($payload, true));
         // validating details provided by lambda client
         $photoDetails = Validator::make(json_decode($payload, true), [
             'height' => 'required|integer',
             'width' => 'required|integer',
             'file_type' => 'required|in:jpg,jpeg,png,psd',
             'size' => 'required|integer',
+            'dhash' => 'required|string',
+            'sha256' => 'required|string',
         ])->validate();
-
+        // dd($photoDetails);
+        Notification::create([
+            'text' => 'uploaded ' . $photo->title,
+            'user_id' => $photo->user_id
+        ]);
         // updating the photo details returned by lambda function
         $photo->update($photoDetails);
     }

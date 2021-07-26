@@ -17,8 +17,8 @@ class Photo extends Model
     protected $fillable = [
         'title', 'size', 'height',
         'width', 'parent_id', 'user_id',
-        'file_type', 'file_name', 'should_process',
-        'token'
+        'file_type', 'file_name',
+        'sha256', 'dhash'
     ];
 
     public static function boot()
