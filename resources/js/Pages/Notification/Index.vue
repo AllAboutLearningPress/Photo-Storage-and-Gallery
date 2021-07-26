@@ -32,31 +32,32 @@ import MainLayout from "@/Layouts/MainLayout.vue";
 
 export default {
     layout: MainLayout,
+    props: ["notifications"],
     data() {
         return {
-            notifications: [
-                {
-                    id: 1,
-                    thumbSrc: "//placekitten.com/g/200/300",
-                    text: "Found a duplicate",
-                    url: "/",
-                },
-                {
-                    id: 2,
-                    thumbSrc: "//placekitten.com/g/200/300",
-                    text: "Found a duplicate",
-                },
-                {
-                    id: 3,
-                    thumbSrc: "//placekitten.com/g/200/300",
-                    text: "Found a duplicate",
-                },
-                {
-                    id: 4,
-                    thumbSrc: "//placekitten.com/g/200/300",
-                    text: "Found a duplicate",
-                },
-            ],
+            // notifications: [
+            //     {
+            //         id: 1,
+            //         thumbSrc: "//placekitten.com/g/200/300",
+            //         text: "Found a duplicate",
+            //         url: "/",
+            //     },
+            //     {
+            //         id: 2,
+            //         thumbSrc: "//placekitten.com/g/200/300",
+            //         text: "Found a duplicate",
+            //     },
+            //     {
+            //         id: 3,
+            //         thumbSrc: "//placekitten.com/g/200/300",
+            //         text: "Found a duplicate",
+            //     },
+            //     {
+            //         id: 4,
+            //         thumbSrc: "//placekitten.com/g/200/300",
+            //         text: "Found a duplicate",
+            //     },
+            // ],
         };
     },
     methods: {

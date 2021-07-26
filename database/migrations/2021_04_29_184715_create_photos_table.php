@@ -26,7 +26,6 @@ class CreatePhotosTable extends Migration
             $table->string('file_name')->nullable();
             $table->string('location')->nullable();
             $table->string('license')->nullable();
-            $table->boolean('should_process')->default(false);
             $table->dateTime('time_taken')->nullable();
             $table->softDeletes();
             $table->timestamps();
