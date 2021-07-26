@@ -65,6 +65,10 @@ export default {
                     route: "home",
                 },
                 {
+                    name: "Notifications",
+                    route: "notifications.index",
+                },
+                {
                     name: "Popular Tags",
                     route: "tags.index",
                 },
