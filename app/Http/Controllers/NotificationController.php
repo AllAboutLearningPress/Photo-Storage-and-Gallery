@@ -11,8 +11,9 @@ class NotificationController extends Controller
 {
     public function index()
     {
+        $notifications =  Notification::where('user_id', Auth::id())->get();
         return Inertia::render("Notification/Index", [
-            'notifications' => Notification::where('user_id', Auth::id())->get()
+            'notifications' =>  genTempSrc($notifications, '/thumbnails/')
         ]);
     }
 }
