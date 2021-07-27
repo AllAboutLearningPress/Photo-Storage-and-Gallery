@@ -2,8 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use Auth;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use App\Models\Notification;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -40,6 +42,7 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'success' => fn () => $request->session()->get('success')
             ],
+            'notification_count' => Notification::where([['user_id', Auth::id()], ['seen', false]])->count()
         ]);
     }
 }
