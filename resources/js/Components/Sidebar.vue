@@ -55,36 +55,45 @@
 
 <script>
 import SidebarHelper from "../frontend/components/Sidebar";
+import { usePage } from "@inertiajs/inertia-vue3";
 export default {
+    setup(props) {
+        console.log(usePage().props.value.notification_count);
+        const menuItems = [
+            {
+                name: "Photos",
+                route: "home",
+            },
+            {
+                name: `Notifications (${
+                    usePage().props.value.notification_count
+                })`,
+                route: "notifications.index",
+            },
+            {
+                name: "Popular Tags",
+                route: "tags.index",
+            },
+            {
+                name: "Trash",
+                route: "trash",
+            },
+            {
+                name: "Invitations",
+                route: "invitations.index",
+            },
+        ];
+        return { menuItems };
+    },
     data() {
         return {
             classes: "navigation__item list-group-item",
-            menuItems: [
-                {
-                    name: "Photos",
-                    route: "home",
-                },
-                {
-                    name: "Notifications",
-                    route: "notifications.index",
-                },
-                {
-                    name: "Popular Tags",
-                    route: "tags.index",
-                },
-                {
-                    name: "Trash",
-                    route: "trash",
-                },
-                {
-                    name: "Invitations",
-                    route: "invitations.index",
-                },
-            ],
+
             currentRoute: route().current(),
         };
     },
     mounted() {
+        console.log("noti count ", this.$page.props.notification_count);
         document.addEventListener("click", (e) => {
             const toggler = e.target.closest(".js-sidebar-toggle");
 
@@ -108,6 +117,7 @@ export default {
         // in order to change the active menu item
         this.$inertia.on("navigate", (event) => {
             this.currentRoute = route().current();
+            this.menuItems[1].name = `Notifications (${this.$page.props.notification_count})`;
         });
     },
     methods: {
