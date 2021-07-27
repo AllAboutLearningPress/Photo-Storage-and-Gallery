@@ -15,12 +15,12 @@
             >
                 <th style="style: 5%" scope="row">
                     <img
-                        :src="notification.thumbSrc"
-                        alt=""
+                        :src="notification.src"
+                        alt="image"
                         style="height: 50px"
                     />
                 </th>
-                <td style="width: 95%">Found a duplicate</td>
+                <td style="width: 95%">{{ notification.text }}</td>
             </tr>
         </tbody>
     </table>

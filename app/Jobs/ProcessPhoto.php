@@ -102,10 +102,19 @@ class ProcessPhoto implements ShouldQueue
             'sha256' => 'required|string',
         ])->validate();
         // dd($photoDetails);
-        Notification::create([
-            'text' => 'uploaded ' . $photo->title,
-            'user_id' => $photo->user_id
-        ]);
+
+
+
+        $duplicate = Photo::where('sha256', $photoDetails['sha256'])->orWhere(function ($query) use ($photoDetails) {
+            $query->where('dhash', $photoDetails['dhash']);
+        })->first();
+        if ($duplicate) {
+            Notification::create([
+                'text' => 'Found duplicate of ' . $photo->title,
+                'user_id' => $photo->user_id,
+                'file_name' => $photo->file_name
+            ]);
+        }
         // updating the photo details returned by lambda function
         $photo->update($photoDetails);
     }

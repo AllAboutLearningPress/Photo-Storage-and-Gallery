@@ -18,8 +18,8 @@ class CreateNotificationsTable extends Migration
             $table->string('text');
             $table->foreignId('user_id')->constrained('users');
             $table->boolean('seen')->default(false);
-            $table->string('url')->nullable();
-            $table->string('thumb_src')->nullable();
+            $table->string('route')->nullable();
+            $table->string('file_name')->nullable();
             $table->timestamps();
         });
     }
