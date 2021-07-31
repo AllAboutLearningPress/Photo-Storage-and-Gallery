@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DownloadController;
+use App\Http\Controllers\DuplicateController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\NotificationController;
@@ -86,6 +87,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     /** Routes related to notifications */
     Route::prefix('notifications')->name('notifications.')->group(function () {
         Route::get('all', [NotificationController::class, 'index'])->name('index');
+    });
+
+    /** Routes related to comparing images */
+    Route::prefix('compare')->name('compare.')->group(function () {
+        Route::get('{photo}/{photo2}', [DuplicateController::class, 'index'])->name('index');
     });
     // Route::get("/dashboard", function () {
     //     return Inertia::render('Dashboard');
