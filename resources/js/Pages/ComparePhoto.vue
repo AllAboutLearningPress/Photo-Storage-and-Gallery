@@ -61,7 +61,7 @@ export default {
     data() {
         return {
             data: {
-                clicked: 0,
+                clicked: false,
                 slider: null,
                 w: 200,
             },
@@ -85,53 +85,51 @@ export default {
         // }
         var img, w, h;
         /* Get the width and height of the img element */
-        this.w = img.offsetWidth;
-        h = img.offsetHeight;
+        this.w = this.$refs["rightImage"].offsetWidth;
+        h = this.$refs["rightImage"].offsetHeight;
         /* Set the width of the img element to 50%: */
-        img.style.width = this.w / 2 + "px";
+        this.$refs["rightImage"].style.width = this.w / 2 + "px";
         /* Create slider: */
         this.slider = document.createElement("DIV");
         this.slider.setAttribute("class", "img-comp-slider");
         /* Insert slider */
-        img.parentElement.insertBefore(this.slider, img);
+        this.$refs["rightImage"].parentElement.insertBefore(this.slider, img);
         /* Position the slider in the middle: */
         this.slider.style.top = h / 2 - this.slider.offsetHeight / 2 + "px";
         this.slider.style.left =
             this.w / 2 - this.slider.offsetWidth / 2 + "px";
         /* Execute a function when the mouse button is pressed: */
-        this.compareImages(this.$refs["rightImage"]);
+
+        this.slider.addEventListener("mousedown", this.slideReady);
+        /* And another function when the mouse button is released: */
+        window.addEventListener("mouseup", this.slideFinish);
+        /* Or touched (for touch screens: */
+        this.slider.addEventListener("touchstart", this.slideReady);
+        /* And released (for touch screens: */
+        window.addEventListener("touchend", this.slideFinish);
     },
     methods: {
-        compareImages(img) {
-            this.slider.addEventListener("mousedown", this.slideReady);
-            /* And another function when the mouse button is released: */
-            window.addEventListener("mouseup", this.slideFinish);
-            /* Or touched (for touch screens: */
-            this.slider.addEventListener("touchstart", this.slideReady);
-            /* And released (for touch screens: */
-            window.addEventListener("touchend", this.slideFinish);
-        },
         slideReady(e) {
             /* Prevent any other actions that may occur when moving over the image: */
             e.preventDefault();
             /* The slider is now this.clicked and ready to move: */
-            this.clicked = 1;
+            this.clicked = true;
+
             /* Execute a function when the slider is moved: */
-            console.log("registering");
             window.addEventListener("mousemove", this.slideMove);
             window.addEventListener("touchmove", this.slideMove);
         },
         slideFinish() {
             /* The slider is no longer this.clicked: */
-            this.clicked = 0;
+            this.clicked = false;
+            // removing the listeners for slide event
+            window.removeEventListener("mousemove", this.slideMove);
+            window.removeEventListener("touchmove", this.slideMove);
         },
         slideMove(e) {
-            // if (e.target.tagName.toLowerCase() !== "img") {
-            //     return;
-            // }
             var pos;
             /* If the slider is no longer this.clicked, exit this function: */
-            if (this.clicked == 0) return false;
+            if (!this.clicked) return;
             /* Get the cursor's x position: */
             pos = this.getCursorPos(e);
             /* Prevent the slider from being positioned outside the image: */
@@ -143,15 +141,15 @@ export default {
         getCursorPos(e) {
             var a,
                 x = 0;
-            e = e || window.event;
-            console.log(e);
+
+            let touch = null;
+            // for touchscreen touch event
+            if (e.touches) touch = e.touches[0];
+
             /* Get the x positions of the image: */
             a = this.$refs["rightImage"].getBoundingClientRect();
             /* Calculate the cursor's x coordinate, relative to the image: */
-            console.log(e.pageX);
-            console.log(a.left);
-            console.log(e.target);
-            x = e.pageX - a.left;
+            x = (e.pageX || touch.pageX) - a.left;
             /* Consider any page scrolling: */
             x = x - window.pageXOffset;
             return x;
