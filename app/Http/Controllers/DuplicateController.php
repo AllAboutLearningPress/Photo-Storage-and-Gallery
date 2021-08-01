@@ -3,19 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\Photo;
+use App\Utils\AwsS3V4;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class DuplicateController extends Controller
 {
-    public function index(Request $request, $photo_id1, $photo_id2)
+    public function index(Request $request, $left_id, $right_id)
     {
-        $photo1 = Photo::find($photo_id1);
-        $photo2 = Photo::find($photo_id2);
+        $left = Photo::find($left_id);
+        $right = Photo::find($right_id);
+        $bucket = config('aws.fullsize_bucket');
+        $awsS3V4 = new AwsS3V4();
+        $left->src = $awsS3V4->presignGet('/full_size/' . $left->file_name, $bucket);
+        $right->src = $awsS3V4->presignGet('/full_size/' . $right->file_name, $bucket);
 
         return Inertia::render('ComparePhoto', [
-            'photo1' => $photo1,
-            'photo2' => $photo2,
+            'leftPhoto' => $left,
+            'rightPhoto' => $right,
+            'height' => max($left->height, $right->height)
         ]);
     }
 }
