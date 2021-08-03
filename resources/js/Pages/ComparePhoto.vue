@@ -137,6 +137,7 @@ import MainLayout from "../Layouts/MainLayout.vue";
 import UploadIcon from "../Components/UploadIcon.vue";
 import BackButton from "../Components/BackButton.vue";
 import HomeButton from "../Components/HomeButton.vue";
+import { addEventListener } from "@/util.js";
 //import { ImgComparisonSlider } from "@img-comparison-slider/vue";
 
 export default {
@@ -147,31 +148,41 @@ export default {
         BackButton,
     },
     props: ["leftPhoto", "rightPhoto", "height"],
-
+    layout: MainLayout,
     data() {
         return {
             clicked: false,
-
             style: this.genStyle(),
             w: null,
+            rmListeners: [],
         };
     },
 
     mounted() {
         /* Position the slider in the middle if orientiation
         changes or screen resizes*/
-        window.addEventListener("load", this.positionSlider);
-        window.addEventListener("orientationchange", this.setSlider);
-        window.addEventListener("resize", this.setSlider);
+        this.rmListeners = [
+            addEventListener(document, "load", this.positionSlider),
+            addEventListener(document, "orientationchange", this.setSlider),
+            addEventListener(document, "resize", this.setSlider),
 
-        /* Execute a function when the mouse button is pressed: */
-        this.$refs["slider"].addEventListener("mousedown", this.slideReady);
-        /* And another function when the mouse button is released: */
-        window.addEventListener("mouseup", this.slideFinish);
-        /* Or touched (for touch screens: */
-        this.$refs["slider"].addEventListener("touchstart", this.slideReady);
-        /* And released (for touch screens: */
-        window.addEventListener("touchend", this.slideFinish);
+            /* Execute a function when the mouse button is pressed: */
+            addEventListener(
+                this.$refs["slider"],
+                "mousedown",
+                this.slideReady
+            ),
+            /* And another function when the mouse button is released: */
+            addEventListener(document, "mouseup", this.slideFinish),
+            /* Or touched (for touch screens: */
+            addEventListener(
+                this.$refs["slider"],
+                "touchstart",
+                this.slideReady
+            ),
+            /* And released (for touch screens: */
+            addEventListener(document, "touchend", this.slideFinish),
+        ];
     },
     methods: {
         positionSlider(e) {
@@ -181,7 +192,7 @@ export default {
 
             this.setSlider();
         },
-        setSlider() {
+        setSlider(e) {
             /* Get the width and height of the img element */
             this.width = this.$refs["rightPhoto"].offsetWidth;
 
@@ -258,6 +269,9 @@ export default {
                 "px";
         },
     },
-    layout: MainLayout,
+    beforeUnmount() {
+        // removing the event listeners before unmounting
+        this.rmListeners.forEach((fn) => fn());
+    },
 };
 </script>
