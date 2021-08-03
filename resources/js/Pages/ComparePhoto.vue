@@ -85,18 +85,21 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    position: absolute;
+    position: fixed;
     max-width: 100%;
     padding: 0 10px 0 10px;
 }
 .img-comp-container {
     position: relative;
-    /*height: 200px; should be the same height as the images */
     width: 100%;
+    height: 100%;
 }
 
 .img-comp-fixed {
     position: relative;
+}
+.img-comp-fixed img {
+    width: 100%;
 }
 .img-comp-overlay {
     width: 100%;
@@ -104,15 +107,17 @@
     top: 0;
     left: 0;
     overflow: hidden;
+    height: inherit;
+}
+.img-comp-overlay img {
+    height: inherit;
 }
 .img-comp-img img {
     display: block;
-    max-width: 100vw;
-    /* width: 100%; */
-    /* vertical-align: middle; */
 }
 
 .img-comp-slider {
+    display: none;
     position: absolute;
     z-index: 9;
     cursor: ew-resize;
@@ -177,6 +182,7 @@ export default {
     methods: {
         resetSliderPosition() {},
         positionSlider() {
+            this.$refs["slider"].style.display = "block";
             let image = this.$refs["rightImage"].querySelector("img");
             if (image) {
                 this.$refs["slider"].style.top =
