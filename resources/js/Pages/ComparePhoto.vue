@@ -62,17 +62,18 @@
                     </div>
                 </div>
                 <div :style="style" class="comp-container">
-                    <div class="img-comp-img">
-                        <img
+                    <div class="img-comp-container">
+                        <div class="img-comp-img img-comp-fixed">
+                            <img :src="leftPhoto.src" />
+                        </div>
+                        <div
                             ref="rightImage"
-                            :src="rightPhoto.src"
-                            style="max-width: 100%"
-                        />
+                            class="img-comp-img img-comp-overlay"
+                        >
+                            <img :src="rightPhoto.src" />
+                        </div>
+                        <div ref="slider" class="img-comp-slider"></div>
                     </div>
-                    <div ref="leftimage" class="img-comp-img img-comp-overlay">
-                        <img :src="leftPhoto.src" />
-                    </div>
-                    <div ref="slider" class="img-comp-slider"></div>
                 </div>
             </div>
         </div>
@@ -86,17 +87,29 @@
     transform: translate(-50%, -50%);
     position: absolute;
     max-width: 100%;
-    margin: 0;
+    padding: 0 10px 0 10px;
+}
+.img-comp-container {
+    position: relative;
+    /*height: 200px; should be the same height as the images */
+    width: 100%;
 }
 
-.img-comp-img {
-    position: absolute;
+.img-comp-fixed {
+    position: relative;
+}
+.img-comp-overlay {
     width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
     overflow: hidden;
 }
-
 .img-comp-img img {
     display: block;
+    max-width: 100vw;
+    /* width: 100%; */
+    /* vertical-align: middle; */
 }
 
 .img-comp-slider {
@@ -141,10 +154,10 @@ export default {
         //     Math.max(this.leftPhoto.height, this.rightPhoto.height) + "px";
 
         /* Get the width and height of the img element */
-        this.w = this.$refs["leftimage"].offsetWidth;
+        this.w = this.$refs["rightImage"].offsetWidth;
 
         /* Set the width of the img element to 50%: */
-        this.$refs["leftimage"].style.width = this.w / 2 + "px";
+        this.$refs["rightImage"].style.width = this.w / 2 + "px";
 
         /* Position the slider in the middle if orientiation
         changes or screen resizes*/
@@ -162,27 +175,20 @@ export default {
         window.addEventListener("touchend", this.slideFinish);
     },
     methods: {
-        positionSlider(e) {
-            console.log(e);
-            if (this.$refs["rightImage"]) {
-                console.log(
-                    "img offset ",
-                    this.$refs["rightImage"].offsetWidth
-                );
-                let sliderPos = this.$refs["rightImage"].offsetWidth / 2;
+        resetSliderPosition() {},
+        positionSlider() {
+            let image = this.$refs["rightImage"].querySelector("img");
+            if (image) {
                 this.$refs["slider"].style.top =
-                    this.$refs["rightImage"].offsetHeight / 2 -
+                    image.offsetHeight / 2 -
                     this.$refs["slider"].offsetHeight / 2 +
                     "px";
                 this.$refs["slider"].style.left =
-                    sliderPos - this.$refs["slider"].offsetWidth / 2 + "px";
-                // on image
-                this.$refs["leftimage"].style.width = sliderPos + "px";
-                // this.style = `width: ${this.$refs["rightImage"].offsetWidth}px; height: ${this.$refs["rightImage"].offsetHeight}px`;
+                    this.w / 2 - this.$refs["slider"].offsetWidth / 2 + "px";
             }
         },
         genStyle() {
-            return `width: ${this.leftPhoto.width}px; height: ${this.leftPhoto.height}px`;
+            return `width: ${this.leftPhoto.width}px`;
         },
         slideReady(e) {
             /* Prevent any other actions that may occur when moving over the image: */
@@ -217,11 +223,12 @@ export default {
             var a,
                 x = 0;
 
+            let touch = null;
             // for touchscreen touch event
             if (e.touches) e = e.touches[0];
 
             /* Get the x positions of the image: */
-            a = this.$refs["leftimage"].getBoundingClientRect();
+            a = this.$refs["rightImage"].getBoundingClientRect();
             /* Calculate the cursor's x coordinate, relative to the image: */
             x = e.pageX - a.left;
             /* Consider any page scrolling: */
@@ -230,10 +237,12 @@ export default {
         },
         slide(x) {
             /* Resize the image: */
-            this.$refs["leftimage"].style.width = x + "px";
+            this.$refs["rightImage"].style.width = x + "px";
             /* Position the slider: */
             this.$refs["slider"].style.left =
-                x - this.$refs["slider"].offsetWidth / 2 + "px";
+                this.$refs["rightImage"].offsetWidth -
+                this.$refs["slider"].offsetWidth / 2 +
+                "px";
         },
     },
     layout: MainLayout,
