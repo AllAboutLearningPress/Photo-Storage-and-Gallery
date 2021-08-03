@@ -63,14 +63,17 @@
                 </div>
                 <div :style="style" class="comp-container">
                     <div class="img-comp-container">
-                        <div class="img-comp-img img-comp-fixed">
-                            <img :src="leftPhoto.src" />
-                        </div>
                         <div
-                            ref="rightImage"
-                            class="img-comp-img img-comp-overlay"
+                            ref="rightPhoto"
+                            class="img-comp-img img-comp-fixed"
                         >
                             <img :src="rightPhoto.src" />
+                        </div>
+                        <div
+                            ref="leftPhoto"
+                            class="img-comp-img img-comp-overlay"
+                        >
+                            <img :src="leftPhoto.src" />
                         </div>
                         <div ref="slider" class="img-comp-slider"></div>
                     </div>
@@ -155,20 +158,11 @@ export default {
     },
 
     mounted() {
-        // document.querySelector(".img-comp-container").style.height =
-        //     Math.max(this.leftPhoto.height, this.rightPhoto.height) + "px";
-
-        /* Get the width and height of the img element */
-        this.w = this.$refs["rightImage"].offsetWidth;
-
-        /* Set the width of the img element to 50%: */
-        this.$refs["rightImage"].style.width = this.w / 2 + "px";
-
         /* Position the slider in the middle if orientiation
         changes or screen resizes*/
         window.addEventListener("load", this.positionSlider);
-        window.addEventListener("orientationchange", this.positionSlider);
-        window.addEventListener("resize", this.positionSlider);
+        window.addEventListener("orientationchange", this.setSlider);
+        window.addEventListener("resize", this.setSlider);
 
         /* Execute a function when the mouse button is pressed: */
         this.$refs["slider"].addEventListener("mousedown", this.slideReady);
@@ -180,17 +174,30 @@ export default {
         window.addEventListener("touchend", this.slideFinish);
     },
     methods: {
-        resetSliderPosition() {},
-        positionSlider() {
+        positionSlider(e) {
+            console.log(e);
+            // the slider is loaded after the images finished loading
             this.$refs["slider"].style.display = "block";
-            let image = this.$refs["rightImage"].querySelector("img");
+
+            this.setSlider();
+        },
+        setSlider() {
+            /* Get the width and height of the img element */
+            this.width = this.$refs["rightPhoto"].offsetWidth;
+
+            /* Set the width of the img element to 50%: */
+            this.$refs["leftPhoto"].style.width = this.width / 2 + "px";
+
+            let image = this.$refs["rightPhoto"].querySelector("img");
             if (image) {
                 this.$refs["slider"].style.top =
                     image.offsetHeight / 2 -
                     this.$refs["slider"].offsetHeight / 2 +
                     "px";
                 this.$refs["slider"].style.left =
-                    this.w / 2 - this.$refs["slider"].offsetWidth / 2 + "px";
+                    this.width / 2 -
+                    this.$refs["slider"].offsetWidth / 2 +
+                    "px";
             }
         },
         genStyle() {
@@ -221,7 +228,7 @@ export default {
             pos = this.getCursorPos(e);
             /* Prevent the slider from being positioned outside the image: */
             if (pos < 0) pos = 0;
-            if (pos > this.w) pos = this.w;
+            if (pos > this.width) pos = this.width;
             /* Execute a function that will resize the overlay image according to the cursor: */
             this.slide(pos);
         },
@@ -234,7 +241,7 @@ export default {
             if (e.touches) e = e.touches[0];
 
             /* Get the x positions of the image: */
-            a = this.$refs["rightImage"].getBoundingClientRect();
+            a = this.$refs["leftPhoto"].getBoundingClientRect();
             /* Calculate the cursor's x coordinate, relative to the image: */
             x = e.pageX - a.left;
             /* Consider any page scrolling: */
@@ -243,10 +250,10 @@ export default {
         },
         slide(x) {
             /* Resize the image: */
-            this.$refs["rightImage"].style.width = x + "px";
+            this.$refs["leftPhoto"].style.width = x + "px";
             /* Position the slider: */
             this.$refs["slider"].style.left =
-                this.$refs["rightImage"].offsetWidth -
+                this.$refs["leftPhoto"].offsetWidth -
                 this.$refs["slider"].offsetWidth / 2 +
                 "px";
         },
