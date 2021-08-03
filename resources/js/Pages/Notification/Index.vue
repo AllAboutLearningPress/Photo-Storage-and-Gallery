@@ -11,21 +11,35 @@
                 v-on:click="openNotification(notification.url)"
                 v-for="notification in notifications"
                 :key="notification.id"
-                style="cursor: pointer"
+                class="notification-row"
             >
-                <th style="style: 5%" scope="row">
-                    <img
-                        :src="notification.src"
-                        alt="image"
-                        style="height: 50px"
-                    />
+                <th scope="row">
+                    <img :src="notification.src" alt="image" />
                 </th>
-                <td style="width: 95%">{{ notification.text }}</td>
+                <td class="notification-text" style="width: 95%">
+                    {{ notification.text }}
+                </td>
             </tr>
         </tbody>
     </table>
 </template>
-
+<style>
+.notification-row {
+    cursor: pointer;
+}
+.notification-row th {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.notification-row img {
+    max-width: 5.5rem;
+    max-height: 3.5rem;
+}
+.notification-text {
+    vertical-align: middle;
+}
+</style>
 
 <script>
 import MainLayout from "@/Layouts/MainLayout.vue";
