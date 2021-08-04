@@ -4,7 +4,10 @@
         <div class="image-view">
             <div class="sidebar-backdrop"></div>
             <div class="image-view__picture-area">
-                <div class="image-view__toolbar toolbar">
+                <div
+                    class="image-view__toolbar toolbar"
+                    style="background-color: transparent"
+                >
                     <div class="toolbar__main">
                         <back-button></back-button>
                         <home-button></home-button>
@@ -90,8 +93,8 @@
     transform: translate(-50%, -50%);
     position: fixed;
 
-    max-width: 1024px;
-    max-height: 1024px;
+    /* max-width: 1024px;
+    max-height: 1024px; */
     padding: 0 10px 0 10px;
 }
 .img-comp-container {
@@ -104,7 +107,15 @@
     position: relative;
 }
 .img-comp-fixed img {
-    height: 100%;
+    height: auto;
+    max-width: none;
+    max-height: 100vh;
+    object-fit: contain;
+}
+@media only screen and (max-width: 1024px) {
+    .img-comp-fixed img {
+        width: 100vw;
+    }
 }
 .img-comp-overlay {
     width: 100%;
@@ -220,6 +231,7 @@ export default {
             }
         },
         genStyle() {
+            return;
             return `width: ${this.leftPhoto.width}px`; //height:${this.leftPhoto.height}px
         },
         slideReady(e) {
