@@ -16,4 +16,10 @@ class NotificationController extends Controller
             'notifications' =>  genTempSrc($notifications, '/thumbnails/')
         ]);
     }
+    public function seen(Request $request)
+    {
+        $data = $request->validate(['id' => ['integer', 'exists:notifications,id']]);
+        Notification::where('id', $data['id'])->update(['seen' => true]);
+        return response($status = 200);
+    }
 }

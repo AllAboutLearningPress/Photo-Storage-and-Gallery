@@ -87,6 +87,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     /** Routes related to notifications */
     Route::prefix('notifications')->name('notifications.')->group(function () {
         Route::get('all', [NotificationController::class, 'index'])->name('index');
+        route::post('seen', [NotificationController::class, 'seen'])->name('seen');
     });
 
     /** Routes related to comparing images */

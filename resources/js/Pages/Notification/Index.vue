@@ -8,10 +8,12 @@
         </thead> -->
         <tbody>
             <tr
-                v-on:click="openNotification(notification.route)"
+                v-on:click="
+                    openNotification(notification.route, notification.id)
+                "
                 v-for="notification in notifications"
                 :key="notification.id"
-                class="notification-row"
+                :class="genRowClassList(notification.seen)"
             >
                 <th scope="row">
                     <img :src="notification.src" alt="image" />
@@ -26,6 +28,9 @@
 <style>
 .notification-row {
     cursor: pointer;
+}
+.notification-unread {
+    background-color: #4a4a4a;
 }
 .notification-row th {
     display: flex;
@@ -43,7 +48,8 @@
 
 <script>
 import MainLayout from "@/Layouts/MainLayout.vue";
-
+import axios from "axios";
+import { notify } from "@/util.js";
 export default {
     layout: MainLayout,
     props: ["notifications"],
@@ -78,13 +84,24 @@ export default {
         console.log(this.notifications[0]);
     },
     methods: {
-        openNotification(route_config) {
+        openNotification(route_config, id) {
             let decoded_route = JSON.parse(route_config);
             console.log(decoded_route);
 
             this.$inertia.visit(
                 route(decoded_route.name, decoded_route.options)
             );
+            axios.post(route("notifications.seen"), { id: id }).catch((err) => {
+                console.error(err);
+                notify("Something went wrong in notifications.");
+            });
+        },
+        genRowClassList(seen) {
+            let classes = "notification-row";
+            if (!seen) {
+                classes += " notification-unread";
+            }
+            return classes;
         },
     },
 };

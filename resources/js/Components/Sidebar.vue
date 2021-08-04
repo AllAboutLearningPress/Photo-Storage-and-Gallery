@@ -59,15 +59,19 @@ import { usePage } from "@inertiajs/inertia-vue3";
 export default {
     setup(props) {
         console.log(usePage().props.value.notification_count);
+        let notificationsName = "Notifications";
+        if (usePage().props.value.notification_count) {
+            notificationsName += ` (${
+                usePage().props.value.notification_count
+            })`;
+        }
         const menuItems = [
             {
                 name: "Photos",
                 route: "home",
             },
             {
-                name: `Notifications (${
-                    usePage().props.value.notification_count
-                })`,
+                name: notificationsName,
                 route: "notifications.index",
             },
             {
