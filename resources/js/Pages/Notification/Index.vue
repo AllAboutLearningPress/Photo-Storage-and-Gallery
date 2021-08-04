@@ -8,7 +8,7 @@
         </thead> -->
         <tbody>
             <tr
-                v-on:click="openNotification(notification.url)"
+                v-on:click="openNotification(notification.route)"
                 v-for="notification in notifications"
                 :key="notification.id"
                 class="notification-row"
@@ -74,9 +74,17 @@ export default {
             // ],
         };
     },
+    mounted() {
+        console.log(this.notifications[0]);
+    },
     methods: {
-        openNotification(url) {
-            this.$inertia.visit(url);
+        openNotification(route_config) {
+            let decoded_route = JSON.parse(route_config);
+            console.log(decoded_route);
+
+            this.$inertia.visit(
+                route(decoded_route.name, decoded_route.options)
+            );
         },
     },
 };
