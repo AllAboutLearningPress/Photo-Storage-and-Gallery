@@ -112,7 +112,8 @@ class ProcessPhoto implements ShouldQueue
             Notification::create([
                 'text' => 'Found duplicate of ' . $photo->title,
                 'user_id' => $photo->user_id,
-                'file_name' => $photo->file_name
+                'file_name' => $photo->file_name,
+                'route' => json_encode(['name' => 'compare.index', 'options' => ['left' => $photo->id, 'right' => $duplicate->id]])
             ]);
         }
         // updating the photo details returned by lambda function

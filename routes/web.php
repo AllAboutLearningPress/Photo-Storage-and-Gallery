@@ -91,7 +91,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     /** Routes related to comparing images */
     Route::prefix('compare')->name('compare.')->group(function () {
-        Route::get('{photo}/{photo2}', [DuplicateController::class, 'index'])->name('index');
+        Route::get('{left}/{right}', [DuplicateController::class, 'index'])->name('index');
     });
     // Route::get("/dashboard", function () {
     //     return Inertia::render('Dashboard');
