@@ -277,17 +277,29 @@
         </data-modal>
         <data-modal
             modalId="shareModal"
+            id="shareModal"
             title="Share photo"
             :deleted="photo.deleted_at ? true : false"
         >
             <template v-slot:body
-                ><div class="input-group mb-3">
+                ><div class="form-check">
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        style="margin-bottom: 0.5rem"
+                    />
+                    <label class="form-check-label" for="flexCheckDefault">
+                        Can Download
+                    </label>
+                </div>
+                <div class="input-group mb-3">
                     <input
                         type="text"
                         class="form-control"
+                        id="photo-share-link"
                         placeholder=""
-                        aria-label=""
-                        aria-describedby="button-addon2"
+                        aria-label="Photo Shareable Link"
+                        aria-describedby="Photo shreable link"
                         :value="shareUrl"
                     />
                     <button
@@ -330,6 +342,7 @@ import RestoreButton from "./Componenets/RestoreButton.vue";
 import FileTitle from "@/Components/FileTitle.vue";
 import DataModal from "@/Components/DataModal.vue";
 import UploadIcon from "../../Components/UploadIcon.vue";
+import Input from "../../Jetstream/Input.vue";
 
 export default {
     props: ["photo", "downloadUrl"],
@@ -346,6 +359,7 @@ export default {
         FileTitle,
         DataModal,
         UploadIcon,
+        Input,
     },
     layout: MainLayout,
 
@@ -457,7 +471,13 @@ export default {
                     });
             }
         },
-        genShareableUrl() {
+        genShareableUrl(e) {
+            //this.copyShareUrl(e);
+            document
+                .querySelector("#shareModal")
+                .addEventListener("shown.bs.modal", () => {
+                    this.copyShareUrl(e);
+                });
             axios
                 .post(route("share.create"), { photo_id: this.photo.id })
                 .then((resp) => {
@@ -474,18 +494,15 @@ export default {
                         console.log(this.shareModal);
                     }
                     this.shareModal.toggle();
-                    this.copyShareUrl();
                 })
                 .catch((err) => {
                     console.error(err);
                     notify("Something went wrong. Please try again", "danger");
                 });
         },
-        copyShareUrl() {
-            let urlInput = document
-                .querySelector("#shareModal")
-                .querySelector("input");
-            console.log(urlInput);
+        copyShareUrl(e) {
+            let urlInput = document.querySelector("#photo-share-link");
+            urlInput.focus();
             urlInput.select();
             document.execCommand("copy");
             urlInput.blur();
