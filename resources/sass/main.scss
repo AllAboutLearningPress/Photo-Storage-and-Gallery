@@ -1,3 +1,5 @@
+@use "sass:math";
+
 @import 'customised-bootstrap';
 //@import 'node_modules/img-comparison-slider/dist/collection/styles/initial';
 
@@ -705,7 +707,7 @@ $toolbar-action-sections-gap: .5rem;
 }
 
 .toolbar__specific-actions {
-  padding-right: $toolbar-action-sections-gap / 2.5;
+  padding-right: math.div($toolbar-action-sections-gap, 2.5);
 
   @media (min-width: $toolbar-roomy-bp) {
     padding-right: $toolbar-action-sections-gap;
@@ -713,7 +715,7 @@ $toolbar-action-sections-gap: .5rem;
 }
 .toolbar__main-actions {
   border-left: 1px solid $contrast2;
-  padding-left: $toolbar-action-sections-gap / 2.5;
+  padding-left: math.div($toolbar-action-sections-gap, 2.5);
 
   @media (min-width: $toolbar-roomy-bp) {
     padding-left: $toolbar-action-sections-gap;
