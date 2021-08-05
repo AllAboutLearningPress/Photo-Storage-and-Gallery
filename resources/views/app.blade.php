@@ -16,7 +16,7 @@
         <script src="/js/vendor/pig.min.js"></script>
 
         @routes
-        <script src="{{ mix('js/app.js') }}" defer></script>
+        <script src="{{ mix('js/public.js') }}" defer></script>
     </head>
 
 
