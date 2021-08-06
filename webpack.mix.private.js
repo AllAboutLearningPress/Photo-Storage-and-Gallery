@@ -10,17 +10,23 @@ const mix = require('laravel-mix');
  | file for the application as well as bundling up all the JS files.
  |
  */
+/** Compiles and renders associated code */
 
-mix.js('resources/js/app.js', 'public/js').vue()
-    .js('resources/js/vendor/pig.js', 'public/js/vendor/pig.min.js')
-    .js('resources/js/frontend/index.js', 'public/js/frontend/bundle.js')
+mix.js('resources/js/vendor/pig.js', 'public/js/vendor')
+    //.js('resources/js/frontend/index.js', 'public/js/frontend/bundle.js')
     .postCss('resources/css/app.css', 'public/css', [
         require('postcss-import'),
         // require('tailwindcss'),
     ])
     .sass('resources/sass/main.scss', 'public/css/bundle.css')
-    .webpackConfig(require('./webpack.config')).extract(['vue']);
+    .webpackConfig(require('./webpack.config'));
 
+/** Compiles and extrats vue app files */
+mix.js('resources/js/app.js', 'public/js/').vue()
+    //.extract('js/vendor.js')
+    .extract()
+    //.extract(['@vue', 'vue-loader', 'loadash'], 'js/vendor.js')
+    .webpackConfig(require('./webpack.config'));
 
 if (mix.inProduction()) {
     mix.version();

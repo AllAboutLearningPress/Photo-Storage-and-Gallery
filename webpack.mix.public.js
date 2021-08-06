@@ -12,7 +12,11 @@ const mix = require('laravel-mix');
  */
 
 
-mix.js('resources/js/public.js', 'public/js/public.js').vue().webpackConfig(require('./webpack.config'));
+mix.js('resources/js/public.js', 'public/js').vue()
+    //.extract('js/public_vendor.js')
+    //.autoload({})
+    .webpackConfig(require('./webpack.config'));
+
 if (mix.inProduction()) {
     mix.version();
 }
