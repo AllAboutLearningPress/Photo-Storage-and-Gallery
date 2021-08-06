@@ -34,6 +34,6 @@ class ShareController extends Controller
         return Inertia::render('PhotoView/PhotoView', [
             'photo' => $photo,
             'downloadUrl' => $downloadUrl,
-        ]);
+        ])->withViewData('public', true);
     }
 }
