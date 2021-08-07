@@ -10,12 +10,13 @@
 
         {{-- Scripts  --}}
         @routes
-        <script src="{{ mix('js/vendor/pig.js') }}"></script>
-
+        {{-- @if(isset($load_pig)) --}}
+        <script src="/js/vendor/pig.js"></script>
+        {{-- @endif --}}
         @if(!isset($public))
-        <script src="{{ mix('js/manifest.js') }}" defer></script>
-        <script src="{{ mix('js/vendor.js') }}" defer></script>
-        <script src="{{ mix('js/app.js') }}" defer></script>
+        <script src="/js/manifest.js" defer></script>
+        <script src="/js/vendor.js" defer></script>
+        <script src="/js/app.js" defer></script>
         @else
         <script src="/js/public.js" defer></script>
         @endif

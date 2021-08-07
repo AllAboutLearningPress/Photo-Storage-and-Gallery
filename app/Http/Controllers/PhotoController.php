@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Photo;
+use App\Utils\AwsS3V4;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Redirect;
@@ -28,9 +29,14 @@ class PhotoController extends Controller
     public function show(Request $request, $id, $slug)
     {
         $photo = Photo::withTrashed()->with('user', 'tags')->findOrFail($id);
+        $awsS3V4 = new AwsS3V4();
+        $bucket = config('aws.fullsize_bucket');
+        $photo->src = $awsS3V4->presignGet('/preview_photos/' . $photo->file_name, $bucket);
+        $downloadLink = $awsS3V4->presignGet('/full_size/' . $photo->file_name, $bucket);
         $photo->add_temp_url('preview_photos');
         return  Inertia::render('PhotoView/PhotoView', [
-            'photo' => $photo
+            'photo' => $photo,
+            'downloadLink' => $downloadLink,
         ]);
     }
 

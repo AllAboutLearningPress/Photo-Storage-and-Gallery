@@ -2,6 +2,7 @@
     <div class="image-view-wrapper">
         <div class="image-view">
             <aside
+                v-if="photo.user"
                 id="image-details-sidebar"
                 ref="sidebar"
                 class="
@@ -32,16 +33,6 @@
                     <div class="image-view__details-content">
                         <ul class="nolist">
                             <li class="js-editable editable">
-                                <!-- <dl class="editable__content dlist_0 dlist">
-                                    <dt class="mr-1">Title:</dt>
-                                    <dd>
-                                        <span class="js-editable__val">
-                                            {{ photo.title }}
-                                        </span>
-                                        <edit-pen></edit-pen>
-                                    </dd>
-                                </dl> -->
-
                                 <file-title
                                     v-on:title-change="photo.title = $event"
                                     :id="photo.id"
@@ -139,7 +130,7 @@
             <div class="sidebar-backdrop"></div>
             <div class="image-view__picture-area">
                 <div class="image-view__toolbar toolbar">
-                    <div class="toolbar__main">
+                    <div v-if="$page.props.user" class="toolbar__main">
                         <back-button></back-button>
                         <home-button></home-button>
                     </div>
@@ -195,9 +186,10 @@
                             <span class="toolbar__specific-actions-more">
                                 <share-button
                                     v-if="$page.props.user"
-                                    v-on:click="genShareableUrl"
+                                    v-on:click="openShareModal"
                                 ></share-button>
                                 <download-button
+                                    v-if="downloadLink"
                                     v-on:click="downloadPhoto"
                                 ></download-button>
                                 <delete-button
@@ -210,6 +202,7 @@
                                 ></restore-button>
                             </span>
                             <show-details-button
+                                v-if="photo.user"
                                 v-on:open-sidebar="toggleSidebar"
                             ></show-details-button>
                         </div>
@@ -281,16 +274,41 @@
             title="Share photo"
             :deleted="photo.deleted_at ? true : false"
         >
-            <template v-slot:body
-                ><div class="form-check">
-                    <input
-                        class="form-check-input"
-                        type="checkbox"
-                        style="margin-bottom: 0.5rem"
-                    />
-                    <label class="form-check-label" for="flexCheckDefault">
-                        Can Download
-                    </label>
+            <template v-slot:body>
+                <div class="row share-check-container">
+                    <div class="form-check">
+                        <input
+                            ref="shareCanDownload"
+                            class="form-check-input"
+                            type="checkbox"
+                            id="share-download-checkbox"
+                            style="margin-bottom: 0.5rem"
+                            v-on:click="genDownloadableLink"
+                        />
+                        <label
+                            class="form-check-label"
+                            for="share-download-checkbox"
+                        >
+                            Can Download
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <input
+                            ref="shareCanViewInfo"
+                            class="form-check-input"
+                            type="checkbox"
+                            id="share-download-checkbox"
+                            style="margin-bottom: 0.5rem"
+                            v-on:click="genDownloadableLink"
+                        />
+                        <label
+                            class="form-check-label"
+                            for="share-download-checkbox"
+                        >
+                            Can View Info
+                        </label>
+                    </div>
                 </div>
                 <div class="input-group mb-3">
                     <input
@@ -300,20 +318,20 @@
                         placeholder=""
                         aria-label="Photo Shareable Link"
                         aria-describedby="Photo shreable link"
-                        :value="shareUrl"
+                        :value="shareLink"
                     />
                     <button
                         class="btn btn-outline-secondary"
                         type="button"
                         id="button-addon2"
-                        v-on:click="copyShareUrl"
+                        v-on:click="copyShareLink"
                     >
                         Copy
                     </button>
                 </div></template
             >
             <template v-slot:action_button>
-                <button v-on:click="openShareUrl" class="btn btn-success">
+                <button v-on:click="openShareLink" class="btn btn-success">
                     Open Share Link
                 </button>
             </template>
@@ -323,6 +341,9 @@
 <style lang="scss" >
 .modal-backdrop {
     z-index: 100;
+}
+.share-check-container {
+    margin-left: 0;
 }
 </style>
 <script>
@@ -345,7 +366,7 @@ import UploadIcon from "../../Components/UploadIcon.vue";
 import Input from "../../Jetstream/Input.vue";
 
 export default {
-    props: ["photo", "downloadUrl"],
+    props: ["photo", "downloadLink", "info"],
     components: {
         BackButton,
         HomeButton,
@@ -376,7 +397,7 @@ export default {
             deleteModal: null,
             deleteModalText: "",
             style: this.genStyle(),
-            shareUrl: "",
+            shareLink: "",
         };
     },
 
@@ -384,7 +405,9 @@ export default {
         // Showing header again for other pages
         this.toggleHeader(true);
     },
+
     methods: {
+        /**Convertes photo size in bytes to human readable format */
         bytesToSize(bytes) {
             var sizes = ["Bytes", "KB", "MB", "GB", "TB"];
             if (bytes == 0) return "0 Byte";
@@ -392,6 +415,7 @@ export default {
             return Math.round(bytes / Math.pow(1024, i), 2) + " " + sizes[i];
         },
         genStyle() {
+            console.log(this.photo);
             return (
                 "padding-top: min(" +
                 `${(this.photo.height / this.photo.width) * 100}%` +
@@ -458,8 +482,8 @@ export default {
             );
         },
         downloadPhoto(e) {
-            if (this.downloadUrl) {
-                window.open(this.downloadUrl);
+            if (this.downloadLink) {
+                window.open(this.downloadLink);
             } else {
                 axios
                     .post(route("downloads.generate_link"), {
@@ -471,17 +495,44 @@ export default {
                     });
             }
         },
-        genShareableUrl(e) {
-            //this.copyShareUrl(e);
-            document
-                .querySelector("#shareModal")
-                .addEventListener("shown.bs.modal", () => {
-                    this.copyShareUrl(e);
-                });
+        genDownloadableLink(e, param_name) {
+            console.log(e);
+            let perm_params = {
+                download: this.$refs["shareCanDownload"].checked,
+                info: this.$refs["shareCanViewInfo"].checked,
+            };
+
+            this.genShareableLink(perm_params);
+            this.shareModal.show();
+        },
+        openShareModal(e) {
+            //this.copyShareLink(e);
+            let shareModal = document.querySelector("#shareModal");
+
+            /** this will copy the link to clipboard once the model
+             * is visible */
+            shareModal.addEventListener(
+                "shown.bs.modal",
+                () => {
+                    this.copyShareLink(e);
+                },
+                { once: true }
+            );
+            // requesting shareable link
+            this.genShareableLink();
+        },
+        genShareableLink(perm_params) {
+            this.shareLink = "Generating Link";
+            let req_data = {
+                photo_id: this.photo.id,
+                ...perm_params,
+            };
+
             axios
-                .post(route("share.create"), { photo_id: this.photo.id })
+                .post(route("share.create"), req_data)
                 .then((resp) => {
                     console.log(resp);
+                    this.shareLink = resp.data;
                     //window.open(resp.data);
                     if (this.shareModal == null) {
                         this.shareModal = new Modal(
@@ -490,26 +541,29 @@ export default {
                                 backdrop: "static",
                             }
                         );
-                        this.shareUrl = resp.data;
+
                         console.log(this.shareModal);
                     }
-                    this.shareModal.toggle();
+                    this.shareModal.show();
+                    if (perm_params) {
+                        this.copyShareLink();
+                    }
                 })
                 .catch((err) => {
                     console.error(err);
                     notify("Something went wrong. Please try again", "danger");
                 });
         },
-        copyShareUrl(e) {
-            let urlInput = document.querySelector("#photo-share-link");
-            urlInput.focus();
-            urlInput.select();
+        copyShareLink(e) {
+            let linkInput = document.querySelector("#photo-share-link");
+            linkInput.focus();
+            linkInput.select();
             document.execCommand("copy");
-            urlInput.blur();
+            linkInput.blur();
             notify("Link copied in clipboard", "success");
         },
-        openShareUrl() {
-            window.open(this.shareUrl);
+        openShareLink() {
+            window.open(this.shareLink);
         },
     },
 };

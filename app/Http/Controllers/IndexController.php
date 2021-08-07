@@ -25,7 +25,7 @@ class IndexController extends Controller
         return Inertia::render('Index', [
             'photos' => $this->generateSrc($photos), // adding temporary thumbnail links to s3
             'title' => 'AALP Photos Index'
-        ])->withViewData(['title', 'AALP Photos']);
+        ])->withViewData(['title' => 'AALP Photos', 'load_pig' => true,]);
     }
 
     /**
