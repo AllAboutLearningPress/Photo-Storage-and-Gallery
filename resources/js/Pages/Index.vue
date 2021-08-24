@@ -1,6 +1,6 @@
 <template>
     <div>
-        <sub-header></sub-header>
+        <!-- <sub-header></sub-header> -->
         <div id="pig" class="gallery mb-4"></div>
         <button type="button" class="btn btn-lg btn-primary">Load more</button>
     </div>
