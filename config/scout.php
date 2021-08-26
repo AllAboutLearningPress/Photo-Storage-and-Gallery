@@ -146,7 +146,7 @@ return [
             //     'pass'   => env('ELASTICSEARCH_PASS', 'password'),
             // ]
         ],
-        'port' => env('ELASTICSEARCH_PORT', '9200')
+        // 'port' => env('ELASTICSEARCH_PORT', '9200')
     ]
 
 ];
