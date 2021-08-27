@@ -79,18 +79,29 @@ export default {
                 let tagOption = document
                     .querySelector("datalist")
                     .querySelector(`[value='${value}']`);
-                let tagId = tagOption.getAttribute("data-id");
-                this.$emit("add-tag", {
-                    name: value,
-                    id: tagId,
-                });
+
+                let tagId = null;
+                if (tagOption) {
+                    // unique tag typed by user
+                    tagId = tagOption.getAttribute("data-id");
+                }
+
                 axios
                     .post(route("uploads.add_tag"), {
                         fileId: this.id,
                         tagId: tagId,
+                        tagName: value,
                     })
                     .then((resp) => {
-                        notify("Tag Added", "success");
+                        console.log(resp);
+                        if (!tagId) {
+                            tagid = resp.data;
+                        }
+                        // this.$emit("add-tag", {
+                        //     name: value,
+                        //     id: tagId,
+                        // });
+                        // notify("Tag Added", "success");
                     });
             }
         },
@@ -115,7 +126,7 @@ export default {
         uniqueTag(newTag) {
             this.tags.forEach((tag) => {
                 if (tag.name == newTag) {
-                    return;
+                    return false;
                 }
             });
             return true;

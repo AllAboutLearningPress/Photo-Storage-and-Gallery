@@ -83,7 +83,7 @@ class Photo extends Model
     public function generateSlug($title)
     {
         // removing the file extension Ex: abc.jpeg -> abc
-        $title = substr($title, 0, (strrpos($title, ".")));
+        $title = pathinfo($title, PATHINFO_FILENAME);
         // creating the initial slug
         $slug = Str::slug($title, '-');
         // if this slug already exists then we will
@@ -104,7 +104,7 @@ class Photo extends Model
     public function incrementSlug($slug)
     {
         // get the slug of the latest created post
-        $max = static::whereTitle($this->title)->latest('id')->skip(1)->value('slug');
+        $max = static::where('title', '=', $this->title)->latest('id')->skip(1)->value('slug');
 
         if ($max && is_numeric($max[-1])) {
             return preg_replace_callback('/(\d+)$/', function ($matches) {

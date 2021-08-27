@@ -230,13 +230,21 @@ class UploadController extends Controller
     {
         $data = $request->validate([
             'fileId' => "required|exists:photos,id",
-            'tagId' => "nullable|exists:tags,id"
+            'tagId' => "nullable|exists:tags,id",
+            'tagName' => "required|string",
         ]);
         //dd($data);
         $photo = Photo::find($data['fileId']);
+        if ($data['tagId'] == null) {
+            $data['tagId'] = Tag::create([
+                'name' => $data['tagName']
+            ])->id;
+        }
         $photo->tags()->attach($data['tagId']);
 
-
+        if ($data['tagId'] == null) {
+            return response($data['tagId'], 200);
+        }
         return response('', 200);
     }
     /**
