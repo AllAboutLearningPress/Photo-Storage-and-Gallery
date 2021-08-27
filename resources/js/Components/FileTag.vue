@@ -95,13 +95,13 @@ export default {
                     .then((resp) => {
                         console.log(resp);
                         if (!tagId) {
-                            tagid = resp.data;
+                            tagId = resp.data;
                         }
-                        // this.$emit("add-tag", {
-                        //     name: value,
-                        //     id: tagId,
-                        // });
-                        // notify("Tag Added", "success");
+                        this.$emit("add-tag", {
+                            name: value,
+                            id: tagId,
+                        });
+                        notify("Tag Added", "success");
                     });
             }
         },
