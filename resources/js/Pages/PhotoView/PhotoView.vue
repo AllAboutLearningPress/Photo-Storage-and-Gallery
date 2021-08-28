@@ -92,7 +92,7 @@
                                     </dd>
                                 </dl>
                             </li>
-                            <li>
+                            <li v-if="photo.license">
                                 <dl class="dlist_0 dlist">
                                     <dt>Licensing and attribution:</dt>
                                     <dd>
