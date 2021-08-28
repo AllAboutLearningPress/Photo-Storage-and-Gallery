@@ -10,6 +10,7 @@
                     sidebar_always-hideable sidebar_right sidebar
                     image-view__details
                 "
+                :class="sidebarPositionClass"
                 tabindex="-1"
                 aria-labelledby="sidebar"
             >
@@ -390,7 +391,11 @@ export default {
 
         // hiding header
         toggleHeader(false);
-        return { showHeader, toggleHeader };
+
+        return {
+            showHeader,
+            toggleHeader,
+        };
     },
     data() {
         return {
@@ -398,7 +403,14 @@ export default {
             deleteModalText: "",
             style: this.genStyle(),
             shareLink: "",
+            sidebarPositionClass: "", // used to show/hide sidebar. Will show if set to "is-open"
         };
+    },
+    beforeMount() {
+        // getting the last sidebarposition from localstorage
+        this.sidebarPositionClass = localStorage.getItem(
+            "sidebar-position-class"
+        );
     },
 
     beforeUnmount() {
@@ -425,9 +437,16 @@ export default {
             );
         },
         /**Toggles the photo info sidebar */
-        toggleSidebar(e) {
-            this.$refs["sidebar"].classList.toggle("is-open");
+        toggleSidebar() {
+            this.sidebarPositionClass =
+                this.sidebarPositionClass == "is-open" ? "" : "is-open";
+
+            localStorage.setItem(
+                "sidebar-position-class",
+                this.sidebarPositionClass
+            );
         },
+
         formatTimestamp(timestamp) {
             let d = new Date(timestamp);
 
