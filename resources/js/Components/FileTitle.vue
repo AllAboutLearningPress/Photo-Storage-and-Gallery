@@ -32,9 +32,9 @@
                 v-on:blur="onBlur"
                 ref="textarea"
             ></textarea>
-            <button class="js-editable__confirm btn btn-outline-secondary">
+            <!-- <button class="js-editable__confirm btn btn-outline-secondary">
                 Ok
-            </button>
+            </button> -->
         </div>
     </div>
 </template>
