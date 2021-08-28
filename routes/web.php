@@ -101,4 +101,4 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 /** Invitations routes that doesnt require authentication */
 Route::get('invitations/accept-invite/{invite_code}', [InvitationController::class, 'acceptInvite'])->name('invitations.accept_invite');
 Route::post('invitations/signup',  [InvitationController::class, 'signup'])->name('invitations.signup');
-Route::get('share/photo/{id}/{key}', [ShareController::class, 'view'])->name('share.show')->middleware('signed');
+Route::get('share/{key}', [ShareController::class, 'view'])->name('share.show');

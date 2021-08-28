@@ -14,9 +14,12 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // \App\Models\User::factory(10)->create();
-        $this->call([
-            UserSeeder::class,
-            TagSeeder::class
-        ]);
+        if (app()->environment('local')) {
+            $this->call([
+                UserSeeder::class,
+                TagSeeder::class,
+                PhotoSeeder::class
+            ]);
+        }
     }
 }
