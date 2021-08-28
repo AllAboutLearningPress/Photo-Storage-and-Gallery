@@ -11,7 +11,7 @@ createApp({
     render: () =>
         h(InertiaApp, {
             initialPage: JSON.parse(el.dataset.page),
-            resolveComponent: () => require(`./Pages/PhotoView/Photoview`).default,
+            resolveComponent: () => require(`./Pages/PhotoView/PhotoView`).default,
         }),
 })
     .mixin({ methods: { route } })
