@@ -38,18 +38,16 @@
                         :id="'file' + file.id"
                     >
                         <div class="file__thumb">
-                            <div
-                                :style="`background-image: url('${
-                                    file.thumbnail_link
-                                        ? file.thumbnail_link
-                                        : spinner
-                                }')`"
-                                class="file__pic"
-                            >
-                                <completed-tick
-                                    v-if="file.uploadCompleted"
-                                ></completed-tick>
+                            <div v-if="file.uploadCompleted" class="file__pic">
+                                <completed-tick></completed-tick>
                             </div>
+                            <div
+                                v-else
+                                style="
+                                    background-image: url('/images/spinner.svg');
+                                "
+                                class="file__pic"
+                            ></div>
 
                             <button
                                 v-on:click="cancelSingleUpload(index)"
@@ -146,7 +144,7 @@ export default {
         return {
             // filesArray: [],
             tags: [],
-            spinner: "/images/spinner.svg",
+
             rmlisteners: [],
             // editableContainerKlass: "js-editable",
             // editingKlass: "is-editing",
