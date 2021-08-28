@@ -231,7 +231,7 @@
                 <div v-if="photo.deleted_at" class="image-view-trash-info">
                     You are viewing a trashed photo
                 </div>
-                <a
+                <!-- <a
                     href="#"
                     draggable="false"
                     class="image-view__picture-nav-prev image-view__picture-nav"
@@ -246,7 +246,7 @@
                     title="Next image"
                 >
                     <span class="visually-hidden">Next image</span>
-                </a>
+                </a> -->
             </div>
         </div>
 
@@ -299,13 +299,13 @@
                             ref="shareCanViewInfo"
                             class="form-check-input"
                             type="checkbox"
-                            id="share-download-checkbox"
+                            id="share-view-info-checkbox"
                             style="margin-bottom: 0.5rem"
                             v-on:click="genDownloadableLink"
                         />
                         <label
                             class="form-check-label"
-                            for="share-download-checkbox"
+                            for="share-view-info-checkbox"
                         >
                             Can View Info
                         </label>
