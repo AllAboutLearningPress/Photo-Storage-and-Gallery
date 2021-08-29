@@ -46,6 +46,7 @@ export default {
         };
         // crating the Pig instance
         this.pig = new Pig(this.photos.data, options);
+        console.log("creating pig ", this.pig);
         this.pig.enable();
 
         /** listening to inertia:navigate event to disable pig when
@@ -72,7 +73,8 @@ export default {
                 return;
             }
             this.pig.disable();
-            console.log(this.navigationListener);
+            this.pig = null;
+            console.log("removing pig", this.navigationListener);
             this.navigationListener();
         },
         /** Generates url for fetching more photos when user scrolls */
