@@ -10,6 +10,7 @@
                 class="progress-bar"
                 role="progressbar"
                 id="master-progress-bar"
+                style="background-color: --bs-green"
                 :style="'width: ' + calculateProgressWidth"
                 aria-valuemin="0"
                 aria-valuemax="100"
@@ -17,6 +18,11 @@
         </div>
     </inertia-link>
 </template>
+<style>
+.progress-bar {
+    background-color: #198754;
+}
+</style>
 <script>
 import { inject } from "@vue/runtime-core";
 //:aria-valuenow="progressValue"
