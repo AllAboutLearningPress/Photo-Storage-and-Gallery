@@ -33,7 +33,7 @@ class PhotoController extends Controller
         $bucket = config('aws.fullsize_bucket');
         $photo->src = $awsS3V4->presignGet('/preview_photos/' . $photo->file_name, $bucket);
         $downloadLink = $awsS3V4->presignGet('/full_size/' . $photo->file_name, $bucket);
-        $photo->add_temp_url('preview_photos');
+        //$photo->add_temp_url('preview_photos');
         return  Inertia::render('PhotoView/PhotoView', [
             'photo' => $photo,
             'downloadLink' => $downloadLink,

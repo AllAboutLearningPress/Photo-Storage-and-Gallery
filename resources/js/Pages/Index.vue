@@ -52,7 +52,7 @@ export default {
         /** listening to inertia:navigate event to disable pig when
          * navigating away
          */
-        this.navigationListener = this.$inertia.on("navigate", this.pigDisable);
+        //this.navigationListener = this.$inertia.on("navigate", this.pigDisable);
         // WARNING: this is required to fix `pigjs` bug, use after each `Pig` initialisation
         window.dispatchEvent(new Event("resize"));
     },
@@ -87,6 +87,10 @@ export default {
                 new URL(this.photos.next_page_url).search
             );
         },
+    },
+    unmounted() {
+        this.pig.disable();
+        this.pig = null;
     },
 };
 </script>

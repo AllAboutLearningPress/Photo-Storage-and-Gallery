@@ -103,7 +103,11 @@
         <tags-datalist :tags="tags"></tags-datalist>
     </div>
 </template>
-
+<style>
+.progress-bar {
+    background-color: #198754;
+}
+</style>
 
 <script>
 import MainLayout from "@/Layouts/MainLayout.vue";
@@ -160,6 +164,7 @@ export default {
         //         id: 0,
         //         title: "test file",
         //         tags: [],
+        //         width: "45%",
         //         //thumbnail_link: "http://placekitten.com/200/100",
         //     }
         //     // {
@@ -172,16 +177,6 @@ export default {
         // setInterval(() => {
         //     console.log(this.filesArray[0].title);
         // }, 1000);
-    },
-    mounted() {
-        // event listener for updating individual progress bar
-        // this.rmlisteners.push(
-        //     addEventListener(
-        //         document,
-        //         "update-progress-bar",
-        //         this.animateUploadBar
-        //     )
-        // );
     },
 
     methods: {
