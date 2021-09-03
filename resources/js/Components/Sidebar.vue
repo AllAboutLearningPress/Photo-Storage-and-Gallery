@@ -58,7 +58,7 @@ import SidebarHelper from "../frontend/components/Sidebar";
 import { usePage } from "@inertiajs/inertia-vue3";
 export default {
     setup(props) {
-        console.log(usePage().props.value.notification_count);
+        // console.log(usePage().props.value.notification_count);
         let notificationsName = "Notifications";
         if (usePage().props.value.notification_count) {
             notificationsName += ` (${
@@ -97,7 +97,7 @@ export default {
         };
     },
     mounted() {
-        console.log("noti count ", this.$page.props.notification_count);
+        // console.log("noti count ", this.$page.props.notification_count);
         document.addEventListener("click", (e) => {
             const toggler = e.target.closest(".js-sidebar-toggle");
 

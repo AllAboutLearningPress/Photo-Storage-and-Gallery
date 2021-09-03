@@ -54,7 +54,7 @@ export default {
         };
         // crating the Pig instance
         this.pig = new Pig(this.photos.data, options);
-        console.log("creating pig ", this.pig);
+        // console.log("creating pig ", this.pig);
         this.pig.enable();
 
         /** listening to inertia:navigate event to disable pig when
@@ -69,6 +69,12 @@ export default {
         photoOnClick(filename, id, slug) {
             console.log(id);
             this.photo = { id };
+            axios
+                .post(route("photo.get_info"), { id: this.photo.id })
+                .then((resp) => {
+                    console.log(resp);
+                    this.photo = resp.data;
+                });
             // this.$inertia.visit(
             //     route("photo.show", {
             //         id: id,

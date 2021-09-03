@@ -115,16 +115,15 @@ class Photo extends Model
         return "{$slug}-2";
     }
 
-    public function add_temp_url($version, $options = [])
+    public function add_temp_url($file_type, $bucket = null)
     {
 
         //$this->src = "/storage/full_size/" . $this->file_name;
         //$this->thumbSrc = "/storage/full_size/" . $this->file_name;
-        $this->src = Storage::disk('s3_fullsize')->temporaryUrl(
-            $version . "/" . $this->file_name,
-            now()->addMinutes(10),
-            $options
-        );
+        if (!$bucket) {
+            $bucket = config('aws.fullsize_bucket');
+        }
+        $this->src =  (new \App\Utils\AwsS3V4())->presignGet($file_type . $this->file_name, $bucket);
     }
 
     protected function makeAllSearchableUsing($query)

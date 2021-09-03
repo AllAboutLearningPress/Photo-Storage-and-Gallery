@@ -115,8 +115,8 @@ import Sidebar from "@/Components/Sidebar.vue";
 import GlobalDropTarget from "../frontend/components/GlobalDropTarget.js";
 import UploadProgressBar from "../Components/UploadProgressBar.vue";
 import Notificator from "../Components/Notificator.vue";
-import { inject, provide, reactive, ref } from "@vue/runtime-core";
-import { notify } from "@/util.js";
+import { provide, ref } from "@vue/runtime-core";
+
 export default {
     components: {
         Header,

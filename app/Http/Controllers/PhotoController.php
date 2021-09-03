@@ -28,6 +28,7 @@ class PhotoController extends Controller
      */
     public function show(Request $request, $id, $slug)
     {
+
         $photo = Photo::withTrashed()->with('user', 'tags')->findOrFail($id);
         $awsS3V4 = new AwsS3V4();
         $bucket = config('aws.fullsize_bucket');
