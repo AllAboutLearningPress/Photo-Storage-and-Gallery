@@ -63,6 +63,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('photo/{id}/{slug}', [PhotoController::class, 'show'])->name('photo.show');
     Route::post('photo/delete', [PhotoController::class, 'destroy'])->name('photo.delete');
     Route::post('photo/restore', [PhotoController::class, 'restore'])->name('photo.restore');
+    Route::post('photo/get-info', [PhotoController::class, 'getInfo'])->name('photo.get_info');
 
     /** Routes related to share */
     Route::prefix('share')->name('share.')->group(function () {

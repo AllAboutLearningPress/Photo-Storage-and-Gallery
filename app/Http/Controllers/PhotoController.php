@@ -81,4 +81,10 @@ class PhotoController extends Controller
         //$request->session()->flash('success', 'Photo restored');
         return  Redirect::back();
     }
+
+    public function getInfo(Request $request)
+    {
+        $data = $request->validate(['id' => 'integer']);
+        return Photo::where('id', $data['id'])->with(['tags', 'user:name'])->firstOrFail();
+    }
 }

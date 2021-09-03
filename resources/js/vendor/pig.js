@@ -291,7 +291,7 @@
              *
              * @param {string} filename - The filename of the image.
              */
-            onClickHandler: function (filename) {
+            onClickHandler: function (filename, id, slug) {
             },
 
             /**

@@ -1,6 +1,7 @@
 <template>
     <div>
         <!-- <sub-header></sub-header> -->
+        <photo-view v-if="photo" :photo="photo" :info="true"></photo-view>
         <div id="pig" class="gallery mb-4"></div>
         <button type="button" class="btn btn-lg btn-primary">Load more</button>
     </div>
@@ -11,20 +12,27 @@
 import MainLayout from "../Layouts/MainLayout.vue";
 import SubHeader from "../Components/SubHeader.vue";
 import GlobalDropTarget from "../frontend/components/GlobalDropTarget.js";
+import PhotoView from "./PhotoView/PhotoView.vue";
 
 export default {
     components: {
         SubHeader,
+        PhotoView,
     },
     layout: MainLayout,
     props: {
         photos: Object,
-        photo: Object,
         jetstream: Object,
         user: Object,
         errorBags: Array,
         errors: Object,
         imageData: [],
+    },
+    data() {
+        return {
+            showPhoto: false,
+            photo: null,
+        };
     },
 
     mounted() {
@@ -59,12 +67,14 @@ export default {
     methods: {
         /**Executed when a photo in the gallery is clicked */
         photoOnClick(filename, id, slug) {
-            this.$inertia.visit(
-                route("photo.show", {
-                    id: id,
-                    slug: slug,
-                })
-            );
+            console.log(id);
+            this.photo = { id };
+            // this.$inertia.visit(
+            //     route("photo.show", {
+            //         id: id,
+            //         slug: slug,
+            //     })
+            // );
         },
         /** Disables Pig when navigating away from gallery */
         pigDisable() {
