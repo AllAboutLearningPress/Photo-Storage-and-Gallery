@@ -1,7 +1,10 @@
 <template >
     <div class="image-view-wrapper">
         <div class="image-view">
-            <photo-info :photo="photo"></photo-info>
+            <photo-info
+                :photo="photo"
+                :sidebarPositionClass="sidebarPositionClass"
+            ></photo-info>
             <div class="sidebar-backdrop"></div>
             <div class="image-view__picture-area">
                 <div class="image-view__toolbar toolbar">
@@ -92,7 +95,11 @@
 
           Add any elements inside (for preloading/etc.) but keep existing elements intact
         -->
-                <div :style="style" class="image-view__pic">
+                <div
+                    v-if="photo.size"
+                    :style="genStyle"
+                    class="image-view__pic"
+                >
                     <img
                         draggable="false"
                         class="image-view__img"
@@ -230,12 +237,12 @@ import DownloadButton from "./Componenets/DownloadButton.vue";
 import ShareButton from "./Componenets/ShareButton.vue";
 import DeleteButton from "./Componenets/DeleteButton.vue";
 import ShowDetailsButton from "./Componenets/ShowDetailsButton.vue";
-import FileTag from "@/Components/FileTag.vue";
+
 import TagsDatalist from "@/Components/TagsDatalist.vue";
 import Modal from "bootstrap/js/dist/modal";
 import { notify, updatePhotoDetails } from "@/util.js";
 import RestoreButton from "./Componenets/RestoreButton.vue";
-import FileTitle from "@/Components/FileTitle.vue";
+
 import DataModal from "@/Components/DataModal.vue";
 import UploadIcon from "../../Components/UploadIcon.vue";
 import Input from "../../Jetstream/Input.vue";
@@ -250,10 +257,10 @@ export default {
         DeleteButton,
         ShareButton,
         DownloadButton,
-        FileTag,
+
         TagsDatalist,
         RestoreButton,
-        FileTitle,
+
         DataModal,
         UploadIcon,
         PhotoInfo,
@@ -265,7 +272,9 @@ export default {
         const showHeader = inject("showHeader");
 
         // hiding header
-        toggleHeader(false);
+        console.log(toggleHeader);
+        console.log(showHeader);
+        //toggleHeader(false);
 
         return {
             showHeader,
@@ -276,7 +285,6 @@ export default {
         return {
             deleteModal: null,
             deleteModalText: "",
-            style: this.genStyle(),
             shareLink: "",
             sidebarPositionClass: "", // used to show/hide sidebar. Will show if set to "is-open"
         };
@@ -285,13 +293,16 @@ export default {
         if (!this.photo.size && this.$page.props.user) {
             // componenet is created from gallery index
             // so we need to request data about the photo
-            axios
-                .post(route("photo.get-info"), { id: this.photo.id })
-                .then((resp) => {
-                    console.log(resp);
-                    this.photo = resp.data;
-                });
+            // axios
+            //     .post(route("photo.get_info"), { id: this.photo.id })
+            //     .then((resp) => {
+            //         console.log(resp);
+            //         this.photo = resp.data;
+            //     });
         }
+        setTimeout(() => {
+            console.log(this.photo);
+        });
     },
     beforeMount() {
         // getting the last sidebarposition from localstorage
@@ -304,19 +315,13 @@ export default {
     },
     beforeUnmount() {
         // Showing header again for other pages
+        console.log(this.toggleHeader);
         this.toggleHeader(true);
     },
-
-    methods: {
-        /**Convertes photo size in bytes to human readable format */
-        bytesToSize(bytes) {
-            var sizes = ["Bytes", "KB", "MB", "GB", "TB"];
-            if (bytes == 0) return "0 Byte";
-            var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-            return Math.round(bytes / Math.pow(1024, i), 2) + " " + sizes[i];
-        },
+    computed: {
         genStyle() {
             console.log(this.photo);
+            console.log("generating styles");
             return (
                 "padding-top: min(" +
                 `${(this.photo.height / this.photo.width) * 100}%` +
@@ -325,6 +330,9 @@ export default {
                 `); width: ${this.photo.width}px`
             );
         },
+    },
+
+    methods: {
         /**Toggles the photo info sidebar */
         toggleSidebar() {
             this.sidebarPositionClass =
@@ -336,11 +344,6 @@ export default {
             );
         },
 
-        formatTimestamp(timestamp) {
-            let d = new Date(timestamp);
-
-            return d.toString();
-        },
         toggleDeleteModal(e) {
             if (this.deleteModal == null) {
                 this.deleteModal = new Modal(

@@ -125,7 +125,27 @@
 </template>
 
 <script>
+import FileTag from "@/Components/FileTag.vue";
+import FileTitle from "@/Components/FileTitle.vue";
 export default {
-    props: ["photo"],
+    components: {
+        FileTag,
+        FileTitle,
+    },
+    props: ["photo", "sidebarPositionClass"],
+    methods: {
+        formatTimestamp(timestamp) {
+            let d = new Date(timestamp);
+
+            return d.toString();
+        },
+        /**Convertes photo size in bytes to human readable format */
+        bytesToSize(bytes) {
+            var sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+            if (bytes == 0) return "0 Byte";
+            var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+            return Math.round(bytes / Math.pow(1024, i), 2) + " " + sizes[i];
+        },
+    },
 };
 </script>
