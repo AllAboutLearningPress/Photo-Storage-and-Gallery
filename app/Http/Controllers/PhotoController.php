@@ -32,8 +32,8 @@ class PhotoController extends Controller
         $photo = Photo::withTrashed()->with('user', 'tags')->findOrFail($id);
         $awsS3V4 = new AwsS3V4();
         $bucket = config('aws.fullsize_bucket');
-        $photo->src = $awsS3V4->presignGet('/preview_photos/' . $photo->file_name, $bucket);
-        $downloadLink = $awsS3V4->presignGet('/full_size/' . $photo->file_name, $bucket);
+        $photo->src = $awsS3V4->presignGet('preview_photos', $photo->file_name, $bucket);
+        $downloadLink = $awsS3V4->presignGet('full_size', $photo->file_name, $bucket);
         //$photo->add_temp_url('preview_photos');
         return  Inertia::render('PhotoView/PhotoView', [
             'photo' => $photo,
@@ -86,6 +86,8 @@ class PhotoController extends Controller
     public function getInfo(Request $request)
     {
         $data = $request->validate(['id' => 'integer']);
-        return Photo::where('id', $data['id'])->with(['tags', 'user:name'])->firstOrFail();
+        $photo = Photo::where('id', $data['id'])->with(['tags', 'user:name'])->firstOrFail();
+        $photo->add_temp_url('preview_photos');
+        return $photo;
     }
 }

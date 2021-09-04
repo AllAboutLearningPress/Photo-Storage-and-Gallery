@@ -89,11 +89,11 @@ class ShareController extends Controller
             $awsS3V4 = new AwsS3V4($remaining_time);
             // generate download link if download permission is provided
             if ($sharedPhoto->download == true) {
-                $downloadUrl = $awsS3V4->presignGet('/full_size/' . $photo->file_name, config('aws.fullsize_bucket'));
+                $downloadUrl = $awsS3V4->presignGet('full_size', $photo->file_name, config('aws.fullsize_bucket'));
             }
 
             // presign get request url for preview
-            $photo->src = $awsS3V4->presignGet('/preview_photos/' . $photo->file_name, config('aws.preview_bucket'));
+            $photo->src = $awsS3V4->presignGet('preview_photos', $photo->file_name, config('aws.preview_bucket'));
 
             return Inertia::render('PhotoView/PhotoView', [
                 'photo' => $photo,

@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
-use Storage;
 use Str;
 
 class Photo extends Model
@@ -123,7 +122,7 @@ class Photo extends Model
         if (!$bucket) {
             $bucket = config('aws.fullsize_bucket');
         }
-        $this->src =  (new \App\Utils\AwsS3V4())->presignGet($file_type . $this->file_name, $bucket);
+        $this->src =  (new \App\Utils\AwsS3V4())->presignGet($file_type, $this->file_name, $bucket);
     }
 
     protected function makeAllSearchableUsing($query)
