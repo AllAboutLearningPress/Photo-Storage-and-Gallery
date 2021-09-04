@@ -69,7 +69,7 @@ class ProcessPhoto implements ShouldQueue
             array_push($label_ids, $label_id);
             array_push($label_scores, ['score' => round($label['Confidence'])]);
         }
-        //dd(array_combine($label_ids, $label_scores));
+
         // adding the labels to the photo
         $photo->labels()->sync(array_combine($label_ids, $label_scores));
 
@@ -91,7 +91,7 @@ class ProcessPhoto implements ShouldQueue
             //'Qualifier' => 'string',
         ));
         $payload = $result->get('Payload');
-        //dd(json_decode($payload, true));
+
         // validating details provided by lambda client
         $photoDetails = Validator::make(json_decode($payload, true), [
             'height' => 'required|integer',
@@ -101,7 +101,7 @@ class ProcessPhoto implements ShouldQueue
             'dhash' => 'required|string',
             'sha256' => 'required|string',
         ])->validate();
-        // dd($photoDetails);
+
 
 
 
