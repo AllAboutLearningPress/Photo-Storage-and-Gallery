@@ -69,12 +69,23 @@ export default {
         photoOnClick(filename, id, slug) {
             console.log(id);
             this.photo = { id };
+            // Current URL: https://my-website.com/page_a
+            console.log(slug);
+            const nextURL = route("photo.show", { id: id, slug: slug });
+            const nextTitle = "My new page title";
+            const nextState = {
+                additionalInformation: "Updated the URL with JS",
+            };
+
+            // This will create a new entry in the browser's history, without reloading
+            window.history.pushState(nextState, nextTitle, nextURL);
             axios
                 .post(route("photo.get_info"), { id: this.photo.id })
                 .then((resp) => {
                     console.log(resp);
                     this.photo = resp.data;
                 });
+
             // this.$inertia.visit(
             //     route("photo.show", {
             //         id: id,
