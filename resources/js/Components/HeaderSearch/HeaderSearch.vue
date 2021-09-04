@@ -59,7 +59,7 @@
                         btn btn-subtle btn-lg
                     "
                 >
-                    <camera-button></camera-button>
+                    <!-- <camera-button></camera-button> -->
                     <span class="visually-hidden">Search by image</span>
                     <input
                         class="js-search__image-input button-file__input"
@@ -78,11 +78,15 @@
 //import Search from "../../frontend/components/Search.js";
 import SingleImageDropManager from "../../frontend/components/SingleImageDropManager.js";
 import SearchSuggest from "./SearchSuggest.vue";
-import CameraButton from "@/Buttons/CameraButton.vue";
+// import CameraButton from "@/Buttons/CameraButton.vue";
 import ShowSearchButton from "./ShowSearchButton.vue";
 import { notify } from "@/util.js";
 export default {
-    components: { SearchSuggest, CameraButton, ShowSearchButton },
+    components: {
+        SearchSuggest,
+        //  CameraButton,
+        ShowSearchButton,
+    },
     data() {
         return {
             dropManager: null,

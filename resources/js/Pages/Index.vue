@@ -3,7 +3,13 @@
         <!-- <sub-header></sub-header> -->
         <photo-view v-if="photo" :photo="photo" :info="true"></photo-view>
         <div id="pig" class="gallery mb-4"></div>
-        <button type="button" class="btn btn-lg btn-primary">Load more</button>
+        <button
+            type="button"
+            class="btn btn-lg btn-primary"
+            v-if="this.photos.next_page_url"
+        >
+            Load more
+        </button>
     </div>
 </template>
 
