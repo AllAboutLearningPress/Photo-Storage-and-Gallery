@@ -233,7 +233,7 @@ class UploadController extends Controller
             'tagId' => "nullable|exists:tags,id",
             'tagName' => "required|string",
         ]);
-        //dd($data);
+
         $photo = Photo::find($data['fileId']);
         if ($data['tagId'] == null) {
             $data['tagId'] = Tag::create([
@@ -259,7 +259,7 @@ class UploadController extends Controller
             'fileId' => "required|exists:photos,id",
             'tagId' => "nullable|exists:tags,id"
         ]);
-        //dd($data);
+
         $photo = Photo::find($data['fileId']);
         $photo->tags()->detach($data['tagId']);
 

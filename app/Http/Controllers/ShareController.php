@@ -58,8 +58,7 @@ class ShareController extends Controller
             ]
         );
         if ($validator->fails()) {
-            //abort(404);
-            dd($validator->errors());
+            abort(404);
         }
         $data = $validator->validated();
 

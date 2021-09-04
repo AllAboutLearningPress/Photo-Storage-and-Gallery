@@ -10,45 +10,63 @@ class AwsS3V4
 
     public function __construct($expires = 21600)
     {
+        $this->start = microtime(true);
+
+
+        //dd($output, microtime(true) - $start);
         $this->region = config('services.ses.region');
+
         $this->bucket = config('aws.fullsize_bucket');
         $this->httpMethodName = 'GET';
         $this->canonicalURI = '';
 
         //$this->setHeaders();
 
-        $provider = \Aws\Credentials\CredentialProvider::defaultProvider();
-        $creds = $provider()->wait();
-
-        $this->key_id = $creds->getAccessKeyId();
-        $this->secret_key = $creds->getSecretKey();
-        $token = $creds->getSecurityToken();
-        $currentTime = time();
-        $this->date_text = gmdate('Ymd', $currentTime);
-        $this->time_text = $this->date_text . 'T' . gmdate('His', $currentTime) . 'Z';
-        $this->scope = $this->date_text . "/" . $this->region . "/s3/aws4_request";
-        $date_text = gmdate('Ymd', time());
-        $time_text = $date_text . 'T' . gmdate('His', time()) . 'Z';
-        $this->scope = $date_text . "/" . $this->region . "/s3/aws4_request";
-
-        $x_amz_params = array(
-            'X-Amz-Algorithm' => $this->HMACAlgorithm,
-            'X-Amz-Credential' => $this->key_id . '/' . $this->scope,
-            'X-Amz-Date' => $time_text,
-            'X-Amz-Expires' => $expires, // 'Expires' is the number of seconds until the request becomes invalid
-            'X-Amz-SignedHeaders' => 'host',
+        $provider = \Aws\Credentials\CredentialProvider::instanceProfile();
+        $provider()->then(
+            // $onFulfilled
+            function ($value) {
+                //dd(microtime(true) - $this->start);
+                echo 'The promise was fulfilled.';
+            },
+            // $onRejected
+            function ($reason) {
+                echo 'The promise was rejected.';
+            }
         );
-        if ($token) {
-            $x_amz_params['X-Amz-Security-Token'] = $token;
-        }
-        // sorting the params in alphabatical order
-        ksort($x_amz_params);
-        $this->query_string = "";
-        foreach ($x_amz_params  as $key => $value) {
-            $this->query_string .= rawurlencode($key) . '=' . rawurlencode($value) . "&";
-        }
 
-        $this->query_string = substr($this->query_string, 0, -1);
+        // $creds = $provider()->wait();
+
+        // $this->key_id = $creds->getAccessKeyId();
+        // $this->secret_key = $creds->getSecretKey();
+        // $token = $creds->getSecurityToken();
+        // $currentTime = time();
+        // $this->date_text = gmdate('Ymd', $currentTime);
+        // $this->time_text = $this->date_text . 'T' . gmdate('His', $currentTime) . 'Z';
+        // $this->scope = $this->date_text . "/" . $this->region . "/s3/aws4_request";
+        // $date_text = gmdate('Ymd', time());
+        // $time_text = $date_text . 'T' . gmdate('His', time()) . 'Z';
+        // $this->scope = $date_text . "/" . $this->region . "/s3/aws4_request";
+
+
+        // $x_amz_params = array(
+        //     'X-Amz-Algorithm' => $this->HMACAlgorithm,
+        //     'X-Amz-Credential' => $this->key_id . '/' . $this->scope,
+        //     'X-Amz-Date' => $time_text,
+        //     'X-Amz-Expires' => $expires, // 'Expires' is the number of seconds until the request becomes invalid
+        //     'X-Amz-SignedHeaders' => 'host',
+        // );
+        // if ($token) {
+        //     $x_amz_params['X-Amz-Security-Token'] = $token;
+        // }
+        // // sorting the params in alphabatical order
+        // ksort($x_amz_params);
+        // $this->query_string = "";
+        // foreach ($x_amz_params  as $key => $value) {
+        //     $this->query_string .= rawurlencode($key) . '=' . rawurlencode($value) . "&";
+        // }
+
+        // $this->query_string = substr($this->query_string, 0, -1);
     }
     // public function setHeaders()
     // {
@@ -56,6 +74,24 @@ class AwsS3V4
     //         "Host" => $this->bucket . ".s3." . $this->region . ".amazonaws.com"
     //     ];
     // }
+    public function getCreds()
+    {
+        // create curl resource
+        $ch = curl_init();
+
+        // set url
+        curl_setopt($ch, CURLOPT_URL, "http://169.254.169.254/latest/meta-data/identity-credentials/ec2/security-credentials/ec2-instance/");
+
+        //return the transfer as a string
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        // $output contains the output string
+        $output = curl_exec($ch);
+
+        // close curl resource to free up system resources
+        curl_close($ch);
+        return json_decode($output)->AccessKeyId;
+    }
     /**
      * Presigns Get request to AWS S3
      *
