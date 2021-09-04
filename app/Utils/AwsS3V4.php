@@ -2,6 +2,8 @@
 
 namespace App\Utils;
 
+use App;
+use Aws\Credentials\Credentials;
 
 class AwsS3V4
 {
@@ -13,60 +15,57 @@ class AwsS3V4
         $this->start = microtime(true);
 
 
-        //dd($output, microtime(true) - $start);
+
         $this->region = config('services.ses.region');
 
         $this->bucket = config('aws.fullsize_bucket');
         $this->httpMethodName = 'GET';
         $this->canonicalURI = '';
 
-        //$this->setHeaders();
 
-        $provider = \Aws\Credentials\CredentialProvider::instanceProfile();
-        $provider()->then(
-            // $onFulfilled
-            function ($value) {
-                //dd(microtime(true) - $this->start);
-                echo 'The promise was fulfilled.';
-            },
-            // $onRejected
-            function ($reason) {
-                echo 'The promise was rejected.';
-            }
+        if (App::environment('production')) {
+            // This environment is in production
+            $creds = $this->getCreds();
+        } else {
+            //$this->setHeaders();
+
+            $provider = \Aws\Credentials\CredentialProvider::defaultProvider();
+            $creds = $provider()->wait();
+        }
+
+
+
+        //dd($creds, microtime(true) - $this->start);
+        $this->key_id = $creds->getAccessKeyId();
+        $this->secret_key = $creds->getSecretKey();
+        $token = $creds->getSecurityToken();
+        $currentTime = time();
+        $this->date_text = gmdate('Ymd', $currentTime);
+        $this->time_text = $this->date_text . 'T' . gmdate('His', $currentTime) . 'Z';
+        $this->scope = $this->date_text . "/" . $this->region . "/s3/aws4_request";
+        $date_text = gmdate('Ymd', time());
+        $time_text = $date_text . 'T' . gmdate('His', time()) . 'Z';
+        $this->scope = $date_text . "/" . $this->region . "/s3/aws4_request";
+
+
+        $x_amz_params = array(
+            'X-Amz-Algorithm' => $this->HMACAlgorithm,
+            'X-Amz-Credential' => $this->key_id . '/' . $this->scope,
+            'X-Amz-Date' => $time_text,
+            'X-Amz-Expires' => $expires, // 'Expires' is the number of seconds until the request becomes invalid
+            'X-Amz-SignedHeaders' => 'host',
         );
+        if ($token) {
+            $x_amz_params['X-Amz-Security-Token'] = $token;
+        }
+        // sorting the params in alphabatical order
+        ksort($x_amz_params);
+        $this->query_string = "";
+        foreach ($x_amz_params  as $key => $value) {
+            $this->query_string .= rawurlencode($key) . '=' . rawurlencode($value) . "&";
+        }
 
-        // $creds = $provider()->wait();
-
-        // $this->key_id = $creds->getAccessKeyId();
-        // $this->secret_key = $creds->getSecretKey();
-        // $token = $creds->getSecurityToken();
-        // $currentTime = time();
-        // $this->date_text = gmdate('Ymd', $currentTime);
-        // $this->time_text = $this->date_text . 'T' . gmdate('His', $currentTime) . 'Z';
-        // $this->scope = $this->date_text . "/" . $this->region . "/s3/aws4_request";
-        // $date_text = gmdate('Ymd', time());
-        // $time_text = $date_text . 'T' . gmdate('His', time()) . 'Z';
-        // $this->scope = $date_text . "/" . $this->region . "/s3/aws4_request";
-
-
-        // $x_amz_params = array(
-        //     'X-Amz-Algorithm' => $this->HMACAlgorithm,
-        //     'X-Amz-Credential' => $this->key_id . '/' . $this->scope,
-        //     'X-Amz-Date' => $time_text,
-        //     'X-Amz-Expires' => $expires, // 'Expires' is the number of seconds until the request becomes invalid
-        //     'X-Amz-SignedHeaders' => 'host',
-        // );
-        // if ($token) {
-        //     $x_amz_params['X-Amz-Security-Token'] = $token;
-        // }
-        // // sorting the params in alphabatical order
-        // ksort($x_amz_params);
-        // $this->query_string = "";
-        // foreach ($x_amz_params  as $key => $value) {
-        //     $this->query_string .= rawurlencode($key) . '=' . rawurlencode($value) . "&";
-        // }
-
-        // $this->query_string = substr($this->query_string, 0, -1);
+        $this->query_string = substr($this->query_string, 0, -1);
     }
     // public function setHeaders()
     // {
@@ -90,7 +89,14 @@ class AwsS3V4
 
         // close curl resource to free up system resources
         curl_close($ch);
-        return json_decode($output)->AccessKeyId;
+
+        $creds_json = json_decode($output);
+
+        return new Credentials(
+            $creds_json->AccessKeyId,
+            $creds_json->SecretAccessKey,
+            $creds_json->Token
+        );
     }
     /**
      * Presigns Get request to AWS S3
