@@ -2,6 +2,7 @@
 
 namespace App\Utils;
 
+
 class AwsS3V4
 {
 
@@ -10,12 +11,11 @@ class AwsS3V4
     public function __construct($expires = 21600)
     {
         $this->region = config('services.ses.region');
+        $this->bucket = config('aws.fullsize_bucket');
         $this->httpMethodName = 'GET';
         $this->canonicalURI = '';
 
-        $this->awsHeaders = [
-            "Host" => "aalpphotosdev.s3.ap-southeast-1.amazonaws.com"
-        ];
+        //$this->setHeaders();
 
         $provider = \Aws\Credentials\CredentialProvider::defaultProvider();
         $creds = $provider()->wait();
@@ -50,13 +50,31 @@ class AwsS3V4
 
         $this->query_string = substr($this->query_string, 0, -1);
     }
-
-
+    // public function setHeaders()
+    // {
+    //     $this->awsHeaders = [
+    //         "Host" => $this->bucket . ".s3." . $this->region . ".amazonaws.com"
+    //     ];
+    // }
+    /**
+     * Presigns Get request to AWS S3
+     *
+     * We are using the therm directory here. But s3 doesnt have directories. So
+     * Its here to be relatable with normal file system.
+     *
+     * @param string $dir The directory of the file.
+     * @param string $file_name The file name of the file we are signing request for.
+     * @param string $bucket The bucket this file is stored on.
+     *
+     * @return string Signed url of the reqeusted file.
+     */
     public function presignGet(
-        $encoded_uri,
-        $bucket
+        String $dir,
+        String $file_name,
+        String $bucket
     ) {
-
+        # calculating full uri from directory and filename
+        $encoded_uri = '/' . $dir . '/' . $file_name;
 
         // Specify the hostname for the S3 endpoint
         if ($this->region == 'us-east-1') {

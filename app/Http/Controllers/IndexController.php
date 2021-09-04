@@ -41,7 +41,7 @@ class IndexController extends Controller
         $photos = Photo::where("height", "!=", null)->select(['id', 'file_name', 'height', 'width'])->orderBy('id', 'DESC')->cursorPaginate(30);
 
         return Inertia::render('Index', [
-            'photos' => genTempSrc($photos, '/thumbnails/'), // adding temporary thumbnail links to s3
+            'photos' => genTempSrc($photos, 'thumbnails'), // adding temporary thumbnail links to s3
             'title' => 'AALP Photos Index'
         ])->withViewData(['title' => 'AALP Photos', 'load_pig' => true,]);
     }

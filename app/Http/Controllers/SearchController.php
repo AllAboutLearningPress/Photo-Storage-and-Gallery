@@ -13,15 +13,12 @@ class SearchController extends Controller
     {
         $data = $request->validate(['search' => 'required|string']);
         $photos = Photo::search($data['search'])->get();
-        //$bucket = "aalpphotosdev";
+        $bucket = config('aws.fullsize_bucket');
 
         $awsS3V4 = new AwsS3V4(300);
         for ($x = 0; $x < count($photos); $x++) {
-
-            // $photos[$x]->add_temp_url('thumbnails');
-            // continue;
-            $thumbPath = $photos[$x]->genThumbPath();
-            $photos[$x]->src = $awsS3V4->presignGet($thumbPath, config('aws.fullsize_bucket'));
+            // $thumbPath = $photos[$x]->genThumbPath();
+            $photos[$x]->src = $awsS3V4->presignGet('thumbnails', $photos[$x]->file_name, $bucket);
             // $photos[$x]->src = Cache::remember($thumbPath, 19080, function () use ($awsS3V4, $thumbPath) {
             //     return $awsS3V4->presignGet($thumbPath);
             // });
