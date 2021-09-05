@@ -27,7 +27,7 @@
     <body class="is-uploading">
 
         @inertia
-        <script src="/js/frontend/bundle.js"></script>
+        {{-- <script src="/js/frontend/bundle.js"></script> --}}
     </body>
 
 </html>
