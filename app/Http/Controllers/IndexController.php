@@ -8,6 +8,9 @@ use Aws\Rekognition\RekognitionClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use GuzzleHttp\Psr7\Request as Req2;
+use GuzzleHttp\Client;
+use Aws\Sdk;
 
 class IndexController extends Controller
 {
@@ -79,5 +82,70 @@ class IndexController extends Controller
             'photos' => $this->generateSrc(Photo::onlyTrashed()->where('height', "!=", null)->cursorPaginate(30)),
             'title' => 'Trashed Photos',
         ])->withViewData(['title' => 'Trashed Photos']);
+    }
+    const SERVER_URI = 'http://169.254.169.254/latest/';
+    const CRED_PATH = 'meta-data/iam/security-credentials/';
+    const TOKEN_PATH = 'api/token';
+
+    const ENV_DISABLE = 'AWS_EC2_METADATA_DISABLED';
+    const ENV_TIMEOUT = 'AWS_METADATA_SERVICE_TIMEOUT';
+    const ENV_RETRIES = 'AWS_METADATA_SERVICE_NUM_ATTEMPTS';
+    public function testing()
+    {
+
+
+
+        $client = new Client([
+            // Base URI is used with relative requests
+            'base_uri' => 'http://169.254.169.254',
+            // You can set any number of default request options.
+            'timeout'  => 2.0,
+        ]);
+
+        // request for secure token
+        $request = new Req2('PUT', self::SERVER_URI . self::TOKEN_PATH);
+        $userAgent = 'aws-sdk-php/' . Sdk::VERSION;
+
+        $userAgent .= ' ' . \Aws\default_user_agent();
+        $request = $request->withHeader('User-Agent', $userAgent);
+        $headers =   [
+            'x-aws-ec2-metadata-token-ttl-seconds' => 21600
+        ];
+        foreach ($headers as $key => $value) {
+            $request = $request->withHeader($key, $value);
+        }
+        $token = $client->send($request)->getBody()->getContents();
+
+        echo $token;
+
+
+
+        // retrive profile
+        $request = new Req2('GET', self::SERVER_URI . self::CRED_PATH);
+        $request = $request->withHeader('User-Agent', $userAgent);
+        $headers = [
+            'x-aws-ec2-metadata-token' => $token
+        ];
+        foreach ($headers as $key => $value) {
+            $request = $request->withHeader($key, $value);
+        }
+        $profile = $client->send($request)->getBody()->getContents();
+
+        // retrive creds
+        $request = new Req2('GET', self::SERVER_URI . self::CRED_PATH . $profile);
+        $request = $request->withHeader('User-Agent', $userAgent);
+        $headers = [
+            'x-aws-ec2-metadata-token' => $token
+        ];
+        foreach ($headers as $key => $value) {
+            $request = $request->withHeader($key, $value);
+        }
+        $creds = $client->send($request)->getBody()->getContents();
+
+        echo $creds;
+
+        $provider = \Aws\Credentials\CredentialProvider::defaultProvider();
+        $creds = $provider()->wait();
+        echo $creds->getAccessKeyId();
     }
 }
