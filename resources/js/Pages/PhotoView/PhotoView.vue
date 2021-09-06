@@ -365,6 +365,7 @@ export default {
             e.preventDefault();
             // hiding the delete modal
             this.deleteModal.toggle();
+            this.$emit("deleted");
             this.$inertia.post(
                 route("photo.delete"),
                 {

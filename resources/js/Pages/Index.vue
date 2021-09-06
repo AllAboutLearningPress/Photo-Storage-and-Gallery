@@ -1,7 +1,12 @@
 <template>
     <div>
         <!-- <sub-header></sub-header> -->
-        <photo-view v-if="photo" :photo="photo" :info="true"></photo-view>
+        <photo-view
+            v-if="photo"
+            v-on:deleted="photo = null"
+            :photo="photo"
+            :info="true"
+        ></photo-view>
         <div id="pig" class="gallery mb-4"></div>
         <button
             type="button"
