@@ -86,7 +86,7 @@ class PhotoController extends Controller
     public function getInfo(Request $request)
     {
         $data = $request->validate(['id' => 'integer']);
-        $photo = Photo::where('id', $data['id'])->with(['tags', 'user:name'])->firstOrFail();
+        $photo = Photo::where('id', $data['id'])->with(['tags', 'user:name'])->withTrashed()->firstOrFail();
         $photo->add_temp_url('preview_photos');
         return $photo;
     }

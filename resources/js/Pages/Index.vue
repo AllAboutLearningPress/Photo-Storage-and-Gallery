@@ -59,6 +59,7 @@ export default {
             figureTagName: "a",
         };
         // crating the Pig instance
+        console.log("creating pig");
         this.pig = new Pig(this.photos.data, options);
         // console.log("creating pig ", this.pig);
         this.pig.enable();
@@ -105,6 +106,7 @@ export default {
                 //navigated to home route. So we dont need to disable pig
                 return;
             }
+            console.log(this.pig);
             this.pig.disable();
             this.pig = null;
             console.log("removing pig", this.navigationListener);
@@ -122,8 +124,11 @@ export default {
         },
     },
     unmounted() {
-        this.pig.disable();
-        this.pig = null;
+        this.$nextTick(() => {
+            this.pig.disable();
+            this.pig.clear();
+            this.pig = null;
+        });
     },
 };
 </script>

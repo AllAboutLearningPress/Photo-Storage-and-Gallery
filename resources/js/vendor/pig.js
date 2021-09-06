@@ -754,6 +754,20 @@
     };
 
     /**
+     * Removes dom entries created by pig
+     *
+     * @return {None}
+     */
+    Pig.prototype.clear = function () {
+        var container = document.getElementById(this.settings.containerId);
+        if (container) {
+            // removing all child elements of container
+            container.innerHTML = '';
+        }
+
+    }
+
+    /**
      * This class manages a single image. It keeps track of the image's height,
      * width, and position in the grid. An instance of this class is associated
      * with a single image figure, which looks like this:
