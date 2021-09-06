@@ -3,16 +3,10 @@
 namespace App\Utils;
 
 use App;
-use Aws\Credentials\Credentials;
-use Aws\Exception\CredentialsException;
-use Aws\Exception\InvalidJsonException;
 use Aws\Sdk;
-use GuzzleHttp\Exception\TransferException;
-use GuzzleHttp\Promise;
-use GuzzleHttp\Exception\RequestException;
+use Aws\Credentials\Credentials;
+use Aws\Credentials\CredentialProvider;
 use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Promise\PromiseInterface;
-use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Client;
 
 class AwsS3V4
@@ -30,7 +24,7 @@ class AwsS3V4
     /** @var string */
     private $profile;
 
-    /** @var callable */
+    /** @var object */
     private $client;
 
     /** @var int */
@@ -65,11 +59,9 @@ class AwsS3V4
             $creds = $this->getCreds();
             //dd($creds);
         } else {
-            //$this->setHeaders();
 
-            $provider = \Aws\Credentials\CredentialProvider::defaultProvider();
-            $creds = $provider()->wait();
-            // dd($creds);
+            $memorized_provider = CredentialProvider::memoize(CredentialProvider::defaultProvider());
+            $creds = $memorized_provider()->wait();
         }
 
 
