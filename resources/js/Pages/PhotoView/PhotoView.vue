@@ -375,10 +375,15 @@ export default {
                 {
                     onSuccess: (resp) => {
                         console.log("resp", resp);
-                        notify("Photo moved to trash", "success", {
-                            text: "Undo",
-                            onClick: () => this.restorePhoto(),
-                        });
+                        // show notification according to the delete state
+                        if (this.photo.deleted_at) {
+                            notify("Photo permanently deleted", "success");
+                        } else {
+                            notify("Photo moved to trash", "success", {
+                                text: "Undo",
+                                onClick: () => this.restorePhoto(),
+                            });
+                        }
                     },
                 }
             );

@@ -29,7 +29,7 @@
                         v-if="toast.button"
                         v-on:click="toast.button.onClick"
                         type="button"
-                        class="btn btn-primary btn-sm c bg-white me-2 m-auto"
+                        class="btn btn-outline-light btn-sm me-2 m-auto"
                         data-bs-dismiss="toast"
                         aria-label="Close"
                     >

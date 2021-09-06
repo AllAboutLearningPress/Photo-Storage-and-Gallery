@@ -61,6 +61,7 @@
                             navigation__item
                             list-group-item list-group-item-action
                         "
+                        style="font-size: 1.1rem"
                     >
                         Logout
                     </button>
