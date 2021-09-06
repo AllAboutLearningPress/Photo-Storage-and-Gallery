@@ -52,7 +52,15 @@ import axios from "axios";
 import { notify } from "@/util.js";
 export default {
     layout: MainLayout,
-    props: ["notifications"],
+    props: {
+        notifications: Array,
+        jetstream: Object,
+        user: Object,
+        errorBags: Array,
+        errors: Object,
+        flash: Object,
+        notification_count: Number,
+    },
     data() {
         return {
             // notifications: [

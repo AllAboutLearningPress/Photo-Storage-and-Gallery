@@ -13,7 +13,7 @@ class NotificationController extends Controller
     {
         $notifications =  Notification::where('user_id', Auth::id())->get();
         return Inertia::render("Notification/Notification", [
-            'notifications' =>  genTempSrc($notifications, '/thumbnails/')
+            'notifications' =>  genTempSrc($notifications, 'thumbnails')
         ]);
     }
     public function seen(Request $request)
