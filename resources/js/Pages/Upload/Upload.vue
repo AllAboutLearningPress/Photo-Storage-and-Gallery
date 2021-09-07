@@ -209,7 +209,7 @@ export default {
             console.log("cancelling ", this.filesArray[index]);
             this.filesArray[index].cancelled = true;
             // sending request to remove the file entry
-            this.sendPhotoDetailsReq([{ id: file.id }], () => {
+            this.sendCancelUploadReq([{ id: file.id }], () => {
                 // adding the file again to exact location
                 // zthis.filesArray.splice(index, 0, file);
             });
