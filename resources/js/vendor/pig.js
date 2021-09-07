@@ -767,6 +767,22 @@
 
     }
 
+    /**Removes a photo with provided id */
+    Pig.prototype.removePhoto = function (id) {
+        for (let i = 0; i < this.images.length; i++) {
+            if (this.images[i].id == id) {
+                // this is our photo
+                console.log(this.images[i]);
+                this.images[i].element.parentElement.removeChild(this.images[i].element);
+                this.images.splice(i, 1);
+                //window.dispatchEvent(new CustomEvent('resize'));
+                this._computeLayout();
+                this._doLayout();
+
+            }
+        }
+    }
+
     /**
      * This class manages a single image. It keeps track of the image's height,
      * width, and position in the grid. An instance of this class is associated
