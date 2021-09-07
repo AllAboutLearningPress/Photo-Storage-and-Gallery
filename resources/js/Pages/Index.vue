@@ -3,7 +3,7 @@
         <!-- <sub-header></sub-header> -->
         <photo-view
             v-if="photo"
-            v-on:deleted="photo = null"
+            v-on:deleted="photoDeleted"
             :photo="photo"
             :info="true"
         ></photo-view>
@@ -77,6 +77,10 @@ export default {
         window.dispatchEvent(new Event("resize"));
     },
     methods: {
+        photoDeleted() {
+            this.pig.removePhoto(this.photo.id);
+            this.photo = null;
+        },
         /**Executed when a photo in the gallery is clicked */
         photoOnClick(filename, id, slug) {
             console.log(id);
