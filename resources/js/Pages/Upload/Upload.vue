@@ -115,7 +115,7 @@ import UploadToolbar from "./Components/UploadToolbar.vue";
 import { notify } from "@/util.js";
 //import { addEventListener } from "@/frontend/util/utils.js";
 import { inject } from "@vue/runtime-core";
-import FileNotes from "./Components/ FileNotes.vue";
+import FileNotes from "./Components/FileNotes.vue";
 import FileTitle from "@/Components/FileTitle.vue";
 import FileTag from "@/Components/FileTag.vue";
 import CompletedTick from "./Components/CompletedTick.vue";
@@ -136,14 +136,14 @@ export default {
         const uploadedCount = inject("uploadedCount");
         const fetchTags = inject("fetchTags");
         const resetUpload = inject("resetUpload");
-        const cancelToken = inject("cancelToken");
+        //const cancelToken = inject("cancelToken");
         return {
             pushToFilesArray,
             filesArray,
             uploadedCount,
             fetchTags,
             resetUpload,
-            cancelToken,
+            //cancelToken,
         };
     },
     data() {
@@ -185,12 +185,12 @@ export default {
         /**Cancels the full upload */
         cancelUpload() {
             console.log("upload cancelled");
-            this.cancelToken.cancel();
             // saving the filesArray for restoring
             let filesArray = [...this.filesArray];
             let ids = [];
             for (let i = 0; i < this.filesArray.length; i++) {
                 ids.push({ id: this.filesArray[i].id });
+                this.filesArray[i].cancelSource.cancel();
             }
             console.log(ids);
             this.sendCancelUploadReq(ids, () => {
@@ -205,7 +205,7 @@ export default {
             // removing the file from filesArray
             //this.filesArray.splice(index, 1);
             // cancelling the upload
-            this.filesArray[index].cancelToken.cancel();
+            this.filesArray[index].cancelSource.cancel();
             console.log("cancelling ", this.filesArray[index]);
             this.filesArray[index].cancelled = true;
             // sending request to remove the file entry

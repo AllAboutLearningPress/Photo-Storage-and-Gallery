@@ -180,7 +180,7 @@ export default {
                     isUploading: false,
                     width: "0%", // used to show progress bar
                     uploadCompleted: false,
-                    //cancelToken: axios.CancelToken.source(), // used to cancel axios request
+                    cancelSource: axios.CancelToken.source(), // used to cancel axios request
                     cancelled: false,
                 });
                 requestPhotos.push({
@@ -260,7 +260,6 @@ export default {
          * @property {boolean} retry - True if file upload is retried, Defaults to False
          */
         uploadSingleFile(filePostion, retry = false) {
-            let fileId = this.filesArray[filePostion].id;
             // marking it as uploading so it wont be
             // picked up again for uploading
             this.filesArray[filePostion].isUploading = true;
@@ -275,9 +274,9 @@ export default {
                     this.filesArray[filePostion].uploadUrl,
                     this.filesArray[filePostion].file,
                     {
-                        // cancelToken:
-                        //     this.filesArray[filePostion].cancelToken.token,
-                        cancelToken: this.cancelToken.token,
+                        cancelToken:
+                            this.filesArray[filePostion].cancelSource.token,
+                        // cancelToken: this.cancelToken.token,
                         onUploadProgress: (e) => {
                             // bug
                             this.filesArray[filePostion].loaded = e.loaded;
@@ -296,16 +295,19 @@ export default {
                     );
                 })
                 .catch((error) => {
-                    console.log(error);
-                    if (retry == false) {
-                        this.uploadSingleFile(filePostion, (retry = true));
-                    } else {
-                        // Show error notification to user
-                        notify(
-                            "Upload Failed: " +
-                                this.filesArray[filePostion].title,
-                            "danger"
-                        );
+                    // We shouldnt retry if upload is cancelled by user
+                    if (!axios.isCancel(error)) {
+                        console.log(error);
+                        if (retry == false) {
+                            this.uploadSingleFile(filePostion, (retry = true));
+                        } else {
+                            // Show error notification to user
+                            notify(
+                                "Upload Failed: " +
+                                    this.filesArray[filePostion].title,
+                                "danger"
+                            );
+                        }
                     }
                 });
         },
