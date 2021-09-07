@@ -132,7 +132,7 @@ export default {
         FileTag,
         FileTitle,
     },
-    props: ["photo", "sidebarPositionClass"],
+    props: ["photo", "sidebarPositionClass", "toggleSidebar"],
     methods: {
         formatTimestamp(timestamp) {
             let d = new Date(timestamp);

@@ -4,6 +4,7 @@
             <photo-info
                 :photo="photo"
                 :sidebarPositionClass="sidebarPositionClass"
+                :toggleSidebar="toggleSidebar"
             ></photo-info>
             <div class="sidebar-backdrop"></div>
             <div class="image-view__picture-area">
@@ -138,12 +139,14 @@
             :deleted="photo.deleted_at ? true : false"
         >
             <template v-slot:body
-                >Are you sure about
-                <span class="text-danger">{{
-                    photo.deleted_at ? "permanently" : ""
-                }}</span>
-                deleting "{{ photo.title }}" ?</template
-            >
+                ><p class="text-break">
+                    Are you sure about
+                    <span class="text-danger">{{
+                        photo.deleted_at ? "permanently" : ""
+                    }}</span>
+                    deleting "{{ photo.title }}" ?
+                </p>
+            </template>
             <template v-slot:action_button>
                 <button v-on:click="deletePhoto" class="btn btn-danger">
                     {{ photo.deleted_at ? "Permanently" : "" }} Delete
