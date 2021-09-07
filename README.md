@@ -11,3 +11,8 @@ to do this task.
 
 ### Supported formats
 This app currently supports jpeg, jpg, png, psd and more support is coming soon . 
+
+
+## Invitation
+Invitation link in email will be valid for 7 days. If the send-again feature is used. Then new 
+link will be valid for 7 days again.
