@@ -3,7 +3,7 @@
         <!-- <sub-header></sub-header> -->
         <photo-view
             v-if="photo"
-            v-on:deleted="photoDeleted"
+            v-on:close="closePhotoView"
             :photo="photo"
             :info="true"
         ></photo-view>
@@ -77,7 +77,7 @@ export default {
         window.dispatchEvent(new Event("resize"));
     },
     methods: {
-        photoDeleted() {
+        closePhotoView() {
             this.pig.removePhoto(this.photo.id);
             this.photo = null;
         },
