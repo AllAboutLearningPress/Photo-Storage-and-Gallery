@@ -193,6 +193,11 @@ export default {
             resetFuncs.value.forEach((func) => func());
         };
 
+        const cancelToken = ref(axios.CancelToken.source());
+        // const resetCancelToken = ()=> {
+        //     cancelToken.value =
+        // }
+
         provide("total", total);
         provide("updateTotal", updateTotal);
         provide("filesArray", filesArray);
@@ -205,6 +210,7 @@ export default {
         provide("fetchTags", fetchTags);
         provide("resetUpload", resetUpload);
         provide("resetFuncs", resetFuncs);
+        provide("cancelToken", cancelToken);
         return {
             total,
             fetchTags,
