@@ -365,7 +365,7 @@ export default {
             e.preventDefault();
             // hiding the delete modal
             this.deleteModal.toggle();
-            this.$emit("deleted");
+            this.$emit("close");
             this.$inertia.post(
                 route("photo.delete"),
                 {
@@ -397,6 +397,7 @@ export default {
                     onSuccess: () => notify("Photo restored", "success"),
                 }
             );
+            this.$emit("close");
         },
         downloadPhoto(e) {
             if (this.downloadLink) {
