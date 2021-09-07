@@ -39,7 +39,9 @@ export default {
         const uploadedCount = inject("uploadedCount");
         const increaseUploadedCount = inject("increaseUploadedCount");
         const resetFuncs = inject("resetFuncs");
+        const cancelToken = inject("cancelToken");
         const dropManager = new SingleImageDropManager();
+
         return {
             pushToFilesArray,
             filesArray,
@@ -49,6 +51,7 @@ export default {
             increaseUploadedCount,
             dropManager,
             resetFuncs,
+            cancelToken,
         };
     },
     data() {
@@ -116,6 +119,7 @@ export default {
                     "image/vnd.adobe.photoshop",
                 ],
                 completedCount: 0,
+                // cancelToken: axios.CancelToken.source(), // used to cancel axios request
             };
         },
         /** This event is dispatched by axios when data is being
@@ -176,7 +180,7 @@ export default {
                     isUploading: false,
                     width: "0%", // used to show progress bar
                     uploadCompleted: false,
-                    cancelToken: axios.CancelToken.source(), // used to cancel axios request
+                    //cancelToken: axios.CancelToken.source(), // used to cancel axios request
                     cancelled: false,
                 });
                 requestPhotos.push({
@@ -271,9 +275,11 @@ export default {
                     this.filesArray[filePostion].uploadUrl,
                     this.filesArray[filePostion].file,
                     {
-                        cancelToken:
-                            this.filesArray[filePostion].cancelToken.token,
+                        // cancelToken:
+                        //     this.filesArray[filePostion].cancelToken.token,
+                        cancelToken: this.cancelToken.token,
                         onUploadProgress: (e) => {
+                            // bug
                             this.filesArray[filePostion].loaded = e.loaded;
                             this.filesArray[filePostion].width =
                                 (e.loaded / e.total) * 100 + "%";
@@ -284,6 +290,7 @@ export default {
                     // this will be used to show the tick on individual
                     // files on /upload page
                     this.filesArray[filePostion].uploadCompleted = true;
+                    // bug
                     this.sendUploadCompletedReq(
                         this.filesArray[filePostion].id
                     );

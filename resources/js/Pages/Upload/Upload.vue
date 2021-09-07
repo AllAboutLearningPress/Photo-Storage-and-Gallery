@@ -136,12 +136,14 @@ export default {
         const uploadedCount = inject("uploadedCount");
         const fetchTags = inject("fetchTags");
         const resetUpload = inject("resetUpload");
+        const cancelToken = inject("cancelToken");
         return {
             pushToFilesArray,
             filesArray,
             uploadedCount,
             fetchTags,
             resetUpload,
+            cancelToken,
         };
     },
     data() {
@@ -183,6 +185,7 @@ export default {
         /**Cancels the full upload */
         cancelUpload() {
             console.log("upload cancelled");
+            this.cancelToken.cancel();
             // saving the filesArray for restoring
             let filesArray = [...this.filesArray];
             let ids = [];
