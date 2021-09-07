@@ -2,9 +2,8 @@
 
 @section('content')
 <div class="login">
-
-
-    <form class="js-login__form login__form" action="{{ route('invitations.signup') }}" method="POST">
+    <form class="js-login__form login__form" action="{{ $store_link }}" method="POST">
+        @csrf
         @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
@@ -14,11 +13,12 @@
             </ul>
         </div>
         @endif
-        @csrf
+
         <h1 class="fw-light">Sign Up</h1>
         <input type="hidden" value="{{ $code }}" name="code">
         <input required placeholder="Name" name="name" class="mb-3 form-control form-control-lg" type="text">
-        <input required placeholder="Email" name="email" class="mb-3 form-control form-control-lg" type="text">
+        <input class="mb-3 form-control form-control-lg" disabled placeholder="Email" name="email" value="{{ $email }}"
+            type="text">
 
         <input required placeholder="Password" name="password" id="password123"
             class="mb-3 form-control form-control-lg password" type="password" autocomplete="new-password">
@@ -32,7 +32,6 @@
             Signup
         </button>
     </form>
-
 </div>
 @endsection
 @section('scripts')

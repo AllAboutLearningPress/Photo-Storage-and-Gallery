@@ -4,16 +4,15 @@ use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\DuplicateController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\InvitationController;
+use App\Http\Controllers\InvitationSignupController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ShareController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\UploadController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
-use Inertia\Inertia;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -26,16 +25,8 @@ use Inertia\Inertia;
 |
 */
 
-// Route::get('/', function () {
-//     return Inertia::render('Welcome', [
-//         'canLogin' => Route::has('login'),
-//         'canRegister' => Route::has('register'),
-//         'laravelVersion' => Application::VERSION,
-//         'phpVersion' => PHP_VERSION,
-//     ]);
-// });
 
-
+/** All the routes that needs authentication */
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get("/", [IndexController::class, 'index'])->name('home');
     Route::post("/fetch-more", [IndexController::class, 'fetch_more'])->name('index.fetch_more');
@@ -100,6 +91,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     // })->name('dashboard');
 });
 /** Invitations routes that doesnt require authentication */
-Route::get('invitations/accept-invite/{invite_code}', [InvitationController::class, 'acceptInvite'])->name('invitations.accept_invite');
-Route::post('invitations/signup',  [InvitationController::class, 'signup'])->name('invitations.signup');
+Route::get('invitations/accept-invite/{invite_code}', [InvitationSignupController::class, 'create'])->middleware('signed')->name('invitations.accept_invite');
+Route::post('invitations/signup',  [InvitationSignupController::class, 'store'])->middleware('signed')->name('invitations.signup.store');
+
 Route::get('share/{key}', [ShareController::class, 'view'])->name('share.show');

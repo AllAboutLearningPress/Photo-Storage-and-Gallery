@@ -771,11 +771,13 @@
     Pig.prototype.removePhoto = function (id) {
         for (let i = 0; i < this.images.length; i++) {
             if (this.images[i].id == id) {
-                // this is our photo
-                console.log(this.images[i]);
+                // removing the img element from dom tree
                 this.images[i].element.parentElement.removeChild(this.images[i].element);
+                // removing the img record
                 this.images.splice(i, 1);
-                //window.dispatchEvent(new CustomEvent('resize'));
+
+                // removing the empty space and positioning
+                // other photos
                 this._computeLayout();
                 this._doLayout();
 

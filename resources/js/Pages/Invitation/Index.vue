@@ -84,6 +84,7 @@
                             <input
                                 ref="invitation-email"
                                 type="email"
+                                placeholder="user@example.com"
                                 class="form-control"
                                 aria-label="Sizing example input"
                                 aria-describedby="inputGroup-sizing-default"
