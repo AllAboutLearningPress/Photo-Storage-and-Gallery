@@ -233,8 +233,11 @@ class UploadController extends Controller
             'tagId' => "nullable|exists:tags,id",
             'tagName' => "required|string",
         ]);
+        // withTrashed is required because users can try to
+        // add tags while the photo is in trash
+        $photo = Photo::withTrashed()->find($data['fileId']);
 
-        $photo = Photo::find($data['fileId']);
+        // tagId wont be provided if its a new tag
         if ($data['tagId'] == null) {
             $data['tagId'] = Tag::create([
                 'name' => $data['tagName']

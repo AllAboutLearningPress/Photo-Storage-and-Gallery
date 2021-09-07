@@ -136,8 +136,8 @@ export default {
     methods: {
         formatTimestamp(timestamp) {
             let d = new Date(timestamp);
-
-            return d.toString();
+            return d.toLocaleString();
+            //return d.toString();
         },
         /**Convertes photo size in bytes to human readable format */
         bytesToSize(bytes) {
