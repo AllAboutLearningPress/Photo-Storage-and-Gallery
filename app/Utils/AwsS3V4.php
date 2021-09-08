@@ -85,6 +85,8 @@ class AwsS3V4
             'X-Amz-Date' => $time_text,
             'X-Amz-Expires' => $expires, // 'Expires' is the number of seconds until the request becomes invalid
             'X-Amz-SignedHeaders' => 'host',
+            'x-Amz-Meta-Cache-Control' => 'max-age=120'
+
         );
         if ($token) {
             $x_amz_params['X-Amz-Security-Token'] = $token;
@@ -152,7 +154,8 @@ class AwsS3V4
     public function presignGet(
         String $dir,
         String $file_name,
-        String $bucket
+        String $bucket,
+        $headers = []
     ) {
         # calculating full uri from directory and filename
         $encoded_uri = '/' . $dir . '/' . $file_name;
