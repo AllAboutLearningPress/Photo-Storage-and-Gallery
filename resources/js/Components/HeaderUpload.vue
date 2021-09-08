@@ -218,7 +218,7 @@ export default {
                 });
 
             // go to upload details page where user can modify file details
-            this.$inertia.get("/upload");
+            this.$inertia.visit("/upload");
         },
         /** Add all the file size to total */
         calculateTotalBytes() {

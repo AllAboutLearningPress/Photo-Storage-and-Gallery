@@ -449,6 +449,7 @@
      * All DOM manipulation occurs in `_doLayout`.
      */
     Pig.prototype._computeLayout = function () {
+        console.log('images in compute layout', this.images);
         // Constants
         var wrapperWidth = parseInt(this.container.clientWidth);
 
@@ -600,7 +601,7 @@
      *
      */
     Pig.prototype._doLayout = function () {
-
+        console.log('images in dolayout', this.images);
         // Set the container height
         this.container.style.height = this.totalHeight + 'px';
 

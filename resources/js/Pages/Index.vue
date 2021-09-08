@@ -66,6 +66,7 @@ export default {
         // crating the Pig instance
         console.log("creating pig");
         this.pig = new Pig(this.photos.data, options);
+        this.pig.clear();
         // console.log("creating pig ", this.pig);
         this.pig.enable();
 
@@ -137,6 +138,7 @@ export default {
             this.pig.disable();
             this.pig.clear();
             this.pig = null;
+            console.log("disabled pig", this.pig);
         });
     },
 };
