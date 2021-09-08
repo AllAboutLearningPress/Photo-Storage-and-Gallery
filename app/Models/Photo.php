@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
+use Storage;
 use Str;
 
 class Photo extends Model
@@ -29,7 +30,12 @@ class Photo extends Model
             $photo->labels()->detach();
             // add code to delete the file
             // add code to remove download links
+            Storage::disk('s3_fullsize')->delete([
 
+                'full_size/' . $photo->file_name,
+                'thumbnails/' . $photo->file_name,
+                'preview_photos/' . $photo->file_name,
+            ]);
         });
         static::created(function ($photo) {
             $photo->slug = $photo->generateSlug($photo->title);

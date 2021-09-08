@@ -11,7 +11,7 @@
         <button
             type="button"
             class="btn btn-lg btn-primary"
-            v-if="this.photos.next_page_url"
+            v-if="this.photos && this.photos.next_page_url"
         >
             Load more
         </button>
@@ -24,6 +24,7 @@ import MainLayout from "../Layouts/MainLayout.vue";
 import SubHeader from "../Components/SubHeader.vue";
 import GlobalDropTarget from "../frontend/components/GlobalDropTarget.js";
 import PhotoView from "./PhotoView/PhotoView.vue";
+import { Inertia } from "@inertiajs/inertia";
 
 export default {
     components: {
@@ -54,30 +55,38 @@ export default {
         //     "image/tiff",
         //     "image/vnd.adobe.photoshop",
         // ];
-
-        const options = {
-            fetchMoreUrl: this.genFetMoreUrl(),
-            urlForSize: function (filename, size) {
-                return `/storage/full_size/${filename}`;
-            },
-            onClickHandler: this.photoOnClick,
-            figureTagName: "a",
-        };
-        // crating the Pig instance
-        console.log("creating pig");
-        this.pig = new Pig(this.photos.data, options);
-        this.pig.clear();
-        // console.log("creating pig ", this.pig);
-        this.pig.enable();
-
-        /** listening to inertia:navigate event to disable pig when
-         * navigating away
-         */
-        //this.navigationListener = this.$inertia.on("navigate", this.pigDisable);
-        // WARNING: this is required to fix `pigjs` bug, use after each `Pig` initialisation
-        window.dispatchEvent(new Event("resize"));
+        if (this.photos) {
+            this.initPig();
+        } else {
+            this.$inertia.reload({ only: ["photos"] }).then((resp) => {
+                this.initPig();
+            });
+        }
     },
     methods: {
+        initPig() {
+            const options = {
+                fetchMoreUrl: this.genFetMoreUrl(),
+                urlForSize: function (filename, size) {
+                    return `/storage/full_size/${filename}`;
+                },
+                onClickHandler: this.photoOnClick,
+                figureTagName: "a",
+            };
+            // crating the Pig instance
+            console.log("creating pig");
+            this.pig = new Pig(this.photos.data, options);
+            this.pig.clear();
+            // console.log("creating pig ", this.pig);
+            this.pig.enable();
+
+            /** listening to inertia:navigate event to disable pig when
+             * navigating away
+             */
+            //this.navigationListener = this.$inertia.on("navigate", this.pigDisable);
+            // WARNING: this is required to fix `pigjs` bug, use after each `Pig` initialisation
+            window.dispatchEvent(new Event("resize"));
+        },
         closePhotoView() {
             this.pig.removePhoto(this.photo.id);
             this.photo = null;
