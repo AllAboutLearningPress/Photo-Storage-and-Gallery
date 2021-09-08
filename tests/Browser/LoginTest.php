@@ -2,6 +2,7 @@
 
 namespace Tests\Browser;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
@@ -10,30 +11,27 @@ class LoginTest extends DuskTestCase
 {
     use DatabaseMigrations;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->artisan('optimize');
-        $this->artisan('db:seed --class="UserSeeder"');
-    }
     /**
-     * A Dusk test example.
+     * Tests login and logout feature
      *
      * @return void
      */
     public function testLoginAndLogout()
     {
 
-        // dd(env('DB_DATABASE'));
-        // dd(env('APP_ENV'));
-        $this->browse(function (Browser $browser) {
+        // creating the user for testing
+        $user = User::factory()->create([
+            'email' => 'testing_user@example.com'
+        ]);
+        $this->browse(function (Browser $browser)  use ($user) {
             $browser->visit('/')
-                ->assertSee('Enter');
-            $browser->type('email', 'user@example.com');
-            $browser->type('password', 'photo@12345pass!');
-            $browser->press(".login__submit-btn")
-                ->assertSee('Notifications');
-            $browser->press('Logout')
+                ->assertSee('Enter')
+                ->type('email', $user->email)
+                ->type('password', 'password')
+                ->press(".login__submit-btn")
+                ->assertSee('Notifications')
+                ->press('Logout')
+                ->waitFor('.login__submit-btn')
                 ->assertSee('Enter');
         });
     }
