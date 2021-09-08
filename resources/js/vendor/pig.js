@@ -449,7 +449,7 @@
      * All DOM manipulation occurs in `_doLayout`.
      */
     Pig.prototype._computeLayout = function () {
-        console.log('images in compute layout', this.images);
+        // console.log('images in compute layout', this.images);
         // Constants
         var wrapperWidth = parseInt(this.container.clientWidth);
 
@@ -601,7 +601,7 @@
      *
      */
     Pig.prototype._doLayout = function () {
-        console.log('images in dolayout', this.images);
+        // console.log('images in dolayout', this.images);
         // Set the container height
         this.container.style.height = this.totalHeight + 'px';
 
@@ -631,9 +631,9 @@
         // Here, we loop over every image, determine if it is inside our buffers or
         // no, and either insert it or remove it appropriately.
         this.images.forEach(function (image) {
-            if (!image.style) {
-                console.log(image);
-            }
+            // if (!image.style) {
+            //     console.log(image);
+            // }
             if (image.style.translateY + image.style.height < minTranslateYPlusHeight ||
                 image.style.translateY > maxTranslateY) {
                 // Hide Image

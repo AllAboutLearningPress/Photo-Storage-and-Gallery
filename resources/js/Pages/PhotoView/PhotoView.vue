@@ -260,10 +260,8 @@ export default {
         DeleteButton,
         ShareButton,
         DownloadButton,
-
         TagsDatalist,
         RestoreButton,
-
         DataModal,
         UploadIcon,
         PhotoInfo,
@@ -314,6 +312,7 @@ export default {
         );
     },
     mounted() {
+        console.log(this.$page.props.user);
         console.log(this.photo);
     },
     beforeUnmount() {

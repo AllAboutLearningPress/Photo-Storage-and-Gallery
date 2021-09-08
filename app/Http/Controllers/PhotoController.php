@@ -86,8 +86,13 @@ class PhotoController extends Controller
     public function getInfo(Request $request)
     {
         $data = $request->validate(['id' => 'integer']);
-        $photo = Photo::where('id', $data['id'])->with(['tags', 'user:name'])->withTrashed()->firstOrFail();
-        $photo->add_temp_url('preview_photos');
+        $photo = Photo::where('id', $data['id'])->with(['tags', 'user'])->withTrashed()->firstOrFail();
+        // $photo->add_temp_url('preview_photos');
+        // $photo->add_temp_url
+        $awsS3V4 = new AwsS3V4();
+        $bucket = config('aws.fullsize_bucket');
+        $photo->src = $awsS3V4->presignGet('preview_photos', $photo->file_name, $bucket);
+        $photo->downloadLink = $awsS3V4->presignGet('full_size', $photo->file_name, $bucket);
         return $photo;
     }
 }

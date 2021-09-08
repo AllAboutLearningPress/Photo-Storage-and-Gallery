@@ -5,6 +5,7 @@
             v-if="photo"
             v-on:close="closePhotoView"
             :photo="photo"
+            :downloadLink="photo.downloadLink"
             :info="true"
         ></photo-view>
         <div id="pig" class="gallery mb-4"></div>
