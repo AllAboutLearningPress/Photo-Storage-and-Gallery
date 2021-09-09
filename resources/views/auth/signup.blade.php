@@ -1,5 +1,5 @@
 @extends('layouts.auth_layout')
-
+@section('title', 'Create New Account')
 @section('content')
 <div class="login">
     <form class="js-login__form login__form" action="{{ $store_link }}" method="POST">

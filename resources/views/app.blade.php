@@ -17,9 +17,10 @@
         {{-- Scripts  --}}
         @routes
         {{-- @if(isset($load_pig)) --}}
-        <script src="/js/vendor/pig.js"></script>
+
         {{-- @endif --}}
         @if(!isset($public))
+        <script src="/js/vendor/pig.js"></script>
         <script src="/js/manifest.js" defer></script>
         <script src="/js/vendor.js" defer></script>
         <script src="/js/app.js" defer></script>

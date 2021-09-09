@@ -74,7 +74,6 @@ class ShareController extends Controller
                 $photo = Photo::findOrFail($sharedPhoto->photo_id, ['id', 'file_name', 'height', 'width']);
             }
 
-
             $downloadUrl  = null;
             // all urls are valid for 12 hours from generating
             // Even though the url is valid. The download link

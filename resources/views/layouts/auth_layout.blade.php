@@ -10,7 +10,7 @@
         <meta name="msapplication-TileColor" content="#da532c">
         <meta name="theme-color" content="#000000">
         <meta charset="utf-8" />
-        <title></title>
+        <title>@yield('title')</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         <!-- See https://github.com/h5bp/html5-boilerplate for details -->

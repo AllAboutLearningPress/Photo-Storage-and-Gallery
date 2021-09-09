@@ -2,6 +2,7 @@
     <div class="image-view-wrapper">
         <div class="image-view">
             <photo-info
+                v-if="photo.user"
                 :photo="photo"
                 :sidebarPositionClass="sidebarPositionClass"
                 :toggleSidebar="toggleSidebar"
@@ -96,11 +97,7 @@
 
           Add any elements inside (for preloading/etc.) but keep existing elements intact
         -->
-                <div
-                    v-if="photo.size"
-                    :style="genStyle"
-                    class="image-view__pic"
-                >
+                <div :style="genStyle" class="image-view__pic">
                     <img
                         draggable="false"
                         class="image-view__img"
@@ -243,12 +240,12 @@ import ShowDetailsButton from "./Componenets/ShowDetailsButton.vue";
 
 import TagsDatalist from "@/Components/TagsDatalist.vue";
 import Modal from "bootstrap/js/dist/modal";
-import { notify, updatePhotoDetails } from "@/util.js";
+import { notify } from "@/util.js";
 import RestoreButton from "./Componenets/RestoreButton.vue";
 
 import DataModal from "@/Components/DataModal.vue";
 import UploadIcon from "../../Components/UploadIcon.vue";
-import Input from "../../Jetstream/Input.vue";
+
 import PhotoInfo from "./Componenets/PhotoInfo.vue";
 
 export default {
@@ -269,18 +266,16 @@ export default {
     layoout: MainLayout,
 
     setup() {
-        const toggleHeader = inject("toggleHeader");
-        const showHeader = inject("showHeader");
-
-        // hiding header
-        console.log(toggleHeader);
-        console.log(showHeader);
-        //toggleHeader(false);
-
-        return {
-            showHeader,
-            toggleHeader,
-        };
+        // const toggleHeader = inject("toggleHeader");
+        // const showHeader = inject("showHeader");
+        // // hiding header
+        // console.log(toggleHeader);
+        // console.log(showHeader);
+        // //toggleHeader(false);
+        // return {
+        //     showHeader,
+        //     toggleHeader,
+        // };
     },
     data() {
         return {
@@ -290,30 +285,49 @@ export default {
             sidebarPositionClass: "", // used to show/hide sidebar. Will show if set to "is-open"
         };
     },
-    created() {
-        if (!this.photo.size && this.$page.props.user) {
-            // componenet is created from gallery index
-            // so we need to request data about the photo
-            // axios
-            //     .post(route("photo.get_info"), { id: this.photo.id })
-            //     .then((resp) => {
-            //         console.log(resp);
-            //         this.photo = resp.data;
-            //     });
-        }
-        setTimeout(() => {
-            console.log(this.photo);
-        });
-    },
+    // created() {
+    //     // if (!this.photo.size && this.$page.props.user) {
+    //     //     // componenet is created from gallery index
+    //     //     // so we need to request data about the photo
+    //     //     // axios
+    //     //     //     .post(route("photo.get_info"), { id: this.photo.id })
+    //     //     //     .then((resp) => {
+    //     //     //         console.log(resp);
+    //     //     //         this.photo = resp.data;
+    //     //     //     });
+    //     // }
+    //     // setTimeout(() => {
+    //     //     console.log(this.photo);
+    //     // });
+    // },
     beforeMount() {
         // getting the last sidebarposition from localstorage
         this.sidebarPositionClass = localStorage.getItem(
             "sidebar-position-class"
         );
+
+        if (this.$page.props.users) {
+            this.toggleHeader = inject("toggleHeader");
+            this.showHeader = inject("showHeader");
+
+            // // hiding header
+            // console.log(toggleHeader);
+            // console.log(showHeader);
+            // //toggleHeader(false);
+
+            // return {
+            //     showHeader,
+            //     toggleHeader,
+            // };
+        }
     },
     mounted() {
-        console.log(this.$page.props.user);
+        // console.log(this.$page.props.user);
         console.log(this.photo);
+        if (!this.photo.file_name) {
+            console.log("reload");
+            this.$inertia.reload({ only: ["photo"] });
+        }
     },
     beforeUnmount() {
         // Showing header again for other pages

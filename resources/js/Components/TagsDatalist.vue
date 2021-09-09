@@ -1,5 +1,5 @@
 <template>
-    <datalist id="tag-list">
+    <datalist v-if="tags" id="tag-list">
         <option
             v-for="tag in tags"
             :key="tag.id"
@@ -12,12 +12,22 @@
 <script>
 import { inject } from "@vue/runtime-core";
 export default {
-    setup() {
-        const tags = inject("tags");
-        return { tags };
+    // setup() {
+    //     const tags = inject("tags");
+    //     return { tags };
+    // },
+    data() {
+        return {
+            tags: null,
+        };
     },
-    created() {
-        //
+    beforeMount() {
+        if (this.$page.props.user) {
+            this.tags = inject("tags");
+        }
     },
+    // created() {
+    //     //
+    // },
 };
 </script>

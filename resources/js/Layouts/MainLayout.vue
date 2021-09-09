@@ -157,7 +157,6 @@ export default {
         const toggleHeader = (value) => {
             showHeader.value = value;
         };
-
         const tags = ref([]);
         /*
         Fetches the tags from server in chunks.

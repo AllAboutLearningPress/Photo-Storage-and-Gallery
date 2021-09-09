@@ -100,7 +100,7 @@
                             </dd>
                         </dl>
                     </li>
-                    <li>
+                    <li v-if="photo.tags">
                         <dl class="dlist_0 dlist">
                             <dt>
                                 <label for="tag-input">Tags</label>

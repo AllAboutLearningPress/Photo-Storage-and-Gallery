@@ -35,6 +35,9 @@ class PhotoController extends Controller
         $photo->src = $awsS3V4->presignGet('preview_photos', $photo->file_name, $bucket);
         $downloadLink = $awsS3V4->presignGet('full_size', $photo->file_name, $bucket);
         //$photo->add_temp_url('preview_photos');
+        // Inertia::lazy(function () use ($photo) {
+        //     return $photo;
+        // }
         return  Inertia::render('PhotoView/PhotoView', [
             'photo' => $photo,
             'downloadLink' => $downloadLink,

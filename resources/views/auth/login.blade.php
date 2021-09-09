@@ -1,4 +1,5 @@
 @extends('layouts.auth_layout')
+@section('title', 'Login to AALP Photos')
 @section('content')
 <div class="login">
     <form class="js-login__form login__form" action="{{ route('login') }}" method="POST">

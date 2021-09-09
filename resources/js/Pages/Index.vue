@@ -5,7 +5,7 @@
             v-if="photo"
             v-on:close="closePhotoView"
             :photo="photo"
-            :downloadLink="photo.downloadLink"
+            :downloadLink="true"
             :info="true"
         ></photo-view>
         <div id="pig" class="gallery mb-4"></div>
@@ -56,7 +56,8 @@ export default {
         //     "image/tiff",
         //     "image/vnd.adobe.photoshop",
         // ];
-        if (this.photos) {
+        //console.log(this.photos);
+        if (this.photos != null) {
             this.initPig();
         } else {
             this.$inertia.reload({ only: ["photos"] }).then((resp) => {
@@ -95,9 +96,10 @@ export default {
         /**Executed when a photo in the gallery is clicked */
         photoOnClick(filename, id, slug) {
             console.log(id);
-            this.photo = { id };
-            // Current URL: https://my-website.com/page_a
-            console.log(slug);
+
+            // user is need to to show "ShowDetailsButton"
+            this.photo = { id: id, user: {} };
+
             const nextURL = route("photo.show", { id: id, slug: slug });
             const nextTitle = "My new page title";
             const nextState = {
@@ -106,12 +108,13 @@ export default {
 
             // This will create a new entry in the browser's history, without reloading
             window.history.pushState(nextState, nextTitle, nextURL);
-            axios
-                .post(route("photo.get_info"), { id: this.photo.id })
-                .then((resp) => {
-                    console.log(resp);
-                    this.photo = resp.data;
-                });
+
+            // axios
+            //     .post(route("photo.get_info"), { id: this.photo.id })
+            //     .then((resp) => {
+            //         console.log(resp);
+            //         this.photo = resp.data;
+            //     });
 
             // this.$inertia.visit(
             //     route("photo.show", {
