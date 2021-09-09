@@ -21,27 +21,6 @@ class Photo extends Model
         'sha256', 'dhash'
     ];
 
-    public static function boot()
-    {
-        parent::boot();
-        static::deleting(function ($photo) {
-            // deleting pivot table tag entries before the photo is deleted
-            $photo->tags()->detach();
-            $photo->labels()->detach();
-            // add code to delete the file
-            // add code to remove download links
-            Storage::disk('s3_fullsize')->delete([
-
-                'full_size/' . $photo->file_name,
-                'thumbnails/' . $photo->file_name,
-                'preview_photos/' . $photo->file_name,
-            ]);
-        });
-        static::created(function ($photo) {
-            $photo->slug = $photo->generateSlug($photo->title);
-            $photo->save();
-        });
-    }
 
     /**
      * The user defined tags that belong to this photo
