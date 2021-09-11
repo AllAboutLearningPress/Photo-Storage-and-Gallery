@@ -66,14 +66,15 @@ class PhotoObserver
      */
     public function forceDeleted(Photo $photo)
     {
+        $file_versions = ['full_size', 'thumbnails', 'preview_photos'];
+        $full_paths = [];
+        foreach ($file_versions as $file_version) {
+            $full_path = $photo->genFullPath($file_version);
+            Cache::forget($full_path);
+            array_push($full_paths, $full_path);
+        }
+
         // add code to remove download links
-        Storage::disk('s3_fullsize')->delete([
-
-            'full_size/' . $photo->file_name,
-            'thumbnails/' . $photo->file_name,
-            'preview_photos/' . $photo->file_name,
-        ]);
-
-        Cache::forget();
+        Storage::disk('s3_fullsize')->delete($full_paths);
     }
 }

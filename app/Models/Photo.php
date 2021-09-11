@@ -59,6 +59,20 @@ class Photo extends Model
     {
         return '/thumbnails/' . $this->file_name;
     }
+
+    public function genFullPath($file_version, $starting_slash = false)
+    {
+        # removing first and last slash if any
+        #$file_version = preg_replace('/^\/|\/$/g', '', $file_version);
+        if (!($file_version[-1] == '/')) {
+            # forward slash not found on the end of $file_version
+            $file_version .= '/';
+        }
+        if ($starting_slash && $file_version[0] != '/') {
+            $file_version = '/' . $file_version;
+        }
+        return $file_version . $this->file_name;
+    }
     /**
      * Set the proper slug attribute.
      *

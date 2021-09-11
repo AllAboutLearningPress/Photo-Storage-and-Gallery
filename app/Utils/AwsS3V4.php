@@ -152,13 +152,12 @@ class AwsS3V4
      * @return string Signed url of the reqeusted file.
      */
     public function presignGet(
-        String $dir,
-        String $file_name,
+        String $encoded_uri,
         String $bucket,
         $headers = []
     ) {
         # calculating full uri from directory and filename
-        $encoded_uri = '/' . $dir . '/' . $file_name;
+        // $encoded_uri = '/' . $dir . '/' . $file_name;
 
         // Specify the hostname for the S3 endpoint
         if ($this->region == 'us-east-1') {
