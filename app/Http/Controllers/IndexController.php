@@ -73,7 +73,7 @@ class IndexController extends Controller
     public function generateSrc($photos)
     {
         foreach ($photos as $photo) {
-            $photo->add_temp_url('thumbnails');
+            $photo->addTempUrl('thumbnails');
         }
         return $photos;
     }

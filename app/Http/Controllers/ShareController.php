@@ -48,13 +48,9 @@ class ShareController extends Controller
 
         // ]);
         $validator = Validator::make(
+            ['key' => $key],
             [
-
-                'key' => $key,
-            ],
-            [
-                'key' => ['required', 'string', 'min:32', 'max:32'],
-
+                'key' => ['required', 'string', 'min:32', 'max:32']
             ]
         );
         if ($validator->fails()) {
@@ -91,8 +87,8 @@ class ShareController extends Controller
             }
 
             // presign get request url for preview
-            $photo->src = $awsS3V4->presignGet('preview_photos', $photo->file_name, config('aws.preview_bucket'));
-
+            // $photo->src = $awsS3V4->presignGet($photo->genFullPath('preview_photos'), config('aws.preview_bucket'));
+            $photo->addTempUrl('preview_photos', config('aws.preview_bucket'));
             return Inertia::render('PhotoView/PhotoView', [
                 'photo' => $photo,
                 'downloadLink' => $downloadUrl,

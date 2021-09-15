@@ -71,6 +71,7 @@ class Photo extends Model
         if ($starting_slash && $file_version[0] != '/') {
             $file_version = '/' . $file_version;
         }
+        // dd($file_version);
         return $file_version . $this->file_name;
     }
     /**
@@ -113,15 +114,14 @@ class Photo extends Model
         return "{$slug}-2";
     }
 
-    public function add_temp_url($file_type, $bucket = null)
+    public function addTempUrl($file_version, $bucket = null)
     {
 
-        //$this->src = "/storage/full_size/" . $this->file_name;
-        //$this->thumbSrc = "/storage/full_size/" . $this->file_name;
+
         if (!$bucket) {
             $bucket = config('aws.fullsize_bucket');
         }
-        $this->src =  (new \App\Utils\AwsS3V4())->presignGet($file_type, $this->file_name, $bucket);
+        $this->src =  (new \App\Utils\AwsS3V4())->presignGet($this->genFullPath($file_version), $bucket);
     }
 
     protected function makeAllSearchableUsing($query)

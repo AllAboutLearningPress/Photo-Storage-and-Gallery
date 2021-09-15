@@ -173,7 +173,7 @@ class AwsS3V4
 
 
         // Task 1: Creating canonical request
-        $canonical_request = "GET\n" . $encoded_uri . "\n" . $this->query_string . "\n" . $header_string . "\n" . $signed_headers_string . "\nUNSIGNED-PAYLOAD";
+        $canonical_request = "GET\n" . '/' . $encoded_uri . "\n" . $this->query_string . "\n" . $header_string . "\n" . $signed_headers_string . "\nUNSIGNED-PAYLOAD";
 
         // Task 2: Creating a string to sign
         $string_to_sign = $this->HMACAlgorithm . "\n" . $this->time_text . "\n" . $this->scope . "\n" . hash('sha256', $canonical_request, false);
@@ -184,7 +184,7 @@ class AwsS3V4
         $signature = hash_hmac('sha256', $string_to_sign, $signing_key);
 
         // Task 4: Adding the signature and query string to the url
-        return 'https://' . $hostname . $encoded_uri . '?' . $this->query_string . '&X-Amz-Signature=' . $signature;
+        return 'https://' . $hostname . '/' . $encoded_uri . '?' . $this->query_string . '&X-Amz-Signature=' . $signature;
     }
 
 

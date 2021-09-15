@@ -67,16 +67,4 @@ class Tag extends Model
 
         return "{$slug}-2";
     }
-
-    public function add_temp_url($version, $options = [])
-    {
-
-        //$this->src = "/storage/full_size/" . $this->file_name;
-        //$this->thumbSrc = "/storage/full_size/" . $this->file_name;
-        $this->src = Storage::disk('s3_fullsize')->temporaryUrl(
-            $version . "/" . $this->file_name,
-            now()->addMinutes(10),
-            $options
-        );
-    }
 }

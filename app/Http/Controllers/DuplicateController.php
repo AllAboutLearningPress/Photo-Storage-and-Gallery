@@ -15,8 +15,8 @@ class DuplicateController extends Controller
         $right = Photo::find($right_id);
         $bucket = config('aws.fullsize_bucket');
         $awsS3V4 = new AwsS3V4();
-        $left->src = $awsS3V4->presignGet('preview_photos', $left->file_name, $bucket);
-        $right->src = $awsS3V4->presignGet('preview_photos', $right->file_name, $bucket);
+        $left->src = $awsS3V4->presignGet($left->genFullPath('preview_photos'), $bucket);
+        $right->src = $awsS3V4->presignGet($right->genFullPath('preview_photos'), $bucket);
 
         return Inertia::render('ComparePhoto', [
             'leftPhoto' => $left,
