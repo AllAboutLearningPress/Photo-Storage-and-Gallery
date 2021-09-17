@@ -15,10 +15,7 @@ class PhotoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        return Inertia::render('PhotoView/PhotoView');
-    }
+    // p8
 
     /**
      * Display the specified resource.
@@ -29,7 +26,11 @@ class PhotoController extends Controller
     public function show(Request $request, $id, $slug)
     {
 
-        $photo = Photo::withTrashed()->with('user', 'tags')->findOrFail($id);
+        $photo = Photo::select(['id', 'title', 'file_name', 'height', 'width', 'size', 'time_taken', 'deleted_at', 'slug', 'user_id'])
+            ->with('user:id,name', 'tags:id,name,slug')
+            ->withTrashed()
+            ->findOrFail($id);
+
         $awsS3V4 = new AwsS3V4();
         $bucket = config('aws.fullsize_bucket');
         //$photo->src = $awsS3V4->presignGet($photo->genFullPath('preview_photos'), $bucket);
@@ -88,16 +89,38 @@ class PhotoController extends Controller
         return  Redirect::back();
     }
 
-    public function getInfo(Request $request)
+    /**
+     * User to get info about a single photo
+     * This route is used in PhotoView.vue page when
+     * rendered from route('home') page
+     */
+
+    // public function getInfo(Request $request)
+    // {
+    //     $data = $request->validate(['id' => 'integer']);
+    //     $photo = Photo::where('id', $data['id'])->with(['tags', 'user'])->withTrashed()->firstOrFail();
+    //     // $photo->addTempUrl('preview_photos');
+    //     // $photo->addTempUrl
+    //     $awsS3V4 = new AwsS3V4();
+    //     $bucket = config('aws.fullsize_bucket');
+    //     $photo->src = $awsS3V4->presignGet($photo->genFullPath('preview_photos'), $bucket);
+    //     $photo->downloadLink = $awsS3V4->presignGet($photo->genFullPath('full_size'), $bucket);
+    //     return $photo;
+    //     return response($photo, 200);
+    // }
+
+    /**
+     * Shows the view for trashed photo. It uses the
+     * same vue page as index
+     * @return \Inertia\Response
+     */
+
+    public function trash()
     {
-        $data = $request->validate(['id' => 'integer']);
-        $photo = Photo::where('id', $data['id'])->with(['tags', 'user'])->withTrashed()->firstOrFail();
-        // $photo->addTempUrl('preview_photos');
-        // $photo->addTempUrl
-        $awsS3V4 = new AwsS3V4();
-        $bucket = config('aws.fullsize_bucket');
-        $photo->src = $awsS3V4->presignGet($photo->genFullPath('preview_photos'), $bucket);
-        $photo->downloadLink = $awsS3V4->presignGet($photo->genFullPath('full_size'), $bucket);
-        return $photo;
+        $photos = Photo::onlyTrashed()->where('height', "!=", null)->cursorPaginate(30);
+        return Inertia::render('Index', [
+            'photos' => genTempSrc($photos, 'thumbanails'),
+            'title' => 'Trashed Photos',
+        ])->withViewData(['title' => 'Trashed Photos']);
     }
 }

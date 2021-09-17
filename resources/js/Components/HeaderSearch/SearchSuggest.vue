@@ -40,7 +40,7 @@ export default {
             console.log("open");
             e.preventDefault();
             this.$inertia.visit(
-                route("photo.show", {
+                route("photos.show", {
                     id: id,
                     slug: slug,
                 })

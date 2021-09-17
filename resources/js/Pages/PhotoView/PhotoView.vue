@@ -353,7 +353,7 @@ export default {
             this.deleteModal.toggle();
             this.$emit("close");
             this.$inertia.post(
-                route("photo.delete"),
+                route("photos.delete"),
                 {
                     id: this.photo.id,
                     force: this.photo.deleted_at ? true : false,
@@ -377,7 +377,7 @@ export default {
         /**Restores a photo from trash to photos */
         restorePhoto(e) {
             this.$inertia.post(
-                route("photo.restore"),
+                route("photos.restore"),
                 { id: this.photo.id },
                 {
                     onSuccess: () => notify("Photo restored", "success"),

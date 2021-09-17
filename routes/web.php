@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 | Here is where you can register web routes for your application. These
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
-|
+œ|
 */
 
 
@@ -31,7 +31,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get("/", [IndexController::class, 'index'])->name('home');
     Route::post("/fetch-more", [IndexController::class, 'fetch_more'])->name('index.fetch_more');
     //Route::resource('photo', PhotoController::class);
-    Route::get("/trash", [IndexController::class, 'trash'])->name('trash');
+    Route::get("/trash", [PhotoController::class, 'trash'])->name('photos.trash');
 
     /* Routes related to uploading files */
     Route::prefix('upload')->name("uploads.")->group(function () {
@@ -51,10 +51,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
 
     /* Routes related to photos */
-    Route::get('photo/{id}/{slug}', [PhotoController::class, 'show'])->name('photo.show');
-    Route::post('photo/delete', [PhotoController::class, 'destroy'])->name('photo.delete');
-    Route::post('photo/restore', [PhotoController::class, 'restore'])->name('photo.restore');
-    Route::post('photo/get-info', [PhotoController::class, 'getInfo'])->name('photo.get_info');
+    Route::prefix('photo')->name('photos.')->group(function () {
+        Route::get('{id}/{slug}', [PhotoController::class, 'show'])->name('show');
+        Route::post('delete', [PhotoController::class, 'destroy'])->name('delete');
+        Route::post('get-info', [PhotoController::class, 'getInfo'])->name('get_info');
+    });
 
     /** Routes related to share */
     Route::prefix('share')->name('share.')->group(function () {
@@ -62,9 +63,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     });
 
     /* Routes related to tags */
-    Route::get("/tags/search-by-partial")->name('tags.search_partial');
-    Route::get('/tags/get-tags', [TagController::class, 'getTags'])->name('tags.get_tags');
-    Route::resource('tags', TagController::class);
+    Route::prefix('tags')->name('tags.')->group(function () {
+        Route::get('', [TagController::class, 'index'])->name('index');
+        route::get('{slug}', [TagController::class, 'show'])->name('show');
+        Route::get("search-by-partial")->name('search_partial');
+        Route::get('get-tags', [TagController::class, 'getTags'])->name('get_tags');
+    });
 
     /** Routes related to search */
     Route::post("/search/search-title", [SearchController::class, 'searchTitle'])->name('search.search_title');

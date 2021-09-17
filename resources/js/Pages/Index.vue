@@ -100,7 +100,7 @@ export default {
             // user is need to to show "ShowDetailsButton"
             this.photo = { id: id, user: {} };
 
-            const nextURL = route("photo.show", { id: id, slug: slug });
+            const nextURL = route("photos.show", { id: id, slug: slug });
             const nextTitle = "My new page title";
             const nextState = {
                 additionalInformation: "Updated the URL with JS",
@@ -110,14 +110,14 @@ export default {
             window.history.pushState(nextState, nextTitle, nextURL);
 
             // axios
-            //     .post(route("photo.get_info"), { id: this.photo.id })
+            //     .post(route("photos.get_info"), { id: this.photo.id })
             //     .then((resp) => {
             //         console.log(resp);
             //         this.photo = resp.data;
             //     });
 
             // this.$inertia.visit(
-            //     route("photo.show", {
+            //     route("photos.show", {
             //         id: id,
             //         slug: slug,
             //     })

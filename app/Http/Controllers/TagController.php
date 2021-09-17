@@ -16,7 +16,7 @@ class TagController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Tag', ['tags' => Tag::limit(100)->get()]);
+        return Inertia::render('Tag', ['tags' => Tag::limit(100)->orderBy('id', 'DESC')->get()]);
     }
 
     /**
@@ -46,9 +46,9 @@ class TagController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($slug)
     {
-        //
+        $tag = Tag::where('slug', $slug)->firstOrFail();
     }
 
     /**
@@ -100,7 +100,7 @@ class TagController extends Controller
     public function getTags(Request $request)
     {
         if ($request->ajax()) {
-            return DB::table('tags')->select('id', 'name', 'slug')->orderBy('id')->cursorPaginate(1000)->toArray();
+            return DB::table('tags')->select('id', 'name', 'slug')->orderBy('id')->cursorPaginate(1000);
         }
         return redirect(route('home'));
     }

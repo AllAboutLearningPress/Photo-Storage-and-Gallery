@@ -103,7 +103,7 @@ export default {
             },
             {
                 name: "Trash",
-                route: "trash",
+                route: "photos.trash",
             },
             {
                 name: "Invitations",

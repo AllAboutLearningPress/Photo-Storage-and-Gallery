@@ -41,7 +41,7 @@ class UploadTest extends DuskTestCase
             $uploadedPhoto = Photo::where('title', 'city.jpeg')->latest()->first();
             static::assertNotNull($uploadedPhoto); // checking if photo is entry is stored on DB
             $browser->visit(route(
-                'photo.show',
+                'photos.show',
                 ['id' => $uploadedPhoto->id, 'slug' => $uploadedPhoto->slug]
             )) // visiting the PhotoView
                 ->waitFor("img[src*='{$uploadedPhoto->file_name}']") // checking if element is loaded

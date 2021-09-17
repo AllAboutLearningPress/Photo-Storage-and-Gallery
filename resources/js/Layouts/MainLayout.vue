@@ -226,9 +226,9 @@ export default {
         ];
 
         const globalDropTarget = new GlobalDropTarget(allowedMimeTypes);
-        if (this.$page.props.user) {
-            this.fetchTags();
-        }
+        // if (this.$page.props.user) {
+        //     this.fetchTags();
+        // }
         // setInterval(() => {
         //     console.log("total in main: ", this.total);
         //     this.total++;
