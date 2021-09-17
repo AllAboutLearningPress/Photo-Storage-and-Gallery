@@ -46,9 +46,18 @@ class TagController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($slug)
+    public function show(Request $request, $slug)
     {
         $tag = Tag::where('slug', $slug)->firstOrFail();
+        // dd($tag->photos);
+        return Inertia::render('Index', [
+            // 'photos' => [
+            //     'data' => genTempSrc($tag->photos()->, 'thumbanails'),
+            //     'next_page_url' => null
+            // ],
+            'photos' => genTempSrc($tag->photos()->cursorPaginate(30), 'thumbnails'),
+            'title' => $tag->name,
+        ])->withViewData(['title' => $tag->name]);
     }
 
     /**
@@ -105,3 +114,7 @@ class TagController extends Controller
         return redirect(route('home'));
     }
 }
+
+// https: //aalpphotosdev.s3-ap-southeast-1.amazonaws.com/thumbanails/e4cf221b5c2dc7fba295883b05209e513fb0944ff7cea3c3a3a6390f5ff3951e.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUYLJ2GP7SPWQCCRB%2F20210917%2Fap-southeast-1%2Fs3%2Faws4_request&X-Amz-Date=20210917T162356Z&X-Amz-Expires=21600&X-Amz-SignedHeaders=host&x-Amz-Meta-Cache-Control=max-age%3D120&X-Amz-Signature=8de42ffa33b44f196328c8f708236398ad5fce902f87d43031dd47ca01a07a82
+
+// https://aalpphotosdev.s3-ap-southeast-1.amazonaws.com/thumbnails/e4cf221b5c2dc7fba295883b05209e513fb0944ff7cea3c3a3a6390f5ff3951e.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUYLJ2GP7SPWQCCRB%2F20210917%2Fap-southeast-1%2Fs3%2Faws4_request&X-Amz-Date=20210917T162536Z&X-Amz-Expires=21600&X-Amz-SignedHeaders=host&x-Amz-Meta-Cache-Control=max-age%3D120&X-Amz-Signature=9b29d00f6b5793e3c2fea1c23407125a43abecdace5fe279664ae4e42761702d

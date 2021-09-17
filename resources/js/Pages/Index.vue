@@ -56,7 +56,7 @@ export default {
         //     "image/tiff",
         //     "image/vnd.adobe.photoshop",
         // ];
-        //console.log(this.photos);
+        console.log(this.photos);
         if (this.photos != null) {
             this.initPig();
         } else {

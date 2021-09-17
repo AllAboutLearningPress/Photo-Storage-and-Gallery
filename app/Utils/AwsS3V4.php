@@ -85,7 +85,7 @@ class AwsS3V4
             'X-Amz-Date' => $time_text,
             'X-Amz-Expires' => $expires, // 'Expires' is the number of seconds until the request becomes invalid
             'X-Amz-SignedHeaders' => 'host',
-            'x-Amz-Meta-Cache-Control' => 'max-age=120'
+            //'x-Amz-Meta-Cache-Control' => 'max-age=120'
 
         );
         if ($token) {

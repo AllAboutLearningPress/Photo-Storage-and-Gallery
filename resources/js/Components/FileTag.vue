@@ -27,9 +27,9 @@
         </div>
 
         <div class="js-tags__list tags__list">
-            <a
+            <inertia-link
                 class="tags__tag tag tag_deletable btn btn-secondary"
-                href="#"
+                :href="route('tags.show', { slug: tag.slug })"
                 v-for="(tag, index) in tags"
                 :key="tag.id"
             >
@@ -45,7 +45,7 @@
                 >
                     <span class="visually-hidden">Delete tag</span>
                 </button>
-            </a>
+            </inertia-link>
             <!-- <a
                 class="tags__tag tag tag_deletable btn btn-secondary"
                 href="#"
