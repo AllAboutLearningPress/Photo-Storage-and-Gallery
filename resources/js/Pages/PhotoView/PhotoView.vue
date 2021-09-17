@@ -263,20 +263,19 @@ export default {
         UploadIcon,
         PhotoInfo,
     },
-    layoout: MainLayout,
+    layout: MainLayout,
 
     setup() {
-        // const toggleHeader = inject("toggleHeader");
-        // const showHeader = inject("showHeader");
-        // // hiding header
-        // console.log(toggleHeader);
-        // console.log(showHeader);
-        // //toggleHeader(false);
-        // return {
-        //     showHeader,
-        //     toggleHeader,
-        // };
+        const toggleHeader = inject("toggleHeader");
+        // hiding header
+        toggleHeader(false);
+
+        // making this injected values available to the componenet
+        return {
+            toggleHeader,
+        };
     },
+
     data() {
         return {
             deleteModal: null,
@@ -285,41 +284,12 @@ export default {
             sidebarPositionClass: "", // used to show/hide sidebar. Will show if set to "is-open"
         };
     },
-    // created() {
-    //     // if (!this.photo.size && this.$page.props.user) {
-    //     //     // componenet is created from gallery index
-    //     //     // so we need to request data about the photo
-    //     //     // axios
-    //     //     //     .post(route("photo.get_info"), { id: this.photo.id })
-    //     //     //     .then((resp) => {
-    //     //     //         console.log(resp);
-    //     //     //         this.photo = resp.data;
-    //     //     //     });
-    //     // }
-    //     // setTimeout(() => {
-    //     //     console.log(this.photo);
-    //     // });
-    // },
+
     beforeMount() {
         // getting the last sidebarposition from localstorage
         this.sidebarPositionClass = localStorage.getItem(
             "sidebar-position-class"
         );
-
-        if (this.$page.props.users) {
-            this.toggleHeader = inject("toggleHeader");
-            this.showHeader = inject("showHeader");
-
-            // // hiding header
-            // console.log(toggleHeader);
-            // console.log(showHeader);
-            // //toggleHeader(false);
-
-            // return {
-            //     showHeader,
-            //     toggleHeader,
-            // };
-        }
     },
     mounted() {
         // console.log(this.$page.props.user);
@@ -331,7 +301,7 @@ export default {
     },
     beforeUnmount() {
         // Showing header again for other pages
-        console.log(this.toggleHeader);
+        //console.log(this.toggleHeader);
         this.toggleHeader(true);
     },
     computed: {
