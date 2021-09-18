@@ -14,6 +14,7 @@
                     placeholder="Specify tag"
                     autocomplete="off"
                     ref="tag-input"
+                    v-on:keyup.enter="addTag"
                 />
                 <button
                     title="Add tag"
@@ -93,6 +94,8 @@ export default {
                     })
                     .then((resp) => {
                         console.log(resp);
+                        this.$refs["tag-input"].value = "";
+                        this.$nextTick();
                         if (!tagId) {
                             tagId = resp.data;
                         }

@@ -11,11 +11,6 @@ use Tests\DuskTestCase;
 
 class UploadTest extends DuskTestCase
 {
-    //use DatabaseMigrations;
-    // public function boot()
-    // {
-    //     $this->artisan('migrate:refresh');
-    // }
     /**
      * Testing the photo upload feature
      *
@@ -57,7 +52,9 @@ class UploadTest extends DuskTestCase
         });
     }
     private $testing_tag = 'testing-tag';
-    public function testTagInputField()
+    private $newTagSelectorInTagList = "a[href*='tags/testing-tag']";
+
+    public function testAddTagToPhotoUsingInputField()
     {
         // $user = User::factory()->create([
         //     'email' => 'testing_user@example.com'
@@ -70,7 +67,7 @@ class UploadTest extends DuskTestCase
             $showDetailsButtonSelector = ".image-view__show-details";
             $tagInputSelector = ".js-tags__input";
             $tagInputFieldName = 'tag-input';
-            $newTagSelectorInTagList = "a[href*='tags/{$this->testing_tag}']";
+            // $newTagSelectorInTagList = "a[href*='tags/{$this->testing_tag}']";
 
             $browser->assertVisible($showDetailsButtonSelector)
                 ->click($showDetailsButtonSelector)
@@ -79,15 +76,31 @@ class UploadTest extends DuskTestCase
                 ->type($tagInputFieldName, $this->testing_tag)
                 ->assertVisible($addTagButtonSelector)
                 ->click($addTagButtonSelector)
-                ->waitFor($newTagSelectorInTagList, 120)
-                ->assertVisible($newTagSelectorInTagList);
+                ->waitFor($this->newTagSelectorInTagList, 120)
+                ->assertVisible($this->newTagSelectorInTagList);
         });
     }
-    // public function testPhotoVisibleInTags()
-    // {
-    //     $this->browse(function (Browser $browser) {
 
-    //         //
-    //     });
-    // }
+    public function testOpenPhotoFromTagList()
+    {
+
+        $this->browse(function (Browser $browser) {
+            $tagDeleteButtonSelector = $this->newTagSelectorInTagList . " button";
+            $uploadedPhoto = Photo::where('title', 'city.jpeg')->latest()->first();
+            $uploadedPhotoInGallerySelector = "img[src*='thumbnails/{$uploadedPhoto->file_name}']";
+            $browser = $browser->visitRoute('tags.index')
+                ->assertSee('Popular tags')
+                ->assertSee($this->testing_tag)
+                ->click($this->newTagSelectorInTagList)
+                ->waitFor($uploadedPhotoInGallerySelector, 10) // checking if element is loaded
+                ->assertVisible($uploadedPhotoInGallerySelector);
+            $browser->script([
+                "var el = document.querySelector('{$uploadedPhotoInGallerySelector}')",
+                "el.parentElement.click()",
+            ]);
+
+            $browser //->click($uploadedPhotoInGallerySelector)
+                ->pause(300000);
+        });
+    }
 }
