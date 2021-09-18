@@ -25,7 +25,6 @@
                 </button>
             </div>
         </div>
-
         <div class="js-tags__list tags__list">
             <inertia-link
                 class="tags__tag tag tag_deletable btn btn-secondary"
@@ -41,7 +40,7 @@
                     type="button"
                     class="js-tag-delete tag__delete btn-close"
                     aria-label="Delete tag"
-                    v-on:click="removeTag(tag, index)"
+                    v-on:click="removeTag($event, tag, index)"
                 >
                     <span class="visually-hidden">Delete tag</span>
                 </button>
@@ -87,7 +86,7 @@ export default {
                 }
 
                 axios
-                    .post(route("uploads.add_tag"), {
+                    .post(route("photos.add_tag"), {
                         fileId: this.id,
                         tagId: tagId,
                         tagName: value,
@@ -97,19 +96,17 @@ export default {
                         if (!tagId) {
                             tagId = resp.data;
                         }
-                        this.$emit("add-tag", {
-                            name: value,
-                            id: tagId,
-                        });
+                        this.$emit("add-tag", resp.data);
                         notify("Tag Added", "success");
                     });
             }
         },
 
-        removeTag(tag, index) {
+        removeTag(e, tag, index) {
+            e.preventDefault();
             this.$emit("remove-tag", index);
             axios
-                .post(route("uploads.remove_tag"), {
+                .post(route("photos.remove_tag"), {
                     fileId: this.id,
                     tagId: tag.id,
                 })

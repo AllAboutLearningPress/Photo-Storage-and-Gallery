@@ -39,11 +39,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::post("store", [UploadController::class, 'store'])->name('store');
         Route::post("store-file", [UploadController::class, 'storeFile'])->name('store_file');
         Route::post("cancel-upload", [UploadController::class, 'cancelUpload'])->name('cancel_upload');
-        Route::post("add-tag", [UploadController::class, 'addTag'])->name('add_tag');
-        Route::post("remove-tag", [UploadController::class, 'removeTag'])->name('remove_tag');
         Route::post("update-details", [UploadController::class, 'updateDetails'])->name('update-details');
         Route::post("complete", [UploadController::class, 'completeUpload'])->name('complete');
     });
+
 
     Route::prefix('download')->name('downloads.')->group(function () {
         Route::post('generate-link', [DownloadController::class, 'generateLink'])->name('generate_link');
@@ -55,6 +54,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('{id}/{slug}', [PhotoController::class, 'show'])->name('show');
         Route::post('delete', [PhotoController::class, 'destroy'])->name('delete');
         Route::post('get-info', [PhotoController::class, 'getInfo'])->name('get_info');
+        Route::post("add-tag", [PhotoController::class, 'addTag'])->name('add_tag');
+        Route::post("remove-tag", [PhotoController::class, 'removeTag'])->name('remove_tag');
     });
 
     /** Routes related to share */

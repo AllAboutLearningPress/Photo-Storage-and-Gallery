@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Photo;
+use App\Models\Tag;
 use App\Utils\AwsS3V4;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -122,5 +123,57 @@ class PhotoController extends Controller
             'photos' => genTempSrc($photos, 'thumbanails'),
             'title' => 'Trashed Photos',
         ])->withViewData(['title' => 'Trashed Photos']);
+    }
+
+
+    /**
+     * Adds tag to photo
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function addTag(Request $request)
+    {
+        $data = $request->validate([
+            'fileId' => "required|int",
+            'tagId' => "nullable|int|exists:tags,id",
+            'tagName' => "required|string|max:255",
+        ]);
+        // withTrashed is required because users can try to
+        // add tags while the photo is in trash
+        $photo = Photo::withTrashed()->findOrFail($data['fileId']);
+
+        // tagId wont be provided if its a new tag
+        if ($data['tagId'] == null) {
+            $tag = Tag::create([
+                'name' => $data['tagName']
+            ]);
+            $data['tagId'] = $tag->id;
+        }
+        $photo->tags()->attach($data['tagId']);
+
+        if (isset($tag)) {
+            return response($tag, 200);
+        }
+        return response('', 200);
+    }
+    /**
+     * Removes tag to photo
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function removeTag(Request $request)
+    {
+        $data = $request->validate([
+            'fileId' => "required|exists:photos,id",
+            'tagId' => "nullable|exists:tags,id"
+        ]);
+
+        $photo = Photo::find($data['fileId']);
+        $photo->tags()->detach($data['tagId']);
+
+
+        return response('', 200);
     }
 }

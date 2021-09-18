@@ -220,55 +220,7 @@ class UploadController extends Controller
 
         return response('', 200);
     }
-    /**
-     * Adds tag to photo
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function addTag(Request $request)
-    {
-        $data = $request->validate([
-            'fileId' => "required|exists:photos,id",
-            'tagId' => "nullable|exists:tags,id",
-            'tagName' => "required|string",
-        ]);
-        // withTrashed is required because users can try to
-        // add tags while the photo is in trash
-        $photo = Photo::withTrashed()->find($data['fileId']);
 
-        // tagId wont be provided if its a new tag
-        if ($data['tagId'] == null) {
-            $data['tagId'] = Tag::create([
-                'name' => $data['tagName']
-            ])->id;
-        }
-        $photo->tags()->attach($data['tagId']);
-
-        if ($data['tagId'] == null) {
-            return response($data['tagId'], 200);
-        }
-        return response('', 200);
-    }
-    /**
-     * Removes tag to photo
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function removeTag(Request $request)
-    {
-        $data = $request->validate([
-            'fileId' => "required|exists:photos,id",
-            'tagId' => "nullable|exists:tags,id"
-        ]);
-
-        $photo = Photo::find($data['fileId']);
-        $photo->tags()->detach($data['tagId']);
-
-
-        return response('', 200);
-    }
 
     public function updateDetails(Request $request)
     {
