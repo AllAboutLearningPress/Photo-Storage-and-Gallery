@@ -146,7 +146,7 @@ class PhotoController extends Controller
         // tagId wont be provided if its a new tag
         if ($data['tagId'] == null) {
             $tag = Tag::create([
-                'name' => $data['tagName']
+                'name' => trim($data['tagName'])
             ]);
             $data['tagId'] = $tag->id;
         }
