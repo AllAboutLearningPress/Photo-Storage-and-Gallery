@@ -1,7 +1,7 @@
 <?php
 
 use App\Utils\AwsS3V4;
-use Illuminate\Support\Collection;
+//use Illuminate\Support\Collection;
 
 if (!function_exists('genTempSrc')) {
     function genTempSrc($photos, $file_version)
@@ -10,7 +10,7 @@ if (!function_exists('genTempSrc')) {
         $bucket = config('aws.fullsize_bucket');
 
         foreach ($photos as $photo) {
-            $full_path = $photo->genFullPath($file_version);
+            $full_path = $file_version . '/' . $photo->file_name;
             $photo->src = Cache::remember($full_path, 600, function () use ($awsS3V4, $full_path, $bucket) {
                 return  $awsS3V4->presignGet($full_path, $bucket);
             });

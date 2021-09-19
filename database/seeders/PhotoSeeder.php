@@ -18,7 +18,9 @@ class PhotoSeeder extends Seeder
      */
     public function run()
     {
+
         if (!Storage::disk('s3_fullsize')->has('full_size/demo.jpg')) {
+
             Storage::disk('s3_fullsize')->putFileAs('full_size', new File('storage/demo_assets/demo.jpg'), 'demo.jpg');
         }
         $photo_id = Photo::create([

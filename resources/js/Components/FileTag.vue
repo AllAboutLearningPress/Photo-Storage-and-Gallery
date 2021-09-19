@@ -94,11 +94,9 @@ export default {
                     })
                     .then((resp) => {
                         console.log(resp);
+                        // clearing the input box
                         this.$refs["tag-input"].value = "";
-                        this.$nextTick();
-                        if (!tagId) {
-                            tagId = resp.data;
-                        }
+                        // response contains
                         this.$emit("add-tag", resp.data);
                         notify("Tag Added", "success");
                     });
