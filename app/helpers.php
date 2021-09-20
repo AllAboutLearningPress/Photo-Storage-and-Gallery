@@ -10,7 +10,7 @@ if (!function_exists('genTempSrc')) {
         $bucket = config('aws.fullsize_bucket');
 
         foreach ($photos as $photo) {
-            $full_path = $file_version . '/' . $photo->file_name;
+            $full_path =  $file_version . '/' . $photo->file_name;
             $photo->src = Cache::remember($full_path, 600, function () use ($awsS3V4, $full_path, $bucket) {
                 return  $awsS3V4->presignGet($full_path, $bucket);
             });

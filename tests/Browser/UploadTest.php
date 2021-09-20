@@ -16,7 +16,7 @@ class UploadTest extends DuskTestCase
      *
      * @return void
      */
-    public function testPhotoUpload()
+    public function test_photo_upload_using_input_element()
     {
         $this->artisan('migrate:refresh');
 
