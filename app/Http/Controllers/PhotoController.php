@@ -120,7 +120,7 @@ class PhotoController extends Controller
     {
         $photos = Photo::onlyTrashed()->where('height', "!=", null)->cursorPaginate(30);
         return Inertia::render('Index', [
-            'photos' => genTempSrc($photos, 'thumbanails'),
+            'photos' => genTempSrc($photos, 'thumbnails'),
             'title' => 'Trashed Photos',
         ])->withViewData(['title' => 'Trashed Photos']);
     }

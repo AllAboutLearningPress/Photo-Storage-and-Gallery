@@ -145,7 +145,11 @@
                 </p>
             </template>
             <template v-slot:action_button>
-                <button v-on:click="deletePhoto" class="btn btn-danger">
+                <button
+                    id="delete-photo-button"
+                    v-on:click="deletePhoto"
+                    class="btn btn-danger"
+                >
                     {{ photo.deleted_at ? "Permanently" : "" }} Delete
                 </button>
             </template>
@@ -194,6 +198,7 @@
                 </div>
                 <div class="input-group mb-3">
                     <input
+                        name="cancel-delete-modal"
                         type="text"
                         class="form-control"
                         id="photo-share-link"
@@ -205,7 +210,7 @@
                     <button
                         class="btn btn-outline-secondary"
                         type="button"
-                        id="button-addon2"
+                        id="copy-share-link"
                         v-on:click="copyShareLink"
                     >
                         Copy
