@@ -67,7 +67,7 @@ class PhotoController extends Controller
         if ($data['force']) {
             Photo::withTrashed()->findOrFail($data['id'])->forceDelete();
             $flash_msg = 'Photo permanenetly deleted';
-            $redirect_route = 'trash';
+            $redirect_route = 'photos.trash';
         } else {
             Photo::findOrFail($data['id'])->delete();
             $flash_msg = 'Photo moved to trash';
