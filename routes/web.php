@@ -56,6 +56,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::post('get-info', [PhotoController::class, 'getInfo'])->name('get_info');
         Route::post("add-tag", [PhotoController::class, 'addTag'])->name('add_tag');
         Route::post("remove-tag", [PhotoController::class, 'removeTag'])->name('remove_tag');
+        Route::post("restore", [PhotoController::class, 'restore'])->name('restore');
     });
 
     /** Routes related to share */

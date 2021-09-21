@@ -11,8 +11,10 @@ use Tests\DuskTestCase;
 class PhotoDeleteTest extends DuskTestCase
 {
     use DatabaseMigrations;
-    private  $delete_modal_open_button_selector = "button[title='Delete image']";
+    private $delete_modal_open_button_selector = "button[title='Delete image']";
     private $delete_button_on_modal = "#delete-photo-button";
+    private $viewing_trashed_photo_text = 'You are viewing a trashed photo';
+
     /**
      * Testing if photo is seen in trash after deleting
      *
@@ -33,7 +35,6 @@ class PhotoDeleteTest extends DuskTestCase
 
 
             $text_on_delete_modal = 'Are you sure about';
-            $viewing_trashed_photo_text = 'You are viewing a trashed photo';
 
             $browser->loginAs($user)
                 ->visitRoute('photos.show', ['id' => $photo->id, 'slug' => $photo->slug])
@@ -50,8 +51,8 @@ class PhotoDeleteTest extends DuskTestCase
                 ->visitRoute('photos.trash')
                 ->waitFor("img[src*='{$photo->file_name}']")
                 ->click('.pig-figure')
-                ->waitForText($viewing_trashed_photo_text, 5)
-                ->assertSee($viewing_trashed_photo_text);
+                ->waitForText($this->viewing_trashed_photo_text, 5)
+                ->assertSee($this->viewing_trashed_photo_text);
 
             $deletedPhoto = Photo::withTrashed()->find($photo->id);
             $this->assertNotNull($deletedPhoto->deleted_at);
@@ -83,6 +84,29 @@ class PhotoDeleteTest extends DuskTestCase
                 ->click($this->delete_button_on_modal)
                 ->waitForText('Photo permanently deleted', 5);
             $this->assertNull(Photo::find($photo->id));
+        });
+    }
+
+    public function test_if_photo_gets_restored_when_clicking_restore_btn_after_delete()
+    {
+        $this->artisan('db:seed --class=UserSeeder');
+        $this->artisan('db:seed --class=PhotoSeeder');
+        $this->browse(function (Browser $browser) {
+            $photo = Photo::find(1);
+            $this->assertNotNull($photo);
+            $photo->delete();
+            $user = User::find(1);
+            $this->assertNotNull($user);
+
+            $restore_photo_button_selector = "button[title='Restore Photo']";
+            $browser->loginAs($user)
+                ->visitRoute('photos.show', ['id' => $photo->id, 'slug' => $photo->slug])
+                ->waitForText($this->viewing_trashed_photo_text, 5)
+                ->assertSee($this->viewing_trashed_photo_text)
+                ->assertVisible($restore_photo_button_selector)
+                ->click($restore_photo_button_selector)
+                ->waitForText('Photo restored', 10)
+                ->assertNotPresent($restore_photo_button_selector);
         });
     }
 }
