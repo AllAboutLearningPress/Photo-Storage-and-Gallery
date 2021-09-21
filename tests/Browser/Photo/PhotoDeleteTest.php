@@ -101,12 +101,17 @@ class PhotoDeleteTest extends DuskTestCase
             $restore_photo_button_selector = "button[title='Restore Photo']";
             $browser->loginAs($user)
                 ->visitRoute('photos.show', ['id' => $photo->id, 'slug' => $photo->slug])
+                //if photo is deleted then "You are viewing a trashed photo" will be shown on the bottom-left
                 ->waitForText($this->viewing_trashed_photo_text, 5)
                 ->assertSee($this->viewing_trashed_photo_text)
-                ->assertVisible($restore_photo_button_selector)
-                ->click($restore_photo_button_selector)
-                ->waitForText('Photo restored', 10)
+                ->assertVisible($restore_photo_button_selector) //checking if restore button is visible
+                ->click($restore_photo_button_selector) //clicking on restore button to initiate restore
+                ->waitForText('Photo restored', 10) //if photo is restored successfully then "Photo restored" toast will be visible
                 ->assertNotPresent($restore_photo_button_selector);
+
+            // if photo is successfully restored then deleted_at column
+            // will be set to null
+            $this->assertNull(Photo::find($photo->id)->deleted_at);
         });
     }
 }
