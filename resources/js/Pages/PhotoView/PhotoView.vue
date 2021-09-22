@@ -198,7 +198,7 @@
                 </div>
                 <div class="input-group mb-3">
                     <input
-                        name="cancel-delete-modal"
+                        name="share-link"
                         type="text"
                         class="form-control"
                         id="photo-share-link"
@@ -218,7 +218,11 @@
                 </div></template
             >
             <template v-slot:action_button>
-                <button v-on:click="openShareLink" class="btn btn-success">
+                <button
+                    v-on:click="openShareLink"
+                    id="open-share-btn"
+                    class="btn btn-success"
+                >
                     Open Share Link
                 </button>
             </template>
