@@ -1,5 +1,6 @@
 <template>
     <button
+        id="open-share-modal-btn"
         title="Share image"
         type="button"
         class="js-image-share btn-subtle btn"

@@ -1,9 +1,9 @@
 <template>
     <button
+        id="delete-modal-open-btn"
         title="Delete image"
         type="button"
         class="btn-subtle btn"
-        id="Asdafs"
         v-on:click="openModal"
     >
         <svg

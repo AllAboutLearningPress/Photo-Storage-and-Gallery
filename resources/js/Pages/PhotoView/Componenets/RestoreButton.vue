@@ -1,5 +1,10 @@
 <template>
-    <button title="Restore Photo" type="button" class="btn-subtle btn">
+    <button
+        id="restore-modal-open-btn"
+        title="Restore Photo"
+        type="button"
+        class="btn-subtle btn"
+    >
         <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

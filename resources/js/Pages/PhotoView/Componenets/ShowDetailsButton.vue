@@ -1,6 +1,7 @@
 <template>
     <button
         title="Show details"
+        id="show-details-btn"
         type="button"
         class="js-sidebar-toggle image-view__show-details btn-subtle btn"
         data-sidebar="#image-details-sidebar"

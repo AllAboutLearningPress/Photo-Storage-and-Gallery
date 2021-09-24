@@ -1,5 +1,6 @@
 <template>
     <button
+        id="download-btn"
         title="Download image"
         type="button"
         class="js-image-download btn-subtle btn"
