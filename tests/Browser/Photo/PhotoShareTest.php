@@ -13,6 +13,9 @@ use Tests\DuskTestCase;
 class PhotoShareTest extends DuskTestCase
 {
     use DatabaseMigrationsWithSeeder;
+
+    private $download_btn_selector = "#download-btn";
+    private $view_info_btn_selector = "#show-details-btn";
     public function test_sharable_link_with_each_permission()
     {
         $this->browse(
@@ -32,7 +35,7 @@ class PhotoShareTest extends DuskTestCase
 
                 $photo_share_link_input_ele = "#photo-share-link";
                 $open_share_link_btn = "#open-share-btn";
-                $show_details_button_selector = ".image-view__show-details";
+
 
                 // checking for all the buttons on share modal
                 $first->assertVisible("button[data-bs-target='#shareModal']") // share cancel button
@@ -88,15 +91,15 @@ class PhotoShareTest extends DuskTestCase
 
                     switch ($permission_check) {
                         case  "#share-view-info-checkbox":
-                            array_push($ShouldBeVisible,  $show_details_button_selector);
+                            array_push($ShouldBeVisible,  $this->view_info_btn_selector);
                             array_push($ShouldBeMissing, '#download-btn');
                             break;
                         case '#share-download-checkbox':
                             array_push($ShouldBeVisible, '#download-btn');
-                            array_push($ShouldBeMissing,  $show_details_button_selector);
+                            array_push($ShouldBeMissing,  $this->view_info_btn_selector);
                             break;
                         default:
-                            array_push($ShouldBeMissing,  $show_details_button_selector);
+                            array_push($ShouldBeMissing,  $this->view_info_btn_selector);
                             array_push($ShouldBeMissing, '#download-btn');
                     }
                     $second->visit($share_url);
@@ -139,7 +142,40 @@ class PhotoShareTest extends DuskTestCase
                 $browser->visit($share->genUrl())
                     ->waitFor($photo_preview_selector, 5)
                     ->assertVisible($photo_preview_selector)
-                    ->pause(3245416669999);
+                    ->waitFor($this->download_btn_selector)
+                    ->assertVisible($this->download_btn_selector);
+
+                // getting the download url
+                $downlaodUrl = $browser->attribute($this->download_btn_selector, 'href');
+                $this->assertNotNull($downlaodUrl);
+
+                // if the photo is correctly downloaded then
+                // it will be redirected back to the previous image
+                // view page. where download button will be visible
+                $browser->visit($downlaodUrl)
+                    ->waitFor($this->download_btn_selector)
+                    ->assertVisible($this->download_btn_selector);
+            }
+        );
+    }
+
+    public function test_photo_details_are_correctly_visible_with_view_info_permission()
+    {
+        $this->browse(
+            function (Browser $browser) {
+                $photo = Photo::latest()->first();
+                $share = SharePhoto::create([
+                    'share_key' => bin2hex(random_bytes(16)),
+                    'photo_id' => $photo->id,
+                    'view_info' => true,
+                    'download' => false
+                ]);
+
+                $browser->visit($share->genUrl())
+                    ->waitFor($this->view_info_btn_selector)
+                    ->assertVisible($this->view_info_btn_selector)
+                    ->click($this->view_info_btn_selector)
+                    ->assertValue(".js-editable__val", $photo->title);
             }
         );
     }

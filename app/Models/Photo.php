@@ -13,6 +13,7 @@ class Photo extends Model
     use HasFactory;
     use SoftDeletes;
     use Searchable;
+    protected $columns = ['dhash', 'sha256'];
     protected $fillable = [
         'title', 'size', 'height',
         'width', 'parent_id', 'user_id',

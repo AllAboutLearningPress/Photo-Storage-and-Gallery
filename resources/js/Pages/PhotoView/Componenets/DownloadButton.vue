@@ -1,9 +1,9 @@
 <template>
-    <button
+    <a
         id="download-btn"
         title="Download image"
-        type="button"
         class="js-image-download btn-subtle btn"
+        :href="downloadLink"
     >
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -21,9 +21,14 @@
             ></path>
         </svg>
         <span class="visually-hidden">Download</span>
-    </button>
+    </a>
 </template>
 
 <script>
-export default {};
+export default {
+    props: ["downloadLink"],
+    mounted() {
+        console.log(this.downloadLink);
+    },
+};
 </script>

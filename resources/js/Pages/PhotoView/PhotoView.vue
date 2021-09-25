@@ -70,7 +70,7 @@
                                 ></share-button>
                                 <download-button
                                     v-if="photo.downloadLink"
-                                    v-on:click="downloadPhoto"
+                                    :downloadLink="photo.downloadLink"
                                 ></download-button>
                                 <delete-button
                                     v-if="$page.props.user"
@@ -219,7 +219,7 @@
             >
             <template v-slot:action_button>
                 <button
-                    v-on:click="openShareLink"
+                    v-on:click="window.open(shareLink)"
                     id="open-share-btn"
                     class="btn btn-success"
                 >
@@ -394,20 +394,8 @@ export default {
             );
             this.$emit("close");
         },
-        downloadPhoto(e) {
-            // if (this.downloadLink) {
-            window.open(this.photo.downloadLink);
-            // } else {
-            //     axios
-            //         .post(route("downloads.generate_link"), {
-            //             id: this.photo.id,
-            //         })
-            //         .then((resp) => {
-            //             // open the download link in a new tab. So it can start downloading
-            //             window.open(resp.data);
-            //         });
-            // }
-        },
+        /** Generates share link with download permission */
+
         genDownloadableLink(e, param_name) {
             console.log(e);
             let perm_params = {
@@ -418,6 +406,9 @@ export default {
             this.genShareableLink(perm_params);
             this.shareModal.show();
         },
+        /** Gets executed when sharebutton is pressed
+         * It opens share modal
+         */
         openShareModal(e) {
             //this.copyShareLink(e);
             let shareModal = document.querySelector("#shareModal");
@@ -434,6 +425,7 @@ export default {
             // requesting shareable link
             this.genShareableLink();
         },
+        /** Generatates share links */
         genShareableLink(perm_params) {
             this.shareLink = "Generating Link";
             let req_data = {
@@ -467,6 +459,7 @@ export default {
                     notify("Something went wrong. Please try again", "danger");
                 });
         },
+        /** Copies the sharelink from the input box to clipboard */
         copyShareLink(e) {
             let linkInput = document.querySelector("#photo-share-link");
             linkInput.focus();
@@ -474,9 +467,6 @@ export default {
             document.execCommand("copy");
             linkInput.blur();
             notify("Link copied in clipboard", "success");
-        },
-        openShareLink() {
-            window.open(this.shareLink);
         },
     },
 };

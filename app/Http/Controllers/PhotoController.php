@@ -27,8 +27,7 @@ class PhotoController extends Controller
     public function show(Request $request, $id, $slug)
     {
 
-        $photo = Photo::select(['id', 'title', 'file_name', 'height', 'width', 'size', 'time_taken', 'file_type', 'deleted_at', 'slug', 'user_id'])
-            ->with('user:id,name', 'tags:id,name,slug')
+        $photo = Photo::with('user:id,name', 'tags:id,name,slug')
             ->withTrashed()
             ->findOrFail($id);
 
