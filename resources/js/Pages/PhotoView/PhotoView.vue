@@ -69,7 +69,7 @@
                                     v-on:click="openShareModal"
                                 ></share-button>
                                 <download-button
-                                    v-if="downloadLink"
+                                    v-if="photo.downloadLink"
                                     v-on:click="downloadPhoto"
                                 ></download-button>
                                 <delete-button
@@ -258,7 +258,7 @@ import UploadIcon from "../../Components/UploadIcon.vue";
 import PhotoInfo from "./Componenets/PhotoInfo.vue";
 
 export default {
-    props: ["photo", "downloadLink", "info"],
+    props: ["photo", "info"],
     components: {
         BackButton,
         HomeButton,
@@ -395,18 +395,18 @@ export default {
             this.$emit("close");
         },
         downloadPhoto(e) {
-            if (this.downloadLink) {
-                window.open(this.downloadLink);
-            } else {
-                axios
-                    .post(route("downloads.generate_link"), {
-                        id: this.photo.id,
-                    })
-                    .then((resp) => {
-                        // open the download link in a new tab. So it can start downloading
-                        window.open(resp.data);
-                    });
-            }
+            // if (this.downloadLink) {
+            window.open(this.photo.downloadLink);
+            // } else {
+            //     axios
+            //         .post(route("downloads.generate_link"), {
+            //             id: this.photo.id,
+            //         })
+            //         .then((resp) => {
+            //             // open the download link in a new tab. So it can start downloading
+            //             window.open(resp.data);
+            //         });
+            // }
         },
         genDownloadableLink(e, param_name) {
             console.log(e);

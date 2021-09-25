@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
-use Storage;
 use Str;
 
 class Photo extends Model
@@ -20,7 +19,7 @@ class Photo extends Model
         'file_type', 'file_name',
         'sha256', 'dhash'
     ];
-
+    private $awsS3V4 = null;
 
     /**
      * The user defined tags that belong to this photo
@@ -114,14 +113,18 @@ class Photo extends Model
         return "{$slug}-2";
     }
 
-    public function addTempUrl($file_version, $bucket = null)
+    public function addTempUrl($file_version, $bucket = null, $property = 'src', $headers = [], $expiresIn = 21600)
     {
 
 
         if (!$bucket) {
             $bucket = config('aws.fullsize_bucket');
         }
-        $this->src =  (new \App\Utils\AwsS3V4())->presignGet($this->genFullPath($file_version), $bucket);
+
+        if (!$this->awsS3V4) {
+            $this->awsS3V4 = new \App\Utils\AwsS3V4($expiresIn);
+        }
+        $this->$property =  $this->awsS3V4->presignGet($this->genFullPath($file_version), $bucket, $headers);
     }
 
     protected function makeAllSearchableUsing($query)

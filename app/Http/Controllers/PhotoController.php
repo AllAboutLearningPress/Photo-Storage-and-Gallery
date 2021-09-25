@@ -27,24 +27,24 @@ class PhotoController extends Controller
     public function show(Request $request, $id, $slug)
     {
 
-        $photo = Photo::select(['id', 'title', 'file_name', 'height', 'width', 'size', 'time_taken', 'deleted_at', 'slug', 'user_id'])
+        $photo = Photo::select(['id', 'title', 'file_name', 'height', 'width', 'size', 'time_taken', 'file_type', 'deleted_at', 'slug', 'user_id'])
             ->with('user:id,name', 'tags:id,name,slug')
             ->withTrashed()
             ->findOrFail($id);
 
-        $awsS3V4 = new AwsS3V4();
+
         $bucket = config('aws.fullsize_bucket');
-        //$photo->src = $awsS3V4->presignGet($photo->genFullPath('preview_photos'), $bucket);
         $photo->addTempUrl('preview_photos', $bucket);
-        // dd($photo->src);
-        $downloadLink = $awsS3V4->presignGet($photo->genFullPath('full_size'), $bucket);
-        //$photo->addTempUrl('preview_photos');
-        // Inertia::lazy(function () use ($photo) {
-        //     return $photo;
-        // }
+        $photo->addTempUrl(
+            'full_size',
+            $bucket,
+            'downloadLink',
+            ['response-content-disposition' => 'attachment; filename=' . $photo->slug . '.' . $photo->file_type]
+        );
+
+
         return  Inertia::render('PhotoView/PhotoView', [
             'photo' => $photo,
-            'downloadLink' => $downloadLink,
         ]);
     }
 

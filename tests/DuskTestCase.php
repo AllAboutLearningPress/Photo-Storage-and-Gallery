@@ -36,6 +36,7 @@ abstract class DuskTestCase extends BaseTestCase
         ])->unless($this->hasHeadlessDisabled(), function ($items) {
             return $items->merge([
                 '--disable-gpu',
+                '--download.default_directory=/Users/eisenheixm/laravel/photo_storage/tests'
                 //'--headless',
             ]);
         })->all());

@@ -39,6 +39,9 @@ class AwsS3V4
     /** @var bool */
     private $secureMode = true;
 
+    /** @var array */
+    private $x_amz_params = null;
+
     public function __construct($expires = 21600)
     {
         $this->start = microtime(true);
@@ -46,12 +49,12 @@ class AwsS3V4
         $this->bucket = config('aws.fullsize_bucket');
         $this->httpMethodName = 'GET';
         $this->canonicalURI = '';
-        $this->client = new Client([
-            // Base URI is used with relative requests
-            'base_uri' => 'http://169.254.169.254',
-            // You can set any number of default request options.
-            'timeout'  => 2.0,
-        ]);
+        // $this->client = new Client([
+        //     // Base URI is used with relative requests
+        //     'base_uri' => 'http://169.254.169.254',
+        //     // You can set any number of default request options.
+        //     'timeout'  => 2.0,
+        // ]);
 
 
         if (App::environment('production')) {
@@ -79,26 +82,20 @@ class AwsS3V4
         $this->scope = $date_text . "/" . $this->region . "/s3/aws4_request";
 
 
-        $x_amz_params = array(
+        $this->x_amz_params = array(
             'X-Amz-Algorithm' => $this->HMACAlgorithm,
             'X-Amz-Credential' => $this->key_id . '/' . $this->scope,
             'X-Amz-Date' => $time_text,
             'X-Amz-Expires' => $expires, // 'Expires' is the number of seconds until the request becomes invalid
             'X-Amz-SignedHeaders' => 'host',
+            // 'response-content-disposition' => 'attachment; "filename=abc.jpeg"'
             //'x-Amz-Meta-Cache-Control' => 'max-age=120'
 
         );
         if ($token) {
-            $x_amz_params['X-Amz-Security-Token'] = $token;
-        }
-        // sorting the params in alphabatical order
-        ksort($x_amz_params);
-        $this->query_string = "";
-        foreach ($x_amz_params  as $key => $value) {
-            $this->query_string .= rawurlencode($key) . '=' . rawurlencode($value) . "&";
+            $this->x_amz_params['X-Amz-Security-Token'] = $token;
         }
 
-        $this->query_string = substr($this->query_string, 0, -1);
 
         $this->timeout = (float) getenv(self::ENV_TIMEOUT) ?: (isset($config['timeout']) ? $config['timeout'] : 1.0);
         $this->profile = isset($config['profile']) ? $config['profile'] : null;
@@ -156,6 +153,9 @@ class AwsS3V4
         String $bucket,
         $headers = []
     ) {
+        if (count($headers)) {
+            $this->x_amz_params = array_merge($this->x_amz_params, $headers);
+        }
         # calculating full uri from directory and filename
         // $encoded_uri = '/' . $dir . '/' . $file_name;
 
@@ -170,7 +170,14 @@ class AwsS3V4
         $signed_headers_string = "host";
 
 
+        // sorting the params in alphabatical order
+        ksort($this->x_amz_params);
+        $this->query_string = "";
+        foreach ($this->x_amz_params  as $key => $value) {
+            $this->query_string .= rawurlencode($key) . '=' . rawurlencode($value) . "&";
+        }
 
+        $this->query_string = substr($this->query_string, 0, -1);
 
         // Task 1: Creating canonical request
         $canonical_request = "GET\n" . '/' . $encoded_uri . "\n" . $this->query_string . "\n" . $header_string . "\n" . $signed_headers_string . "\nUNSIGNED-PAYLOAD";

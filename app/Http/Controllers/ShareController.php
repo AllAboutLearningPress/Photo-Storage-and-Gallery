@@ -66,11 +66,17 @@ class ShareController extends Controller
 
             if ($sharedPhoto->view_info == true) {
                 $photo = Photo::with('user:id,name')->findOrFail($sharedPhoto->photo_id);
+                // if this share has view_info permission then the downloaded
+                // file will be named using photo slug
+                $file_name = $photo->slug . '.' . $photo->file_type;
             } else {
-                $photo = Photo::findOrFail($sharedPhoto->photo_id, ['id', 'file_name', 'height', 'width']);
+                $photo = Photo::findOrFail($sharedPhoto->photo_id, ['id', 'file_name', 'height', 'width', 'file_type']);
+                // as the user dont have view_info permission then the photo will be named
+                // after the share_key
+                $file_name = $sharedPhoto->share_key . '.' . $photo->file_type;
             }
 
-            $downloadUrl  = null;
+
             // all urls are valid for 12 hours from generating
             // Even though the url is valid. The download link
             // and preview link of s3 stored image is generated
@@ -80,18 +86,24 @@ class ShareController extends Controller
             if ($remaining_time > 240) {
                 $remaining_time = 240;
             }
-            $awsS3V4 = new AwsS3V4($remaining_time);
+
             // generate download link if download permission is provided
             if ($sharedPhoto->download == true) {
-                $downloadUrl = $awsS3V4->presignGet('full_size', $photo->file_name, config('aws.fullsize_bucket'));
+                $photo->addTempUrl(
+                    'full_size',
+                    config('aws.fullsize_bucket'),
+                    'downloadLink',
+                    ['response-content-disposition' => 'attachment; filename=' . $file_name],
+                    $remaining_time
+                );
             }
 
             // presign get request url for preview
             // $photo->src = $awsS3V4->presignGet($photo->genFullPath('preview_photos'), config('aws.preview_bucket'));
-            $photo->addTempUrl('preview_photos', config('aws.preview_bucket'));
+            $photo->addTempUrl('preview_photos', config('aws.preview_bucket'), 'src', [], $remaining_time);
+
             return Inertia::render('PhotoView/PhotoView', [
                 'photo' => $photo,
-                'downloadLink' => $downloadUrl,
                 'info' => $sharedPhoto->view_info,
             ])->withViewData('public', true);
         }
