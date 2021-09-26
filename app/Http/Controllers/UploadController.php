@@ -75,7 +75,7 @@ class UploadController extends Controller
                 'user_id' => Auth::user()->id,
                 'size' => $file['size'],
                 'file_name' => $fileName,
-                'user_id' => Auth::user()->id,
+                // 'user_id' => Auth::user()->id,
 
             ])->id;
 
