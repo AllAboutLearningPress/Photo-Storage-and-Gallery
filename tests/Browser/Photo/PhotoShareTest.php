@@ -4,6 +4,7 @@ namespace Tests\Browser;
 
 use App\Models\Photo;
 use App\Models\SharePhoto;
+use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
@@ -163,7 +164,10 @@ class PhotoShareTest extends DuskTestCase
     {
         $this->browse(
             function (Browser $browser) {
+                $this->artisan("db:seed --class='TagSeeder'");
+                $tagIds = Tag::limit(5)->get('id')->pluck('id')->toArray();
                 $photo = Photo::latest()->first();
+                $photo->tags()->sync($tagIds);
                 $share = SharePhoto::create([
                     'share_key' => bin2hex(random_bytes(16)),
                     'photo_id' => $photo->id,
@@ -171,11 +175,21 @@ class PhotoShareTest extends DuskTestCase
                     'download' => false
                 ]);
 
+                $title_val_selector = ".js-editable__val";
                 $browser->visit($share->genUrl())
                     ->waitFor($this->view_info_btn_selector)
                     ->assertVisible($this->view_info_btn_selector)
                     ->click($this->view_info_btn_selector)
-                    ->assertValue(".js-editable__val", $photo->title);
+                    ->waitFor($title_val_selector, 5)
+                    ->assertSeeIn($title_val_selector, $photo->title)
+                    ->assertSeeIn("#uploaded-by-val", $photo->user->name);
+
+                if (count($photo->tags)) {
+                    foreach ($photo->tags as $tag) {
+                        // tags shouldnt be visible when using shared link
+                        $browser->assertDontSee($tag->name);
+                    }
+                }
             }
         );
     }

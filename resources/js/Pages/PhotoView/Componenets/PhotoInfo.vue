@@ -77,7 +77,9 @@
                     <li>
                         <dl class="dlist_0 dlist">
                             <dt>Uploaded by:</dt>
-                            <dd>{{ photo.user.name }}</dd>
+                            <dd id="uploaded-by-val">
+                                {{ photo.user.name }}
+                            </dd>
                         </dl>
                     </li>
                     <li v-if="photo.location">

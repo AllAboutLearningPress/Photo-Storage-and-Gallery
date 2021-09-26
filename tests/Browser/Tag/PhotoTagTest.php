@@ -116,12 +116,19 @@ class PhotoTagTest extends DuskTestCase
             $tagDeleteButtonSelector = $this->newTagSelectorInTagList . " button";
             $browser
                 ->loginAs($user)
-                ->visitRoute('photos.show', ['id' => $photo->id, 'slug' => $photo->slug])
+                // photo details sidebar on photoview uses 'sidebar-position-class'
+                // from localstore decide if sidebar should be open or closed state
+                // on laod. If sidebar-position-class is set to 'is-open' then sidebar
+                // will be open.
+                ->script("window.localStorage.setItem('sidebar-position-class', 'is-open')");
+
+            $browser->visitRoute('photos.show', ['id' => $photo->id, 'slug' => $photo->slug])
                 ->waitFor($photoviewPhotoSelector)
                 ->assertVisible($photoviewPhotoSelector)
                 ->assertVisible($this->showDetailsButtonSelector)
-                ->click($this->showDetailsButtonSelector)
+                //->click($this->showDetailsButtonSelector)
                 ->waitFor($this->tagInputSelector)
+                ->waitFor($this->newTagSelectorInTagList, 10)
                 ->assertVisible($this->newTagSelectorInTagList)
                 ->assertVisible($tagDeleteButtonSelector)
                 ->click($tagDeleteButtonSelector)
