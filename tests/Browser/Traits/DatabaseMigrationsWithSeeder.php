@@ -14,7 +14,7 @@ trait DatabaseMigrationsWithSeeder
      */
     public function runDatabaseMigrations()
     {
-        $this->artisan('migrate:refresh');
+        $this->artisan('migrate:fresh');
         $this->app[Kernel::class]->setArtisan(null);
         $this->artisan('db:seed --class=UserSeeder');
         $this->artisan('db:seed --class=PhotoSeeder');

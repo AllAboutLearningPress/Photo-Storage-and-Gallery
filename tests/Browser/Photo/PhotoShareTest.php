@@ -13,7 +13,14 @@ use Tests\DuskTestCase;
 
 class PhotoShareTest extends DuskTestCase
 {
-    use DatabaseMigrationsWithSeeder;
+    use DatabaseMigrations;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->artisan('db:seed --class=UserSeeder');
+        $this->artisan('db:seed --class=PhotoSeeder');
+    }
 
     private $download_btn_selector = "#download-btn";
     private $view_info_btn_selector = "#show-details-btn";
@@ -140,7 +147,8 @@ class PhotoShareTest extends DuskTestCase
 
 
                 $photo_preview_selector = "img[src*='preview_photos/{$photo->file_name}']";
-                $browser->visit($share->genUrl())
+                $browser->assertGuest()->visit($share->genUrl());
+                $browser
                     ->waitFor($photo_preview_selector, 5)
                     ->assertVisible($photo_preview_selector)
                     ->waitFor($this->download_btn_selector)
@@ -162,9 +170,10 @@ class PhotoShareTest extends DuskTestCase
 
     public function test_photo_details_are_correctly_visible_with_view_info_permission()
     {
+        $this->artisan("db:seed --class='TagSeeder'");
         $this->browse(
             function (Browser $browser) {
-                $this->artisan("db:seed --class='TagSeeder'");
+
                 $tagIds = Tag::limit(5)->get('id')->pluck('id')->toArray();
                 $photo = Photo::latest()->first();
                 $photo->tags()->sync($tagIds);
