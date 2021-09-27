@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Jobs\ProcessPhoto;
 use App\Models\LabelPhoto;
 use App\Models\Photo;
-use App\Models\PhotoTag;
 use Illuminate\Database\Seeder;
 use Storage;
 use Illuminate\Http\File;

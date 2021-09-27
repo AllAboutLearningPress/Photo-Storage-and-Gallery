@@ -27,7 +27,7 @@ class Photo extends Model
      */
     public function tags()
     {
-        return $this->belongsToMany(Tag::class)->using(PhotoTag::class)->withTimestamps();
+        return $this->belongsToMany(Tag::class)->using(\App\Models\Pivots\PhotoTag::class)->withTimestamps();
     }
 
     /**
@@ -35,7 +35,7 @@ class Photo extends Model
      */
     public function labels()
     {
-        return $this->belongsToMany(Label::class)->using(LabelPhoto::class)->withPivot('score');
+        return $this->belongsToMany(Label::class)->using(\App\Models\Pivots\LabelPhoto::class)->withPivot('score');
     }
 
     /*

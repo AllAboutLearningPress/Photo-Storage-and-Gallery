@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Storage;
 use Str;
 
 class Tag extends Model
@@ -25,7 +25,7 @@ class Tag extends Model
      */
     public function photos()
     {
-        return $this->belongsToMany(Photo::class)->using(PhotoTag::class);
+        return $this->belongsToMany(Photo::class)->using(\App\Models\Pivots\PhotoTag::class);
     }
     /**
      * Set the proper slug attribute.
