@@ -13,6 +13,14 @@ class PermissionSeeder extends Seeder
      */
     public function run()
     {
-        //
+        $permissions = [
+            'send-invite',
+            'upload',
+            'delete',
+            'clear-trash',
+            'add-tags',
+            'can-download',
+            'can-view-roles',
+        ];
     }
 }
