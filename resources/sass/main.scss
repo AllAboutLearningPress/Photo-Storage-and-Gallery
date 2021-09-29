@@ -550,6 +550,7 @@ $sidebar-animation-duration: 0.2s;
   border: none;
   padding: 0.5rem 2rem 0.5rem $sidebar-left-pad;
   font-size: 1.2rem;
+  border-radius: 0 2rem 2rem 0;
 }
 
 .navigation__item:not(.active):hover,

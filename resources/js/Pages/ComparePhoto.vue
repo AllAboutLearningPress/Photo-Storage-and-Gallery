@@ -70,13 +70,19 @@
                             ref="rightPhoto"
                             class="img-comp-img img-comp-fixed"
                         >
-                            <img :src="rightPhoto.src" />
+                            <img
+                                class="right-photo-img"
+                                :src="rightPhoto.src"
+                            />
                         </div>
                         <div
                             ref="leftPhoto"
                             class="img-comp-img img-comp-overlay"
                         >
-                            <img :src="leftPhoto.src" />
+                            <img
+                                v-on:load="positionSlider"
+                                :src="leftPhoto.src"
+                            />
                         </div>
                         <div ref="slider" class="img-comp-slider"></div>
                     </div>
@@ -176,12 +182,18 @@ export default {
             rmListeners: [],
         };
     },
-
+    created() {},
     mounted() {
         /* Position the slider in the middle if orientiation
         changes or screen resizes*/
         this.rmListeners = [
-            addEventListener(window, "load", this.positionSlider),
+            // addEventListener(window, "load", this.positionSlider),
+
+            // addEventListener(
+            //     document.querySelector(".right-photo-img"),
+            //     "load",
+            //     this.positionSlider
+            // ),
             addEventListener(window, "orientationchange", this.setSlider),
             addEventListener(window, "resize", this.setSlider),
 
@@ -204,12 +216,23 @@ export default {
         ];
     },
     methods: {
+        /** Functin is called on left image load event
+         */
         positionSlider(e) {
             console.log(e);
-            // the slider is loaded after the images finished loading
-            this.$refs["slider"].style.display = "block";
 
-            this.setSlider();
+            let rightImage = document.querySelector(".right-photo-img");
+            if (rightImage.complete) {
+                // right image was also loaded. So can position the slider now
+                // the slider is loaded after the images finished loading
+                this.$refs["slider"].style.display = "block";
+
+                this.setSlider();
+            } else {
+                this.rmListeners.push(
+                    addEventListener(rightImage, "load", this.positionSlider)
+                );
+            }
         },
         setSlider(e) {
             /* Get the width and height of the img element */

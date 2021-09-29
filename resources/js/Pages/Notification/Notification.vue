@@ -36,10 +36,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    /* width: 5.5rem;
+    height: 3.5rem; */
 }
 .notification-row img {
-    max-width: 5.5rem;
-    max-height: 3.5rem;
+    max-width: 5.2rem;
+    max-height: 3.2rem;
 }
 .notification-text {
     vertical-align: middle;

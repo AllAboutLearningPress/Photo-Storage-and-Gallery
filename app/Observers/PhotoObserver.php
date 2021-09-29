@@ -54,9 +54,7 @@ class PhotoObserver
     }
     public function deleting(Photo $photo)
     {
-        // deleting pivot table tag entries before the photo is deleted
-        $photo->tags()->detach();
-        $photo->labels()->detach();
+        //\App\Models\Notification
     }
     /**
      * Handle the Photo "force deleted" event.
@@ -73,6 +71,10 @@ class PhotoObserver
             Cache::forget($full_path);
             array_push($full_paths, $full_path);
         }
+
+        // deleting pivot table tag entries before the photo is deleted
+        $photo->tags()->detach();
+        $photo->labels()->detach();
 
         // add code to remove download links
         Storage::disk('s3_fullsize')->delete($full_paths);

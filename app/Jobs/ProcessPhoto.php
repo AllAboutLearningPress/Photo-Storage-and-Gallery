@@ -116,6 +116,7 @@ class ProcessPhoto implements ShouldQueue
                 'route' => json_encode(['name' => 'compare.index', 'options' => ['left' => $photo->id, 'right' => $duplicate->id]])
             ]);
         }
+        // SELECT id, dhash, BIT_COUNT(UNHEX('cfc080fcf9c0d0f8') ^ unhex(dhash)) AS hd from photos HAVING hd > 0
         // updating the photo details returned by lambda function
         $photo->update($photoDetails);
     }
