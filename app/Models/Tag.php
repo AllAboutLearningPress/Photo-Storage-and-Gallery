@@ -10,15 +10,15 @@ use Str;
 class Tag extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'user_id'];
+    protected $fillable = ['name', 'user_id', 'slug'];
 
     public static function boot()
     {
         parent::boot();
-        static::created(function ($tag) {
-            $tag->slug = $tag->generateSlug($tag->name);
-            $tag->save();
-        });
+        // static::created(function ($tag) {
+        //     $tag->slug = $tag->generateSlug($tag->name);
+        //     $tag->save();
+        // });
     }
     /**
      * The photos that belong to this tag
@@ -40,7 +40,7 @@ class Tag extends Model
         $slug = Str::slug(strtolower(($name)), '-');
         // if this slug already exists then we will
         // create an incrementing slug
-        $last_slug = static::where('slug', '!=', null)->latest('id')->value('slug');
+        $last_slug = static::where('slug', '==', $slug)->latest('id')->value('slug');
         if ($last_slug) {
 
             $slug = $this->incrementSlug($slug);

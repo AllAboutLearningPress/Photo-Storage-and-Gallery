@@ -8,6 +8,7 @@ use App\Utils\AwsS3V4;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Redirect;
+use Str;
 
 class PhotoController extends Controller
 {
@@ -138,23 +139,26 @@ class PhotoController extends Controller
             'tagId' => "nullable|int|exists:tags,id",
             'tagName' => "required|string|max:255",
         ]);
-        // withTrashed is required because users can try to
-        // add tags while the photo is in trash
-        $photo = Photo::withTrashed()->findOrFail($data['fileId']);
 
         // tagId wont be provided if its a new tag
-        if ($data['tagId'] == null) {
+        $slug = Str::slug(strtolower(trim($data['tagName'])), '-');
+        $tag = null;
+        if (!(isset($data['tagId']) && $data['tagId'])) {
             $tag = Tag::create([
-                'name' => trim($data['tagName'])
+                'name' => trim($data['tagName']),
+                'slug' => $slug,
+                'user_id' => auth()->id()
             ]);
+
             $data['tagId'] = $tag->id;
         }
+        // withTrashed is required because users can try to
+        // add tags while the photo is in trash
+        $photo = Photo::where('id', $data['fileId'])->withTrashed()->firstOrFail();
+
         $photo->tags()->attach($data['tagId']);
 
-        if (isset($tag)) {
-            return response($tag, 200);
-        }
-        return response('', 200);
+        return response($tag, 200);
     }
     /**
      * Removes tag to photo

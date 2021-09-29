@@ -276,12 +276,14 @@ export default {
 
     setup() {
         const toggleHeader = inject("toggleHeader");
+        const fetchTags = inject("fetchTags");
         // hiding header
         toggleHeader(false);
 
         // making this injected values available to the componenet
         return {
             toggleHeader,
+            fetchTags,
         };
     },
 
@@ -307,6 +309,7 @@ export default {
             console.log("reload");
             this.$inertia.reload({ only: ["photo"] });
         }
+        this.fetchTags();
     },
     beforeUnmount() {
         // Showing header again for other pages

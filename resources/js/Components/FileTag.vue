@@ -29,7 +29,7 @@
         <div class="js-tags__list tags__list">
             <inertia-link
                 class="tags__tag tag tag_deletable btn btn-secondary"
-                :href="route('tags.show', { slug: tag.slug })"
+                :href="genTagRoute(tag.slug)"
                 v-for="(tag, index) in tags"
                 :key="tag.id"
             >
@@ -97,9 +97,20 @@ export default {
                         // clearing the input box
                         this.$refs["tag-input"].value = "";
                         // response contains
-                        this.$emit("add-tag", resp.data);
+                        if (tagId) {
+                            this.$emit("add-tag", {
+                                id: tagId,
+                                name: value,
+                                slug: tagOption.getAttribute("data-slug"),
+                            });
+                        } else {
+                            this.$emit("add-tag", resp.data);
+                        }
+
                         notify("Tag Added", "success");
                     });
+            } else {
+                notify("Tag already added", "success");
             }
         },
 
@@ -122,12 +133,20 @@ export default {
                 });
         },
         uniqueTag(newTag) {
-            this.tags.forEach((tag) => {
-                if (tag.name == newTag) {
+            for (let x = 0; x < this.tags.length; x++) {
+                if (this.tags[x].name == newTag) {
                     return false;
                 }
-            });
+            }
             return true;
+        },
+
+        genTagRoute(slug) {
+            if (slug) {
+                return route("tags.show", { slug: slug });
+            } else {
+                return "#";
+            }
         },
     },
 };

@@ -51,12 +51,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     /* Routes related to photos */
     Route::prefix('photo')->name('photos.')->group(function () {
-        Route::get('{id}/{slug}', [PhotoController::class, 'show'])->name('show');
         Route::post('delete', [PhotoController::class, 'destroy'])->name('delete');
         Route::post('get-info', [PhotoController::class, 'getInfo'])->name('get_info');
         Route::post("add-tag", [PhotoController::class, 'addTag'])->name('add_tag');
         Route::post("remove-tag", [PhotoController::class, 'removeTag'])->name('remove_tag');
         Route::post("restore", [PhotoController::class, 'restore'])->name('restore');
+        Route::get('{id}/{slug}', [PhotoController::class, 'show'])->name('show');
     });
 
     /** Routes related to share */
@@ -67,9 +67,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     /* Routes related to tags */
     Route::prefix('tags')->name('tags.')->group(function () {
         Route::get('', [TagController::class, 'index'])->name('index');
-        route::get('{slug}', [TagController::class, 'show'])->name('show');
-        Route::get("search-by-partial")->name('search_partial');
         Route::get('get-tags', [TagController::class, 'getTags'])->name('get_tags');
+        route::get('view/{slug}', [TagController::class, 'show'])->name('show');
+        // Route::get("search-by-partial")->name('search_partial');
+
     });
 
     /** Routes related to search */

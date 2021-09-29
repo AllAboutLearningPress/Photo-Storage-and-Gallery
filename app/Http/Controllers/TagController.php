@@ -50,12 +50,12 @@ class TagController extends Controller
     {
         $tag = Tag::where('slug', $slug)->firstOrFail();
         // dd($tag->photos);
+        $photos = $tag->photos()->cursorPaginate(30);
+        foreach ($photos as $photo) {
+            $photo->id = $photo->photo_id;
+        }
         return Inertia::render('Index', [
-            // 'photos' => [
-            //     'data' => genTempSrc($tag->photos()->, 'thumbanails'),
-            //     'next_page_url' => null
-            // ],
-            'photos' => genTempSrc($tag->photos()->cursorPaginate(30), 'thumbnails'),
+            'photos' => genTempSrc($photos, 'thumbnails'),
             'title' => $tag->name,
         ])->withViewData(['title' => $tag->name]);
     }

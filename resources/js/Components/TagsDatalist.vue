@@ -5,6 +5,7 @@
             :key="tag.id"
             :value="tag.name"
             :data-id="tag.id"
+            :data-slug="tag.slug"
         ></option>
     </datalist>
 </template>
@@ -12,22 +13,9 @@
 <script>
 import { inject } from "@vue/runtime-core";
 export default {
-    // setup() {
-    //     const tags = inject("tags");
-    //     return { tags };
-    // },
-    data() {
-        return {
-            tags: null,
-        };
+    setup() {
+        const tags = inject("tags");
+        return { tags };
     },
-    beforeMount() {
-        if (this.$page.props.user) {
-            this.tags = inject("tags");
-        }
-    },
-    // created() {
-    //     //
-    // },
 };
 </script>
