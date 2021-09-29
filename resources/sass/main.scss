@@ -571,6 +571,7 @@ $sidebar-animation-duration: 0.2s;
 .navigation__item.active:hover,
 .navigation__item.active:focus {
   color: #000;
+  border-radius: 0 2rem 2rem 0;
 }
 
 /*

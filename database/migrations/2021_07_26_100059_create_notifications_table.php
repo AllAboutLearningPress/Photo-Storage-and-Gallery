@@ -15,7 +15,7 @@ class CreateNotificationsTable extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->string('text');
+            $table->json('data');
             $table->foreignId('user_id')->constrained('users');
             $table->boolean('seen')->default(false);
             $table->string('route', 512)->nullable();

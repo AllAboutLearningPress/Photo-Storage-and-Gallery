@@ -107,10 +107,10 @@ class ProcessPhoto implements ShouldQueue
 
         $duplicate = Photo::where('sha256', $photoDetails['sha256'])->orWhere(function ($query) use ($photoDetails) {
             $query->where('dhash', $photoDetails['dhash']);
-        })->first();
+        })->orderBy('id', 'ASC')->first();
         if ($duplicate) {
             Notification::create([
-                'text' => 'Found duplicate of ' . $photo->title,
+                'data' => json_encode(['title' => 'Found Duplicate', 'body' => "\"{$photo->title}\" is a duplicate of \"{$duplicate->title}\" "]),
                 'user_id' => $photo->user_id,
                 'file_name' => $photo->file_name,
                 'route' => json_encode(['name' => 'compare.index', 'options' => ['left' => $photo->id, 'right' => $duplicate->id]])
