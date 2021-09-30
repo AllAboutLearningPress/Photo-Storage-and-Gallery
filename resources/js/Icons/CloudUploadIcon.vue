@@ -19,5 +19,7 @@
 </template>
 
 <script>
-export default {};
+export default {
+    props: ["height", "width"],
+};
 </script>

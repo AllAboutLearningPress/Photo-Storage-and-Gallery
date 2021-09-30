@@ -22,4 +22,12 @@ class NotificationController extends Controller
         Notification::where('id', $data['id'])->update(['seen' => true]);
         return response($status = 200);
     }
+    public function destroy(Request $request)
+    {
+        $data = $request->validate([
+            'ids.*' => "exists:notifications,id,user_id," . auth()->id()
+        ]);
+        Notification::destroy($data['ids']);
+        return response('', 200);
+    }
 }
