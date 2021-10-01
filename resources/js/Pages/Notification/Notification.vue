@@ -28,7 +28,7 @@
                     v-for="notification in notifications"
                     :key="notification.id"
                     class="box-body p-0 text-decoration-none text-white"
-                    :class="notification.seen ? '' : 'unread'"
+                    :class="genRowClassList(notification)"
                     :src="notification.src"
                     v-on:click="
                         notiOnClick($event, notification.route, notification.id)
@@ -72,6 +72,9 @@
                             <button
                                 type="button"
                                 class="btn btn-sm rounded p-0 noti-delete"
+                                v-on:click="
+                                    deleteNotification($event, notification)
+                                "
                             >
                                 <trash-icon height="24" width="24"></trash-icon>
                             </button>
@@ -171,72 +174,7 @@ export default {
             checkboxInputIdPrefix: "input-check-",
             checkboxDisplayClass: "d-none",
             selectedIds: [],
-            // notifications: [
-            //     {
-            //         id: 1,
-            //         thumbSrc: "//placekitten.com/g/200/300",
-            //         text: "Found a duplicate",
-            //         url: "/",
-            //     },
-            //     {
-            //         id: 2,
-            //         thumbSrc: "//placekitten.com/g/200/300",
-            //         text: "Found a duplicate",
-            //     },
-            //     {
-            //         id: 3,
-            //         thumbSrc: "//placekitten.com/g/200/300",
-            //         text: "Found a duplicate",
-            //     },
-            //     {
-            //         id: 4,
-            //         thumbSrc: "//placekitten.com/g/200/300",
-            //         text: "Found a duplicate",
-            //     },
-            // ],
-        };
-    },
-    created() {
-        this.notifications.forEach((notification) => {
-            notification.data = JSON.parse(notification.data);
-        });
-    },
-    mounted() {
-        console.log(this.notifications[0]);
-    },
-    methods: {
-        toggleSelect(e) {
-            this.select = !this.select;
-            this.checkboxDisplayClass = this.select ? "d-block" : "d-none";
-            console.log(this.checkboxClass);
-        },
-
-        deleteSelected() {
-            this.notifications.forEach((noti) => {
-                if (this.selectedIds.contains(noti.id)) {
-                    noti.hidden = true;
-                }
-            });
-            axios
-                .post(route("notifications.destroy"), { ids: this.selectedIds })
-                .then((resp) => {
-                    notify("Notifications deleted", "success");
-                })
-                .catch((err) => {
-                    console.error(err);
-                    notify("Something went wrong", "danger");
-                });
-        },
-
-        /** Converts mysql time to human readbale time format
-         * like 4 days ago, 5 years ago, etc
-         */
-        convertTime(timestamnp) {
-            let time =
-                (new Date().getTime() - new Date(timestamnp).getTime()) / 1000;
-            //(Date.now() - new Date(timestamnp)) / 1000; // unix timestamp in second
-            time = time < 1 ? 1 : time;
-            let tokens = [
+            tokens: [
                 {
                     sec: 31536000,
                     unit: "year",
@@ -265,11 +203,89 @@ export default {
                     sec: 1,
                     unit: "second",
                 },
-            ];
-            // tokens.reverse();
+            ],
+            // notifications: [
+            //     {
+            //         id: 1,
+            //         thumbSrc: "//placekitten.com/g/200/300",
+            //         text: "Found a duplicate",
+            //         url: "/",
+            //     },
+            //     {
+            //         id: 2,
+            //         thumbSrc: "//placekitten.com/g/200/300",
+            //         text: "Found a duplicate",
+            //     },
+            //     {
+            //         id: 3,
+            //         thumbSrc: "//placekitten.com/g/200/300",
+            //         text: "Found a duplicate",
+            //     },
+            //     {
+            //         id: 4,
+            //         thumbSrc: "//placekitten.com/g/200/300",
+            //         text: "Found a duplicate",
+            //     },
+            // ],
+        };
+    },
+    created() {
+        this.notifications.forEach((notification) => {
+            console.log(notification.data);
+            if (!(typeof notification.data === "object")) {
+                notification.data = JSON.parse(notification.data);
+            }
+        });
+    },
+    mounted() {
+        console.log(this.notifications[0]);
+    },
+    methods: {
+        toggleSelect(e) {
+            this.select = !this.select;
+            this.checkboxDisplayClass = this.select ? "d-block" : "d-none";
+            console.log(this.checkboxClass);
+        },
+        deleteNotification(e, noti) {
+            e.stopPropagation();
+            noti.hidden = true;
 
-            for (let i = 0; i < tokens.length; i++) {
-                let token = tokens[i];
+            this.sendNotiDeleteReq({ ids: [noti.id] });
+        },
+        deleteSelected(ids) {
+            this.notifications.forEach((noti) => {
+                if (this.selectedIds.includes(noti.id)) {
+                    noti.hidden = true;
+                }
+            });
+            this.sendNotiDeleteReq({ ids: this.selectedIds });
+        },
+
+        sendNotiDeleteReq(data) {
+            axios
+                .post(route("notifications.destroy"), data)
+                .then((resp) => {
+                    notify("Notifications deleted", "success");
+                })
+                .catch((err) => {
+                    console.error(err);
+                    notify("Something went wrong", "danger");
+                });
+        },
+
+        /** Converts mysql time to human readbale time format
+         * like 4 days ago, 5 years ago, etc
+         */
+        convertTime(timestamnp) {
+            let time =
+                (new Date().getTime() - new Date(timestamnp).getTime()) / 1000;
+            //(Date.now() - new Date(timestamnp)) / 1000; // unix timestamp in second
+            time = time < 1 ? 1 : time;
+
+            // this.tokens.reverse();
+
+            for (let i = 0; i < this.tokens.length; i++) {
+                let token = this.tokens[i];
                 //console.log("token: ", token);
                 //console.log("time: ", time);
                 if (time < token.sec) continue;
@@ -322,7 +338,13 @@ export default {
             }
             let decoded_route = JSON.parse(route_config);
             console.log(decoded_route);
-
+            for (let i = 0; i < this.notifications.length; i++) {
+                if (this.notifications[i].id == id) {
+                    this.notifications[i].seen = true;
+                    console.log(this.notifications[i]);
+                    break;
+                }
+            }
             this.$inertia.visit(
                 route(decoded_route.name, decoded_route.options)
             );
@@ -330,17 +352,14 @@ export default {
                 .post(route("notifications.seen"), {
                     id: id,
                 })
+                .then((resp) => {})
                 .catch((err) => {
                     console.error(err);
                     notify("Something went wrong in notifications.");
                 });
         },
-        genRowClassList(seen) {
-            let classes = "notification-row";
-            if (!seen) {
-                classes += " notification-unread";
-            }
-            return classes;
+        genRowClassList(noti) {
+            return noti.seen ? "" : "unread";
         },
     },
 };
