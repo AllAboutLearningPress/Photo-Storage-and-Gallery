@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\DuplicateController;
 use App\Http\Controllers\IndexController;
@@ -94,6 +95,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::prefix('compare')->name('compare.')->group(function () {
         Route::get('{left}/{right}', [DuplicateController::class, 'index'])->name('index');
     });
+
+    /** Routes related to account */
+    Route::get('account', [AccountController::class, 'index']);
     // Route::get("/dashboard", function () {
     //     return Inertia::render('Dashboard');
     // })->name('dashboard');
