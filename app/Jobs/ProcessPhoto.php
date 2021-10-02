@@ -12,6 +12,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Notification;
+use DB;
 use Validator;
 
 class ProcessPhoto implements ShouldQueue
@@ -105,9 +106,11 @@ class ProcessPhoto implements ShouldQueue
 
 
 
-        $duplicate = Photo::where('sha256', $photoDetails['sha256'])->orWhere(function ($query) use ($photoDetails) {
-            $query->where('dhash', $photoDetails['dhash']);
-        })->orderBy('id', 'ASC')->first();
+        // checking for exact duplicate
+        $duplicate = Photo::where('sha256', $photoDetails['sha256'])->orderBy('id', 'ASC')->first();
+        //orWhere(function ($query) use ($photoDetails) {
+        //   $query->where('dhash', $photoDetails['dhash']);
+        //}
         if ($duplicate) {
             Notification::create([
                 'data' => json_encode(['title' => 'Found Duplicate', 'body' => "\"{$photo->title}\" is a duplicate of \"{$duplicate->title}\" "]),
@@ -116,7 +119,20 @@ class ProcessPhoto implements ShouldQueue
                 'route' => json_encode(['name' => 'compare.index', 'options' => ['left' => $photo->id, 'right' => $duplicate->id]])
             ]);
         }
+
+        // checking for color corrected or slightly zoomed photo
+        $parentPhoto = DB::table('photos')
+            ->selectRaw("id, dhash, BIT_COUNT(UNHEX('cfc080fcf9c0d0f8') ^ unhex(dhash)) as hd")
+            ->havingRaw('hd > 0 and hd < 12 ')
+            ->orderBy('hd', 'asc')
+            ->first();
+        if ($parentPhoto) {
+            $parentPhoto->derivatives()->attach($photo->id);
+        }
+
         // SELECT id, dhash, BIT_COUNT(UNHEX('cfc080fcf9c0d0f8') ^ unhex(dhash)) AS hd from photos HAVING hd > 0
+        // select id, dhash, BIT_COUNT(UNHEX('cfc080fcf9c0d0f8') ^ unhex(dhash)) as hd from `photos` having hd > 0
+
         // updating the photo details returned by lambda function
         $photo->update($photoDetails);
     }

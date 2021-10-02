@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Jobs\DeletePhotoFiles;
 use App\Models\Photo;
 use Cache;
 use Storage;
@@ -64,19 +65,7 @@ class PhotoObserver
      */
     public function forceDeleted(Photo $photo)
     {
-        $file_versions = ['full_size', 'thumbnails', 'preview_photos'];
-        $full_paths = [];
-        foreach ($file_versions as $file_version) {
-            $full_path = $photo->genFullPath($file_version);
-            Cache::forget($full_path);
-            array_push($full_paths, $full_path);
-        }
 
-        // deleting pivot table tag entries before the photo is deleted
-        $photo->tags()->detach();
-        $photo->labels()->detach();
-
-        // add code to remove download links
-        Storage::disk('s3_fullsize')->delete($full_paths);
+        DeletePhotoFiles::dispatch($photo->file_name);
     }
 }

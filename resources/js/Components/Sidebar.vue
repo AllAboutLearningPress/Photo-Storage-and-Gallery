@@ -132,7 +132,9 @@ export default {
         // in order to change the active menu item
         this.$inertia.on("navigate", (event) => {
             this.currentRoute = route().current();
-            this.menuItems[1].name = `Notifications (${this.$page.props.notification_count})`;
+            if (this.$page.props.notification_count > 0) {
+                this.menuItems[1].name = `Notifications (${this.$page.props.notification_count})`;
+            }
         });
     },
     methods: {

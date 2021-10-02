@@ -65,7 +65,12 @@ class PhotoController extends Controller
         // if force is set to true then the photo will
         // be permamnently deleted
         if ($data['force']) {
-            Photo::withTrashed()->findOrFail($data['id'])->forceDelete();
+            $photo = Photo::withTrashed()->select(['id', 'file_name'])->findOrFail($data['id']);
+            // deleting pivot table tag entries before the photo is deleted
+            $photo->tags()->detach();
+            $photo->labels()->detach();
+
+            $photo->forceDelete();
             $flash_msg = 'Photo permanenetly deleted';
             $redirect_route = 'photos.trash';
         } else {

@@ -38,6 +38,10 @@ class Photo extends Model
         return $this->belongsToMany(Label::class)->using(\App\Models\Pivots\LabelPhoto::class)->withPivot('score');
     }
 
+    public function derivatives()
+    {
+        return $this->belongsToMany(Photo::class, 'parent_id', 'derived_id')->using(\App\models\Pivots\Derivative::class)->withTimestamps();
+    }
     /*
     * The parent of this photo
     */
