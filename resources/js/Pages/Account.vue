@@ -92,10 +92,21 @@
                                 <div class="form-group">
                                     <input
                                         type="password"
-                                        class="form-control"
+                                        class="form-control is-invalid"
                                         id="ciTy"
                                         placeholder="New Password"
                                     />
+                                    <div
+                                        id="invalidCheck3Feedback"
+                                        class="invalid-feedback"
+                                    >
+                                        <ul>
+                                            <li>Password should be 8 chars</li>
+                                            <li>
+                                                Password should contain 1 digit
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -128,6 +139,7 @@
                                     id="submit"
                                     name="submit"
                                     class="btn btn-outline-primary"
+                                    v-on:click="submit"
                                 >
                                     Update
                                 </button>
@@ -174,6 +186,11 @@ export default {
                 passwordConfirmation: null,
             },
         };
+    },
+    methods: {
+        submit() {
+            this.$inertia.post(route("account.update"), this.form);
+        },
     },
 };
 </script>

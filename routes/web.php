@@ -5,13 +5,14 @@ use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\DuplicateController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\InvitationController;
-use App\Http\Controllers\InvitationSignupController;
+// use App\Http\Controllers\InvitationSignupController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ShareController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\UploadController;
+use Aws\Account\AccountClient;
 use Illuminate\Support\Facades\Route;
 
 
@@ -97,14 +98,11 @@ Route::middleware('auth')->group(function () {
     });
 
     /** Routes related to account */
-    Route::get('account', [AccountController::class, 'index']);
-    // Route::get("/dashboard", function () {
-    //     return Inertia::render('Dashboard');
-    // })->name('dashboard');
+    Route::prefix('account')->name('account')->group(function () {
+        Route::get('', [AccountController::class, 'index'])->name('index');
+        Route::post('update', [AccountController::class, 'update'])->name('update');
+    });
 });
-/** Invitations routes that doesnt require authentication */
-Route::get('invitations/accept-invite/{invite_code}', [InvitationSignupController::class, 'create'])->middleware('signed')->name('invitations.accept_invite');
-Route::post('invitations/signup',  [InvitationSignupController::class, 'store'])->middleware('signed')->name('invitations.signup.store');
 
 Route::get('share/{key}', [ShareController::class, 'view'])->name('share.show');
 

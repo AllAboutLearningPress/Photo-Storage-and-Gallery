@@ -141,10 +141,11 @@ export default {
         /**Logout function */
         logout() {
             // sending the post request for logging out this session
-            axios.post(route("logout")).then((resp) => {
-                // visiting the new url
-                location.replace(route("login"));
-            });
+            // axios.post(route("logout")).then((resp) => {
+            //     // visiting the new url
+            //     location.replace(route("login"));
+            // });
+            this.$inertia.post(route("logout"));
         },
     },
 };

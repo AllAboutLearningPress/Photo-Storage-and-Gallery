@@ -42,7 +42,8 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'success' => fn () => $request->session()->get('success')
             ],
-            'notification_count' => Notification::where([['user_id', Auth::id()], ['seen', false]])->count()
+            'notification_count' => Notification::where([['user_id', Auth::id()], ['seen', false]])->count(),
+            'user' => $request->user()
         ]);
     }
 }

@@ -132,12 +132,10 @@
 </style>
 <script>
 import MainLayout from "@/Layouts/MainLayout.vue";
-import Button from "../../Jetstream/Button.vue";
 import Modal from "bootstrap/js/dist/modal";
 import axios from "axios";
 import { notify } from "@/util.js";
 export default {
-    components: { Button },
     props: ["invitations"],
     layout: MainLayout,
     data() {

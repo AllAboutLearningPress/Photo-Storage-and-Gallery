@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
+use Hash;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Str;
 
 class AccountController extends Controller
 {
@@ -23,6 +26,18 @@ class AccountController extends Controller
         ]);
 
 
-        $request->user();
+        $updatedData = ['name' => $data->name];
+        if (
+            array_key_exists('current_password', $data) &&
+            Auth::guard('web')->validate([
+                'email' => $request->user()->email,
+                'password' => $request->current_password,
+            ])
+        ) {
+            $updatedData['password'] =  Hash::make($data['password']);
+            $updatedData['remember_token'] =  Str::random(60);
+        }
+        $request->user->update($updatedData);
+        return redirect()->back();
     }
 }

@@ -60,7 +60,8 @@ class InvitationSignupController extends Controller
             'code' => ['required', 'string', 'min:32'],
 
         ]);
-        $invite = Invitation::where([['code', "=", $data['code']], ['is_accepted', '=', false]])->first();
+        $invite = Invitation::select(['id', 'is_accepted'])
+            ->where([['code', "=", $data['code']], ['is_accepted', '=', false]])->first();
         if ($invite) {
             $invite->update(['is_accepted' => true]);
             $user = User::create([
