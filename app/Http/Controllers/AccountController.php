@@ -12,7 +12,7 @@ class AccountController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Account');
+        return Inertia::render('Account/Account');
     }
 
     public function update(Request $request)

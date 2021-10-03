@@ -39,7 +39,9 @@
                     >
                         <div class="file__thumb">
                             <div v-if="file.uploadCompleted" class="file__pic">
-                                <completed-tick></completed-tick>
+                                <check-icon
+                                    class="file__pic__tick"
+                                ></check-icon>
                             </div>
                             <div
                                 v-else
@@ -118,7 +120,7 @@ import { inject } from "@vue/runtime-core";
 import FileNotes from "./Components/FileNotes.vue";
 import FileTitle from "@/Components/FileTitle.vue";
 import FileTag from "@/Components/FileTag.vue";
-import CompletedTick from "./Components/CompletedTick.vue";
+import CheckIcon from "../../Icons/CheckIcon.vue";
 import TagsDatalist from "@/Components/TagsDatalist.vue";
 export default {
     components: {
@@ -126,7 +128,7 @@ export default {
         FileNotes,
         FileTitle,
         FileTag,
-        CompletedTick,
+        CheckIcon,
         TagsDatalist,
     },
     layout: MainLayout,

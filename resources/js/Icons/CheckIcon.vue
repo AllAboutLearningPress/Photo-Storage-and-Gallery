@@ -1,7 +1,7 @@
 <template>
     <svg
         xmlns="http://www.w3.org/2000/svg"
-        class="file__pic__tick bi bi-check"
+        class="bi bi-check"
         fill="currentColor"
         viewBox="0 0 16 16"
     >
@@ -10,7 +10,3 @@
         />
     </svg>
 </template>
-
-<script>
-export default {};
-</script>
