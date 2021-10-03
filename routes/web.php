@@ -107,3 +107,5 @@ Route::get('invitations/accept-invite/{invite_code}', [InvitationSignupControlle
 Route::post('invitations/signup',  [InvitationSignupController::class, 'store'])->middleware('signed')->name('invitations.signup.store');
 
 Route::get('share/{key}', [ShareController::class, 'view'])->name('share.show');
+
+require __DIR__ . '/auth.php';
