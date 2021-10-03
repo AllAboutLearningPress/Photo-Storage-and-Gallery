@@ -17,7 +17,6 @@
         "inertiajs/inertia-laravel": "^0.3.5",
         "intervention/image": "^2.5",
         "laravel/framework": "^8.12",
-        "laravel/jetstream": "^2.3",
         "laravel/sanctum": "^2.6",
         "laravel/scout": "^8.0",
         "laravel/tinker": "^2.5",

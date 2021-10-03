@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Route;
 
 
 /** All the routes that needs authentication */
-Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+Route::middleware('auth')->group(function () {
     Route::get("/", [IndexController::class, 'index'])->name('home');
     Route::post("/fetch-more", [IndexController::class, 'fetch_more'])->name('index.fetch_more');
     //Route::resource('photo', PhotoController::class);
