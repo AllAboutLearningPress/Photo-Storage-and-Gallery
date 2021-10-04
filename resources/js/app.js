@@ -21,7 +21,7 @@ const app = createApp({
 
 Sentry.init({
     app,
-    dsn: "https://50e6a72caae84cd4a5568f24039c754e@o1024753.ingest.sentry.io/5990611",
+    dsn: process.env.MIX_SENTRY_DSN_PUBLIC,
     integrations: [
         //     new Integrations.BrowserTracing({
         //         routingInstrumentation: Sentry.vueRouterInstrumentation(router),
@@ -29,7 +29,8 @@ Sentry.init({
         //     }),
     ],
     beforeSend: (event, hint) => {
-        if (IS_DEBUG) {
+
+        if (process.env.MIX_APP_DEBUG == "true") {
             console.error(hint.originalException || hint.syntheticException);
             return null; // this drops the event and nothing will be sent to sentry
         }
