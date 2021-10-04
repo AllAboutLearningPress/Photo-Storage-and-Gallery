@@ -17,14 +17,15 @@ class AccountController extends Controller
 
     public function update(Request $request)
     {
+        dd($request);
         $data = $request->validate([
             'name' => 'required|string|max:128',
-            'email' => 'required|email',
-            'current_password' => 'string',
-            'new_password' => 'string|required_with:current_password',
-            'password_confirmation' => 'string|required_with:new_password'
+            // 'email' => 'required|email',
+            'currentPassword' => 'string',
+            'password' => 'string|required_with:currentPassword',
+            'passwordConfirmation' => 'string|required_with:password'
         ]);
-
+        dd($data);
 
         $updatedData = ['name' => $data->name];
         if (

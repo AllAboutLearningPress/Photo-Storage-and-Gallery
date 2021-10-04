@@ -98,7 +98,7 @@ Route::middleware('auth')->group(function () {
     });
 
     /** Routes related to account */
-    Route::prefix('account')->name('account')->group(function () {
+    Route::prefix('account')->name('account.')->group(function () {
         Route::get('', [AccountController::class, 'index'])->name('index');
         Route::post('update', [AccountController::class, 'update'])->name('update');
     });

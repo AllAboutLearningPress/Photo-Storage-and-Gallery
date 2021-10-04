@@ -2,7 +2,7 @@
     <div class="row gutters">
         <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
             <div class="card h-100">
-                <form class="needs-valdiation">
+                <form @submit.prevent="submit" class="needs-validation">
                     <div class="card-body">
                         <div class="row gutters">
                             <div
@@ -39,6 +39,7 @@
                                             type="text"
                                             class="form-control"
                                             v-model="form.name"
+                                            required
                                         />
                                         <!-- <input type="text" class="form-control" /> -->
                                     </div>
@@ -100,7 +101,9 @@
                                             <input
                                                 type="password"
                                                 class="form-control"
+                                                name="current_password"
                                                 placeholder="Current Password"
+                                                v-model="form.currentPassword"
                                             />
                                         </div>
                                     </div>
@@ -120,20 +123,26 @@
                                         <input
                                             type="password"
                                             class="form-control"
-                                            :class="genPasswordInputClasses"
-                                            id="new-password"
+                                            :class="newPassInputClass"
+                                            id="new_password"
                                             placeholder="New Password"
                                             required
                                             v-model="form.password"
                                             v-on:input="checkPassword"
                                             v-on:click="checkPassword"
+                                            min="10"
                                         />
-                                        <div class="valid-feedback">
+                                        <div
+                                            v-if="showFeedback"
+                                            class="valid-feedback"
+                                        >
                                             <ul>
                                                 <li
                                                     v-for="(
                                                         feedback, index
-                                                    ) in passwordValidFeedbacks"
+                                                    ) in genValidArray(
+                                                        passwordValidFeedbacks
+                                                    )"
                                                     :key="index"
                                                 >
                                                     {{ feedback }}
@@ -141,22 +150,20 @@
                                             </ul>
                                         </div>
                                         <div
-                                            id="invalidCheck3Feedback"
+                                            v-if="showFeedback"
                                             class="invalid-feedback"
                                         >
                                             <ul>
-                                                <div class="invalid-feedback">
-                                                    <ul>
-                                                        <li
-                                                            v-for="(
-                                                                feedback, index
-                                                            ) in passwordInvalidFeedbacks"
-                                                            :key="index"
-                                                        >
-                                                            {{ feedback }}
-                                                        </li>
-                                                    </ul>
-                                                </div>
+                                                <li
+                                                    v-for="(
+                                                        feedback, index
+                                                    ) in genValidArray(
+                                                        passwordInvalidFeedbacks
+                                                    )"
+                                                    :key="index"
+                                                >
+                                                    {{ feedback }}
+                                                </li>
                                             </ul>
                                         </div>
                                     </div>
@@ -176,12 +183,18 @@
                                         <input
                                             type="password"
                                             class="form-control"
-                                            id="confirm-new-password"
+                                            id="password_confirmation"
                                             placeholder="Confirm New Password"
                                             required
                                             :pattern="'^' + form.password + '$'"
+                                            v-on:input="checkConfirmPassword"
+                                            min="10"
+                                            v-model="form.passwordConfirmation"
                                         />
-                                        <div class="invalid-feedback">
+                                        <div
+                                            v-if="showFeedback"
+                                            class="invalid-feedback"
+                                        >
                                             <ul>
                                                 <li>Passwords don't match</li>
                                             </ul>
@@ -256,6 +269,7 @@
 import CheckIcon from "../../Icons/CheckIcon.vue";
 import XIcon from "../../Icons/XIcon.vue";
 import MainLayoutVue from "../../Layouts/MainLayout.vue";
+import { addEventListener } from "@/util.js";
 export default {
     components: { CheckIcon, XIcon },
     layout: MainLayoutVue,
@@ -263,13 +277,13 @@ export default {
         return {
             form: {
                 name: this.$page.props.user.name,
-                email: this.$page.props.user.email,
                 currentPassword: null,
                 password: null,
                 passwordConfirmation: null,
             },
             passwordInvalidFeedbacks: [],
             passwordValidFeedbacks: [],
+            showFeedback: false,
             passwordValidationRules: [
                 {
                     re: /[a-z]/,
@@ -287,54 +301,117 @@ export default {
                     re: /[@$!%*#?&]/,
                     text: "Password should contain at least one of @$!%*#?&",
                 },
+                {
+                    re: /^.{10,}$/,
+                    text: "Password needs to be atleast 10 characters long",
+                },
             ],
+            rmListeners: [],
+            newPassInputClass: null,
         };
     },
-    computed: {
-        genPasswordInputClasses() {
-            return (
-                (this.passwordInvalidFeedbacks.length ? "is-invalid " : " ") +
-                (this.passwordValidFeedbacks.length ? "is-valid" : "")
-            );
-        },
+    computed: {},
+    mounted() {
+        this.rmListeners = [
+            addEventListener(
+                document.querySelector("#new_password"),
+                "focusout",
+                (e) => {
+                    this.showFeedback = false;
+                    // this.newPassInputClass = this.newPassInputClass.includes(
+                    //     "is-valid"
+                    // )
+                    //     ? "is-valid"
+                    //     : null;
+                }
+            ),
+        ];
     },
     methods: {
-        submit() {
-            // this.$inertia.post(route("account.update"), this.form);
+        submit(e) {
+            console.log(e);
+            let form = document.querySelector(".needs-validation");
+            if (this.form.currentPassword) {
+                this.checkPassword(e);
+                this.checkConfirmPassword({
+                    target: form.querySelector("#password_confirmation"),
+                });
+            }
+            console.log(sa);
+            let isInvalid = form.querySelector("is-invalid");
+            if (isInvalid) {
+                this.showFeedback = true;
+            } else {
+                this.$inertia.post(route("account.update"), this.form);
+            }
+
             //  document.querySelector(".needs-valdiation").querySelectorAll(':invalid')[0].classList.add('is-invalid')
-            console.log(
-                document.querySelector(".needs-valdiation").checkValidity()
-            );
+            // console.log(
+            //     document.querySelector(".needs-valdiation").checkValidity()
+            // );
         },
+
         passwordOnClick() {},
         checkPassword(e) {
             console.log(e);
-
-            this.passwordValidationRules.forEach((rule) => {
-                this.addToPasswordFeedback(rule.re, rule.text);
-            });
+            // that = this;
+            this.showFeedback = true;
+            this.passwordValidationRules.forEach(
+                function (rule, i) {
+                    this.addToPasswordFeedback(rule.re, rule.text, i);
+                }.bind(this)
+            );
+            this.setNewPassInputClass();
         },
-        addToPasswordFeedback(re, validationText) {
-            if (re.test(this.form.password)) {
-                let index =
-                    this.passwordInvalidFeedbacks.indexOf(validationText);
-                if (index) {
-                    this.passwordInvalidFeedbacks.splice(index, 1);
-                }
-
-                // atleast one small case letter
-                this.passwordValidFeedbacks.push(validationText);
+        addToPasswordFeedback(re, validationText, i) {
+            if (this.form.password && re.test(this.form.password)) {
+                this.passwordValidFeedbacks[i] = validationText;
+                this.passwordInvalidFeedbacks[i] = null;
             } else {
-                let index = this.passwordValidFeedbacks.indexOf(validationText);
-                if (index) {
-                    this.passwordValidFeedbacks.splice(index, 1);
-                }
-
-                // atleast one small case letter
-                this.passwordInvalidFeedbacks.push(validationText);
+                this.passwordValidFeedbacks[i] = null;
+                this.passwordInvalidFeedbacks[i] = validationText;
             }
-            console.log("invalid: ", this.passwordValidFeedbacks);
-            console.log("valid: ", this.passwordInvalidFeedbacks);
+        },
+
+        genValidArray(arr) {
+            let arr2 = [];
+            arr.forEach(function (val) {
+                if (val) {
+                    arr2.push(val);
+                }
+            });
+            return arr2;
+        },
+        setNewPassInputClass() {
+            let klass = "";
+            for (let i = 0; i < this.passwordInvalidFeedbacks.length; i++) {
+                if (this.passwordInvalidFeedbacks[i]) {
+                    klass += "is-invalid ";
+                    break;
+                }
+            }
+            for (let i = 0; i < this.passwordValidFeedbacks.length; i++) {
+                if (this.passwordValidFeedbacks[i]) {
+                    klass += "is-valid";
+                    break;
+                }
+            }
+            if (klass != this.newPassInputClass) this.newPassInputClass = klass;
+        },
+
+        checkConfirmPassword(e) {
+            if (!e.target.checkValidity()) {
+                console.log(e.target.classList);
+                e.target.classList.remove("is-valid");
+                if (!e.target.classList.contains("is-invalid")) {
+                    e.target.classList.add("is-invalid");
+                }
+            } else {
+                // if (!e.target.classList.contains("is-invalid")) {
+                e.target.classList.remove("is-invalid");
+                // }
+                e.target.classList.add("is-valid");
+            }
         },
     },
 };
