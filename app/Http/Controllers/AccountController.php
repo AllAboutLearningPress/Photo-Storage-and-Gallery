@@ -17,28 +17,29 @@ class AccountController extends Controller
 
     public function update(Request $request)
     {
-        dd($request);
+        //dd($request);
         $data = $request->validate([
             'name' => 'required|string|max:128',
             // 'email' => 'required|email',
-            'currentPassword' => 'string',
+            'currentPassword' => 'string|nullable',
             'password' => 'string|required_with:currentPassword',
             'passwordConfirmation' => 'string|required_with:password'
         ]);
-        dd($data);
 
-        $updatedData = ['name' => $data->name];
+
+        $updatedData = ['name' => $data['name']];
         if (
-            array_key_exists('current_password', $data) &&
+            array_key_exists('currentPassword', $data) &&
             Auth::guard('web')->validate([
                 'email' => $request->user()->email,
-                'password' => $request->current_password,
+                'password' => $data['currentPassword'],
             ])
         ) {
+            // dd($data);
             $updatedData['password'] =  Hash::make($data['password']);
             $updatedData['remember_token'] =  Str::random(60);
         }
-        $request->user->update($updatedData);
+        $request->user()->update($updatedData);
         return redirect()->back();
     }
 }

@@ -337,12 +337,16 @@ export default {
                     target: form.querySelector("#password_confirmation"),
                 });
             }
-            console.log(sa);
+            //console.log(sa);
             let isInvalid = form.querySelector("is-invalid");
+            console.log("is inval;id: ", isInvalid);
             if (isInvalid) {
                 this.showFeedback = true;
             } else {
-                this.$inertia.post(route("account.update"), this.form);
+                let data = Object.fromEntries(
+                    Object.entries(this.form).filter(([_, v]) => v != null)
+                );
+                this.$inertia.post(route("account.update"), data);
             }
 
             //  document.querySelector(".needs-valdiation").querySelectorAll(':invalid')[0].classList.add('is-invalid')
