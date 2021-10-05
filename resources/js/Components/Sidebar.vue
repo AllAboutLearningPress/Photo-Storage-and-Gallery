@@ -97,6 +97,10 @@ export default {
                 name: "Invitations",
                 route: "invitations.index",
             },
+            {
+                name: "Account",
+                route: "account.index",
+            },
         ];
         return { menuItems };
     },

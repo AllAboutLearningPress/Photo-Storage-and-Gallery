@@ -67,25 +67,8 @@ export default {
     },
     created() {
         document.addEventListener("notify", this.show);
-        this.$inertia.on("navigate", () => {
-            if (this.$page.props.flash.success) {
-                let button = null;
-                let body = null;
-                if (this.$page.props.flash.success.text) {
-                    body = this.$page.props.flash.success.text;
-                    button = this.$page.props.flash.success.button;
-                } else {
-                    body = this.$page.props.flash.success;
-                }
-                this.show({
-                    detail: {
-                        body: body,
-                        button: button,
-                        level: "success",
-                    },
-                });
-            }
-        });
+        // this.$inertia.on("navigate", this.notifyFlash);
+        this.$inertia.on("success", this.notifyFlash);
     },
     mounted() {
         this.container = document.querySelector(".js-notification-container");
@@ -93,6 +76,35 @@ export default {
         //this.testEvent();
     },
     methods: {
+        notifyFlash() {
+            if (this.$page.props.flash.success) {
+                if (typeof this.$page.props.flash.success == "string") {
+                    this.notifyFlashMsg(this.$page.props.flash.success);
+                } else {
+                    this.$page.props.flash.success.forEach(
+                        this.notifySuccessMsg
+                    );
+                }
+            }
+        },
+        notifySuccessMsg(flashMsg) {
+            let button = null;
+            let body = null;
+            console.log(flashMsg);
+            if (flashMsg.text) {
+                body = flashMsg.text;
+                button = flashMsg.button;
+            } else {
+                body = flashMsg;
+            }
+            this.show({
+                detail: {
+                    body: body,
+                    button: button,
+                    level: "success",
+                },
+            });
+        },
         testEvent() {
             console.log(this.ref + this.count);
             document.dispatchEvent(
