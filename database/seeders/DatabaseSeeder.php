@@ -16,9 +16,10 @@ class DatabaseSeeder extends Seeder
         // \App\Models\User::factory(10)->create();
         if (app()->environment('local')) {
             $this->call([
+                PermissionSeeder::class,
                 RoleSeeder::class,
                 UserSeeder::class,
-                TagSeeder::class,
+                //TagSeeder::class,
                 //PhotoSeeder::class
             ]);
         }
