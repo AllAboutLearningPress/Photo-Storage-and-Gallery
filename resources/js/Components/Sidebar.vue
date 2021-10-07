@@ -89,30 +89,27 @@ export default {
                 name: "Popular Tags",
                 route: "tags.index",
             },
-            {
-                name: "Trash",
-                route: "photos.trash",
-            },
-            {
-                name: "Invitations",
-                route: "invitations.index",
-            },
-            {
-                name: "Account",
-                route: "account.index",
-            },
+            // adding routes that user has permission to
+            ...usePage().props.value.sidebarMenuItems,
+            // {
+            //     name: "Trash",
+            //     route: "photos.trash",
+            // },
+            // {
+            //     name: "Invitations",
+            //     route: "invitations.index",
+            // },
         ];
+
         return { menuItems };
     },
     data() {
         return {
             classes: "navigation__item list-group-item",
-
             currentRoute: route().current(),
         };
     },
     mounted() {
-        // console.log("noti count ", this.$page.props.notification_count);
         document.addEventListener("click", (e) => {
             const toggler = e.target.closest(".js-sidebar-toggle");
 
@@ -123,9 +120,7 @@ export default {
                     })
                 );
         });
-        // const contentSidebar = new Sidebar(
-        //     document.querySelector(".js-content-sidebar")
-        // );
+
         const contentSidebar = new SidebarHelper(
             document.querySelector(".js-content-sidebar")
         );

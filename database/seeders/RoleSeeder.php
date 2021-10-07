@@ -31,5 +31,15 @@ class RoleSeeder extends Seeder
         $allPermIds = Permission::select('id')->pluck('id')->all();
 
         $adminRole->permissions()->sync($allPermIds);
+
+        // normal user
+        $normal_user = Role::forceCreate([
+            'id' => 2,
+            'name' => 'Normal User',
+            'slug' => 'normal-user'
+        ]);
+
+        $perm_ids_for_normal_user = Permission::where('slug', 'like', 'photos.%')->select('id')->pluck('id')->all();
+        $normal_user->permissions()->sync($perm_ids_for_normal_user);
     }
 }

@@ -90,6 +90,19 @@
                                 aria-describedby="inputGroup-sizing-default"
                             />
                         </div>
+                        <select
+                            class="form-select form-select-sm"
+                            aria-label=".form-select-sm example"
+                        >
+                            <option selected>Select User Role</option>
+                            <option
+                                v-for="role in roles"
+                                :key="role.id"
+                                :value="role.id"
+                            >
+                                {{ role.name }}
+                            </option>
+                        </select>
                     </div>
                     <div class="modal-footer">
                         <button
@@ -136,7 +149,7 @@ import Modal from "bootstrap/js/dist/modal";
 import axios from "axios";
 import { notify } from "@/util.js";
 export default {
-    props: ["invitations"],
+    props: ["invitations", "roles"],
     layout: MainLayout,
     data() {
         return { deleteModal: null };

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Cache;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -65,5 +66,23 @@ class User extends Authenticatable
     public function tags()
     {
         return $this->hasMany(Tag::class);
+    }
+
+    public function role()
+    {
+        return  $this->belongsTo(Role::class, 'role_id');
+    }
+
+    public function hasPermission($permission)
+    {
+        $perms  = Cache::rememberForever('role' . $this->role_id, function () {
+            return $this->role->permissions()->get();
+        });
+        foreach ($perms as $perm) {
+            if ($perm->slug == $permission) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Permission;
 use Illuminate\Database\Seeder;
+use Str;
 
 class PermissionSeeder extends Seeder
 {
@@ -15,7 +16,7 @@ class PermissionSeeder extends Seeder
     public function run()
     {
         $permissions = [
-            ['id' => 1, 'name' => 'Send Invite', 'slug' => 'send-invite'],
+            ['id' => 1, 'name' => 'Send Invite', 'slug' => 'view-i'],
             ['id' => 2, 'name' => 'Upload Photo', 'slug' => 'upload-photo'],
             ['id' => 3, 'name' => 'Delete Invite', 'slug' => 'delete-photo'],
             ['id' => 4, 'name' => 'Download Photo', 'slug' => 'download-photo'],
@@ -27,7 +28,53 @@ class PermissionSeeder extends Seeder
             ['id' => 10, 'name' => 'Delete Role', 'slug' => 'delete-role'],
         ];
 
-        foreach ($permissions as $perm) {
+        $models = [
+            [
+                'name' => 'Photo',
+                'plural' => 'photos'
+            ],
+            [
+                'name' => 'User',
+                'plural' => 'users'
+            ],
+            [
+                'name' => 'Invitation',
+                'plural' => 'invitations'
+            ],
+            [
+                'name' => 'Role',
+                'plural' => 'roles',
+
+            ], [
+                'name' => 'Tag',
+                'plural' => 'tags'
+            ], [
+                'name' => 'Photo Share',
+                'plural' => 'share_photos'
+            ]
+
+        ];
+        $permissions = ['index', 'view', 'create', 'delete'];
+
+
+        foreach ($models as $model) {
+            foreach ($permissions as $perm) {
+                Permission::forceCreate(
+                    [
+                        'name' => ucfirst($perm) . " " . $model['name'],
+                        'slug' => Str::plural(Str::lower($model['plural'])) . "." . Str::lower($perm)
+                    ]
+                );
+            }
+        }
+        $extra_perms = [
+            [
+                'name' => 'View Trash',
+                'slug' => 'photos.trash'
+            ],
+        ];
+
+        foreach ($extra_perms as $perm) {
             Permission::forceCreate($perm);
         }
     }

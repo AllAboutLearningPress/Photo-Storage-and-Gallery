@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Role extends Model
 {
     use HasFactory;
-    protected $fillable = ['id', 'name', 'slug'];
+    protected $fillable = ['name', 'slug'];
 
     public function permissions()
     {

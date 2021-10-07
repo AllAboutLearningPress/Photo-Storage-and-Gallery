@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\InviteMail;
 use App\Models\Invitation;
+use App\Models\Role;
 use App\Models\User;
 use Auth;
 use Hash;
@@ -18,7 +19,8 @@ class InvitationController extends Controller
     {
         return Inertia::render('Invitation/Index', [
             'invitations' => Invitation::where('invited_by', "=", $request->user()->id)->cursorPaginate(30),
-            'title' => 'Sent Invitations'
+            'title' => 'Sent Invitations',
+            'roles' => Role::all()
         ]);
     }
 
