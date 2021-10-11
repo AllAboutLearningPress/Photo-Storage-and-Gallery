@@ -97,28 +97,9 @@ export default {
         };
     },
     methods: {
-        sendInvitation(e, email) {
-            this.$emit("hide-model");
-            if (this.deleteModal) {
-                this.deleteModal.hide();
-            }
-
-            axios
-                .post(route("invitations.send_invite"), {
-                    email: this.email,
-                    role: this.roleId,
-                })
-                .then((resp) => {
-                    notify("Invitation sent", "success");
-                    this.email = "";
-                })
-                .catch((err) => {
-                    notify(
-                        "Something went wrong. Please send invitation again",
-                        "danger"
-                    );
-                    console.error(err);
-                });
+        sendInvitation(e) {
+            console.log(e);
+            this.$emit("sendInvite", this.email, this.roleId);
         },
     },
 };

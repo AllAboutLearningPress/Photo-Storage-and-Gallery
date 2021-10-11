@@ -26,7 +26,7 @@ class InvitationController extends Controller
 
     public function sendInvite(Request $request)
     {
-        $data = $request->validate(['email' => 'required|email']);
+        $data = $request->validate(['email' => 'required|email', 'roleId' => 'required|exists:roles,id']);
         $invitation = Invitation::where('email', "=", $data['email'])->first();
         $user = User::where('email', $data['email'])->count();
 
@@ -40,6 +40,7 @@ class InvitationController extends Controller
                 'code' => $invite_code,
                 'invited_by' => $request->user()->id,
                 'is_accepted' => false,
+                'role_id' => $data['roleId']
             ]);
         }
 
@@ -97,6 +98,7 @@ class InvitationController extends Controller
                 'name' => $data['name'],
                 'email' => $invite->email,
                 'password' => Hash::make($data['password']),
+                'role_id' => $invite->role_id
             ]);
             Auth::login($user);
             return redirect(route('home'));

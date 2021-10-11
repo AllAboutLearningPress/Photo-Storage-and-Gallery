@@ -19,7 +19,7 @@
                     <th scope="col">Email</th>
                     <th scope="col">Sent at</th>
                     <th scope="col">Status</th>
-                    <th v-if="canCreate && canDelete" scope="col">Action</th>
+                    <th v-if="canInvite || canDelete" scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -31,10 +31,16 @@
                     <td>{{ invite.email }}</td>
                     <td>{{ genSentAt(invite.updated_at) }}</td>
                     <td>{{ invite.is_accepted ? "accepted" : "pending" }}</td>
-                    <td v-if="canCreate && canDelete">
+                    <td v-if="canInvite || canDelete">
                         <button
-                            v-if="canCreate"
-                            v-on:click="sendInvitation($event, invite.email)"
+                            v-if="canInvite"
+                            v-on:click="
+                                sendInvitation(
+                                    $event,
+                                    invite.email,
+                                    invite.role_id
+                                )
+                            "
                             type="button"
                             class="btn btn-primary resend"
                         >
@@ -55,7 +61,7 @@
         <send-invitation-modal
             ref="invite-modal"
             :roles="roles"
-            v-on:hide-modal="hideModal"
+            @sendInvite="sendInvitation"
         ></send-invitation-modal>
     </div>
 </template>
@@ -107,8 +113,30 @@ export default {
     },
 
     methods: {
-        hideModal(e) {
-            console.log("hide", e);
+        resendInvite(e) {},
+        sendInvitation(email, id) {
+            console.log(email);
+            this.$emit("hide-model");
+            if (this.deleteModal) {
+                this.deleteModal.hide();
+            }
+
+            axios
+                .post(route("invitations.send_invite"), {
+                    email: email,
+                    roleId: id,
+                })
+                .then((resp) => {
+                    notify("Invitation sent", "success");
+                    this.email = "";
+                })
+                .catch((err) => {
+                    notify(
+                        "Something went wrong. Please send invitation again",
+                        "danger"
+                    );
+                    console.error(err);
+                });
         },
         toggleInviteModal(e) {
             console.log(e);
