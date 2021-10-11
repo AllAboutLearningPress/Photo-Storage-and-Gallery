@@ -66,6 +66,10 @@ class HandleInertiaRequests extends Middleware
             [
                 'name' => 'Invitations',
                 'route' => 'invitations.index'
+            ],
+            [
+                'name' => 'Roles',
+                'route' => 'roles.index'
             ]
             // 'invitations.index',
 

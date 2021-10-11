@@ -104,10 +104,10 @@ export default {
             //     name: "Invitations",
             //     route: "invitations.index",
             // },
-            {
-                name: "Manage Roles",
-                route: "roles.index",
-            },
+            // {
+            //     name: "Manage Roles",
+            //     route: "roles.index",
+            // },
             {
                 name: "Account",
                 route: "account.index",

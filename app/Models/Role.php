@@ -21,14 +21,19 @@ class Role extends Model
 
     public function removeCachedPermSlugs()
     {
-        Cache::forget('role-perms' . $this->id);
+        Cache::forget($this->getCacheKey());
     }
 
     public function cachePermSlugs()
     {
         Cache::forever(
-            'role-perms' . $this->id,
+            $this->getCacheKey(),
             $this->permissions()->select('slug')->get()->pluck('slug')->toArray()
         );
+    }
+
+    public function getCacheKey()
+    {
+        return 'role-perms' . $this->id;
     }
 }

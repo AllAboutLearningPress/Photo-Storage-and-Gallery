@@ -79,7 +79,7 @@ class RoleController extends Controller
         //     $q->select('permission_id as id');
         // }));
 
-        $permissions = Permission::all();
+        // $permissions = Permission::all();
         return Inertia::Render('Role/Create', [
             'role' => $role,
             'added_permissions' => $role->permissions()->allRelatedIds(),
