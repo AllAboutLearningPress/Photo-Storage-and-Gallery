@@ -85,9 +85,12 @@ Route::middleware('auth')->group(function () {
 
     /** Routes related to Invitations */
     Route::prefix('invitations')->name('invitations.')->group(function () {
-        Route::get('all', [InvitationController::class, 'index'])->name('index')->middleware('can:invitations.index');
-        Route::post('send-invite', [InvitationController::class, 'sendInvite'])->name('send_invite')->middleware('can:invitations.create');
-        Route::post("{id}/delete", [InvitationController::class, 'deleteInvite'])->name('delete_invite')->middleware('can:invitations.delete');;
+        Route::get('all', [InvitationController::class, 'index'])
+            ->name('index')->middleware('can:invitations.index');
+        Route::post('send-invite', [InvitationController::class, 'sendInvite'])
+            ->name('send_invite')->middleware('can:invitations.create');
+        Route::post("{id}/delete", [InvitationController::class, 'deleteInvite'])
+            ->name('delete_invite')->middleware('can:invitations.delete');;
     });
 
     /** Routes related to notifications */

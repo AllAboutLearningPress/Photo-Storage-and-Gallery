@@ -197,6 +197,8 @@ export default {
         //     cancelToken.value =
         // }
         const sidebarMenuItems = ref(usePage().props.value.sidebarMenuItems);
+        const permissions = ref(usePage().props.value.permissions);
+        provide("permissions", permissions);
         provide("sidebarMenuItems", sidebarMenuItems);
         provide("total", total);
         provide("updateTotal", updateTotal);

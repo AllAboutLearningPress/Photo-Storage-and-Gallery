@@ -17,6 +17,7 @@ class RoleController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', Role::class);
         return Inertia::Render('Role/Index', ['roles' => Role::all()]);
     }
 
@@ -27,6 +28,7 @@ class RoleController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Role::class);
         return Inertia::render('Role/Create', ['permissions' => Permission::all()]);
     }
 
@@ -38,6 +40,7 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Role::class);
         $data = $request->validate([
             'id' => 'integer|exists:roles,id',
             'name' => 'required|string',

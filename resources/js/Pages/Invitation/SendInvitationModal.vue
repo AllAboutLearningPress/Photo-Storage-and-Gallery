@@ -36,21 +36,33 @@
                             class="form-control"
                             aria-label="Sizing example input"
                             aria-describedby="inputGroup-sizing-default"
+                            v-model="email"
                         />
                     </div>
-                    <select
-                        class="form-select form-select-sm"
-                        aria-label=".form-select-sm example"
-                    >
-                        <option selected>Select User Role</option>
-                        <option
-                            v-for="role in roles"
-                            :key="role.id"
-                            :value="role.id"
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label
+                                class="input-group-text bg-transparent"
+                                for="inputGroupSelect01"
+                                >Role</label
+                            >
+                        </div>
+
+                        <select
+                            class="form-select form-select-sm"
+                            aria-label=".form-select-sm example"
+                            v-model="roleId"
                         >
-                            {{ role.name }}
-                        </option>
-                    </select>
+                            <!-- <option selected>Select User Role</option> -->
+                            <option
+                                v-for="role in roles"
+                                :key="role.id"
+                                :value="role.id"
+                            >
+                                {{ role.name }}
+                            </option>
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button
@@ -64,6 +76,7 @@
                         type="button"
                         class="btn btn-primary"
                         v-on:click="sendInvitation"
+                        data-bs-dismiss="modal"
                     >
                         Send Invite
                     </button>
@@ -74,19 +87,30 @@
 </template>
 
 <script>
+import { notify } from "@/util.js";
 export default {
+    props: ["roles"],
+    data() {
+        return {
+            roleId: null,
+            email: null,
+        };
+    },
     methods: {
         sendInvitation(e, email) {
+            this.$emit("hide-model");
             if (this.deleteModal) {
                 this.deleteModal.hide();
             }
+
             axios
                 .post(route("invitations.send_invite"), {
-                    email: email ? email : this.$refs["invitation-email"].value,
+                    email: this.email,
+                    role: this.roleId,
                 })
                 .then((resp) => {
-                    notify("Invitation send", "success");
-                    this.$refs["invitation-email"].value = "";
+                    notify("Invitation sent", "success");
+                    this.email = "";
                 })
                 .catch((err) => {
                     notify(

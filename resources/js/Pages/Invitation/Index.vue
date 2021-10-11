@@ -1,9 +1,10 @@
 
 <template>
-    <div>
+    <div class="col-6">
         <div class="d-flex flex-row justify-content-between">
             <h2 class="fw-light mb-4">Sent Invitations</h2>
             <button
+                v-if="canInvite"
                 v-on:click="toggleInviteModal"
                 type="button"
                 class="btn btn-success invite-button"
@@ -18,7 +19,7 @@
                     <th scope="col">Email</th>
                     <th scope="col">Sent at</th>
                     <th scope="col">Status</th>
-                    <th scope="col">Action</th>
+                    <th v-if="canCreate && canDelete" scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -30,8 +31,9 @@
                     <td>{{ invite.email }}</td>
                     <td>{{ genSentAt(invite.updated_at) }}</td>
                     <td>{{ invite.is_accepted ? "accepted" : "pending" }}</td>
-                    <td>
+                    <td v-if="canCreate && canDelete">
                         <button
+                            v-if="canCreate"
                             v-on:click="sendInvitation($event, invite.email)"
                             type="button"
                             class="btn btn-primary resend"
@@ -39,6 +41,7 @@
                             Resend
                         </button>
                         <button
+                            v-if="canDelete"
                             type="button"
                             class="btn btn-danger delete-invite"
                             v-on:click="deleteInvite(invite.id, index)"
@@ -49,7 +52,11 @@
                 </tr>
             </tbody>
         </table>
-        <send-invitation-modal ref="invite-modal"></send-invitation-modal>
+        <send-invitation-modal
+            ref="invite-modal"
+            :roles="roles"
+            v-on:hide-modal="hideModal"
+        ></send-invitation-modal>
     </div>
 </template>
 <style lang="scss" scoped>
@@ -77,6 +84,7 @@ import axios from "axios";
 import { notify } from "@/util.js";
 
 import SendInvitationModal from "./SendInvitationModal.vue";
+import { inject } from "@vue/runtime-core";
 export default {
     components: { SendInvitationModal },
     props: ["invitations", "roles"],
@@ -86,16 +94,33 @@ export default {
         return { deleteModal: null };
     },
 
+    setup() {
+        const permissions = inject("permissions");
+        console.log(permissions);
+        const canInvite = permissions.value.includes("invitations.create");
+        console.log("can invite: ", canInvite);
+        const canDelete = permissions.value.includes("invitations.delete");
+        return {
+            canInvite,
+            canDelete,
+        };
+    },
+
     methods: {
+        hideModal(e) {
+            console.log("hide", e);
+        },
         toggleInviteModal(e) {
-            let inviteModalComp = document.querySelector("#invite-modal");
+            console.log(e);
+
             if (this.inviteModal == null) {
+                let inviteModalComp = document.querySelector("#invite-modal");
                 this.inviteModal = new Modal(inviteModalComp, {
                     backdrop: "static",
                 });
                 console.log(this.inviteModal);
             }
-            inviteModalComp.querySelector("#invitation-email").value = "";
+            // inviteModalComp.querySelector("#invitation-email").value = "";
             this.inviteModal.toggle();
         },
 

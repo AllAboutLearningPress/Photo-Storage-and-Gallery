@@ -14,7 +14,9 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
-        ' App\Models\Photo' => 'App\Policies\PhotoPolicy'
+        'App\Models\Photo' => 'App\Policies\PhotoPolicy',
+        'App\Models\Invitation' => 'App\Policies\InvitationPolicy',
+        'App\Models\Role' => 'App\Policies\RolePolicy'
 
     ];
 
@@ -29,8 +31,13 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('photos.trash', [\App\Policies\PhotoPolicy::class, 'trash']);
         Gate::define('photos.download',  [\App\Policies\PhotoPolicy::class, 'download']);
+
+        //gates for invitations
         Gate::define('invitations.index', [\App\Policies\InvitationPolicy::class, 'viewAny']);
         Gate::define('invitations.create', [\App\Policies\InvitationPolicy::class, 'create']);
         Gate::define('invitations.delete', [\App\Policies\InvitationPolicy::class, 'delete']);
+
+        //gates for roles
+
     }
 }
