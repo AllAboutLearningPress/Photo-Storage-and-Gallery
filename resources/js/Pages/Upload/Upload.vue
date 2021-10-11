@@ -50,7 +50,12 @@
                                 "
                                 class="file__pic"
                             ></div>
-
+                            <div
+                                v-if="!file.uploadCompleted"
+                                class="file__percent"
+                            >
+                                {{ file.width }}
+                            </div>
                             <button
                                 v-on:click="cancelSingleUpload(index)"
                                 title="Remove file"
@@ -108,6 +113,13 @@
 <style>
 .progress-bar {
     background-color: #198754;
+}
+.file__percent {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 5%;
 }
 </style>
 

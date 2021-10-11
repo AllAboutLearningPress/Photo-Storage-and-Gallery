@@ -75,14 +75,15 @@ class User extends Authenticatable
 
     public function hasPermission($permission)
     {
-        $perms  = Cache::rememberForever('role' . $this->role_id, function () {
-            return $this->role->permissions()->get();
+
+        $perms  = $this->getCachedPermSlugs();
+        return in_array($permission, $perms);
+    }
+
+    public function getCachedPermSlugs()
+    {
+        return Cache::rememberForever('role-perms' . $this->role_id, function () {
+            return $this->role->permissions()->select('slug')->get()->pluck('slug')->toArray();
         });
-        foreach ($perms as $perm) {
-            if ($perm->slug == $permission) {
-                return true;
-            }
-        }
-        return false;
     }
 }

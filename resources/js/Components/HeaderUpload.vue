@@ -281,7 +281,7 @@ export default {
                             // bug
                             this.filesArray[filePostion].loaded = e.loaded;
                             this.filesArray[filePostion].width =
-                                (e.loaded / e.total) * 100 + "%";
+                                (e.loaded / e.total) * 98 + "%";
                         },
                     }
                 )
@@ -290,9 +290,7 @@ export default {
                     // files on /upload page
                     this.filesArray[filePostion].uploadCompleted = true;
                     // bug
-                    this.sendUploadCompletedReq(
-                        this.filesArray[filePostion].id
-                    );
+                    this.sendUploadCompletedReq(filePostion);
                 })
                 .catch((error) => {
                     // We shouldnt retry if upload is cancelled by user
@@ -311,15 +309,20 @@ export default {
                     }
                 });
         },
-        sendUploadCompletedReq(id) {
-            axios.post(route("uploads.complete"), { id: id }).then((resp) => {
-                this.increaseUploadedCount(1);
+        sendUploadCompletedReq(pos) {
+            axios
+                .post(route("uploads.complete"), {
+                    id: this.filesArray[pos].id,
+                })
+                .then((resp) => {
+                    this.increaseUploadedCount(1);
+                    this.filesArray[pos].width = "100%";
+                    // upload finished. Now it will check and
+                    // start a new upload
+                    this.uploadingCount--;
 
-                // upload finished. Now it will check and
-                // start a new upload
-                this.uploadingCount--;
-                this.uploadFiles();
-            });
+                    this.uploadFiles();
+                });
         },
 
         /**

@@ -38,36 +38,45 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request)
     {
-        return array_merge(parent::share($request), [
+        $shared = [
             'flash' => [
                 'success' => fn () => $request->session()->get('success')
             ],
             'notification_count' => Notification::where([['user_id', Auth::id()], ['seen', false]])->count(),
             'user' => $request->user(),
-            'sidebarMenuItems' => function () use ($request) {
 
-                $permitted_menu_items = [];
-                $menu_items = [
-                    [
-                        'name' => 'Trash',
-                        'route' =>  'photos.trash'
-                    ],
-                    [
-                        'name' => 'Invitations',
-                        'route' => 'invitations.index'
-                    ]
-                    // 'invitations.index',
+        ];
 
-                ];
-                foreach ($menu_items as $menu_item) {
-                    //  dd($request->user()->hasPermission($menu_item['route']));
-                    if ($request->user()->hasPermission($menu_item['route'])) {
-                        array_push($permitted_menu_items, $menu_item);
-                    }
-                }
-                //dd($permitted_menu_items);
-                return $permitted_menu_items;
+        if (Auth::check() && !$request->header('x-inertia')) {
+            $shared['sidebarMenuItems']  =  $this->permittedSidebarMenus();
+            $shared['permissions'] = request()->header('x-inertia') ? null : $request->user()->getCachedPermSlugs();
+        }
+        return array_merge(parent::share($request), $shared);
+    }
+    public function permittedSidebarMenus()
+    {
+
+
+        $permitted_menu_items = [];
+        $menu_items = [
+            [
+                'name' => 'Trash',
+                'route' =>  'photos.trash'
+            ],
+            [
+                'name' => 'Invitations',
+                'route' => 'invitations.index'
+            ]
+            // 'invitations.index',
+
+        ];
+        foreach ($menu_items as $menu_item) {
+            //  dd($request->user()->hasPermission($menu_item['route']));
+            if (Auth::user()->hasPermission($menu_item['route'])) {
+                array_push($permitted_menu_items, $menu_item);
             }
-        ]);
+        }
+        //dd($permitted_menu_items);
+        return $permitted_menu_items;
     }
 }

@@ -72,6 +72,10 @@ class PermissionSeeder extends Seeder
                 'name' => 'View Trash',
                 'slug' => 'photos.trash'
             ],
+            [
+                'name' => 'Download Photo',
+                'slug' => 'photos.download'
+            ]
         ];
 
         foreach ($extra_perms as $perm) {

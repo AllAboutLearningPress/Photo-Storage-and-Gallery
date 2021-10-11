@@ -14,6 +14,8 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+        ' App\Models\Photo' => 'App\Policies\PhotoPolicy'
+
     ];
 
     /**
@@ -25,6 +27,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Gate::define('photos.trash', [\App\Policies\PhotoPolicy::class, 'trash']);
+        Gate::define('photos.download',  [\App\Policies\PhotoPolicy::class, 'download']);
     }
 }

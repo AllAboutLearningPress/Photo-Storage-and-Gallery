@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Permission;
 use App\Models\Role;
+use Cache;
 use Illuminate\Database\Seeder;
 
 class RoleSeeder extends Seeder
@@ -28,6 +29,7 @@ class RoleSeeder extends Seeder
             'name' => 'Admin',
             'slug' => 'admin',
         ]);
+        Cache::forget('role' . $adminRole->id);
         $allPermIds = Permission::select('id')->pluck('id')->all();
 
         $adminRole->permissions()->sync($allPermIds);
@@ -41,5 +43,7 @@ class RoleSeeder extends Seeder
 
         $perm_ids_for_normal_user = Permission::where('slug', 'like', 'photos.%')->select('id')->pluck('id')->all();
         $normal_user->permissions()->sync($perm_ids_for_normal_user);
+
+        Cache::forget('role' . $normal_user->id);
     }
 }

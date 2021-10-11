@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Photo;
 use App\Models\Tag;
 use App\Utils\AwsS3V4;
+use Gate;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Redirect;
@@ -35,12 +36,14 @@ class PhotoController extends Controller
 
         $bucket = config('aws.fullsize_bucket');
         $photo->addTempUrl('preview_photos', $bucket);
-        $photo->addTempUrl(
-            'full_size',
-            $bucket,
-            'downloadLink',
-            ['response-content-disposition' => 'attachment; filename=' . $photo->slug . '.' . $photo->file_type]
-        );
+        if (Gate::allows('photos.download')) {
+            $photo->addTempUrl(
+                'full_size',
+                $bucket,
+                'downloadLink',
+                ['response-content-disposition' => 'attachment; filename=' . $photo->slug . '.' . $photo->file_type]
+            );
+        }
 
 
         return  Inertia::render('PhotoView/PhotoView', [
@@ -121,8 +124,9 @@ class PhotoController extends Controller
      * @return \Inertia\Response
      */
 
-    public function trash()
+    public function trash(Request $request)
     {
+        Gate::authorize('photos.trash');
         $photos = Photo::onlyTrashed()->where('height', "!=", null)->cursorPaginate(30);
         return Inertia::render('Index', [
             'photos' => genTempSrc($photos, 'thumbnails'),

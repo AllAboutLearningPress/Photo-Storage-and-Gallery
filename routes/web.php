@@ -8,6 +8,7 @@ use App\Http\Controllers\InvitationController;
 // use App\Http\Controllers\InvitationSignupController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ShareController;
 use App\Http\Controllers\TagController;
@@ -26,6 +27,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 œ|
 */
+
 
 
 /** All the routes that needs authentication */
@@ -102,6 +104,8 @@ Route::middleware('auth')->group(function () {
         Route::get('', [AccountController::class, 'index'])->name('index');
         Route::post('update', [AccountController::class, 'update'])->name('update');
     });
+
+    Route::resource('roles', RoleController::class);
 });
 
 Route::get('share/{key}', [ShareController::class, 'view'])->name('share.show');

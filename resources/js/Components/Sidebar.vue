@@ -67,6 +67,8 @@
 <script>
 import SidebarHelper from "../frontend/components/Sidebar";
 import { usePage } from "@inertiajs/inertia-vue3";
+import { inject } from "@vue/runtime-core";
+
 export default {
     setup(props) {
         // console.log(usePage().props.value.notification_count);
@@ -76,6 +78,9 @@ export default {
                 usePage().props.value.notification_count
             })`;
         }
+
+        const sidebarMenuItems = inject("sidebarMenuItems");
+        console.log("sidemenu", sidebarMenuItems);
         const menuItems = [
             {
                 name: "Photos",
@@ -90,7 +95,7 @@ export default {
                 route: "tags.index",
             },
             // adding routes that user has permission to
-            ...usePage().props.value.sidebarMenuItems,
+            ...sidebarMenuItems.value,
             // {
             //     name: "Trash",
             //     route: "photos.trash",
@@ -99,6 +104,14 @@ export default {
             //     name: "Invitations",
             //     route: "invitations.index",
             // },
+            {
+                name: "Manage Roles",
+                route: "roles.index",
+            },
+            {
+                name: "Account",
+                route: "account.index",
+            },
         ];
 
         return { menuItems };

@@ -16,10 +16,10 @@ class PhotoPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
-    {
-        //
-    }
+    // public function viewAny(User $user)
+    // {
+    //     //
+    // }
 
     /**
      * Determine whether the user can view the model.
@@ -28,10 +28,10 @@ class PhotoPolicy
      * @param  \App\Models\Photo  $photo
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Photo $photo)
-    {
-        //
-    }
+    // public function view(User $user, Photo $photo)
+    // {
+    //     //
+    // }
 
     /**
      * Determine whether the user can create models.
@@ -39,10 +39,10 @@ class PhotoPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
-    {
-        //
-    }
+    // public function create(User $user)
+    // {
+    //     //
+    // }
 
     /**
      * Determine whether the user can update the model.
@@ -51,10 +51,10 @@ class PhotoPolicy
      * @param  \App\Models\Photo  $photo
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Photo $photo)
-    {
-        //
-    }
+    // public function update(User $user, Photo $photo)
+    // {
+    //     //
+    // }
 
     /**
      * Determine whether the user can delete the model.
@@ -63,10 +63,10 @@ class PhotoPolicy
      * @param  \App\Models\Photo  $photo
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Photo $photo)
-    {
-        //
-    }
+    // public function delete(User $user, Photo $photo)
+    // {
+    //     //
+    // }
 
     /**
      * Determine whether the user can restore the model.
@@ -75,10 +75,10 @@ class PhotoPolicy
      * @param  \App\Models\Photo  $photo
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Photo $photo)
-    {
-        //
-    }
+    // public function restore(User $user, Photo $photo)
+    // {
+    //     //
+    // }
 
     /**
      * Determine whether the user can permanently delete the model.
@@ -87,8 +87,19 @@ class PhotoPolicy
      * @param  \App\Models\Photo  $photo
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Photo $photo)
+    // public function forceDelete(User $user, Photo $photo)
+    // {
+    //     //
+    // }
+
+
+    public function trash(User $user)
     {
-        //
+        return $user->hasPermission('photos.trash');
+    }
+
+    public function download(User $user)
+    {
+        return $user->hasPermission('photos.download');
     }
 }

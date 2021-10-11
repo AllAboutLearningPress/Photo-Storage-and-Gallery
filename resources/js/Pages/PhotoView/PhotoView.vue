@@ -106,6 +106,9 @@
                         :src="photo.src"
                         alt=""
                     />
+                    <div v-if="photo.deleted_at" class="image-view-trash-info">
+                        You are viewing a trashed photo
+                    </div>
                 </div>
                 <div v-if="photo.deleted_at" class="image-view-trash-info">
                     You are viewing a trashed photo

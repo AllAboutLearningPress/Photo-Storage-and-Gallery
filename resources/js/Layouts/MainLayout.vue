@@ -116,7 +116,7 @@ import GlobalDropTarget from "../frontend/components/GlobalDropTarget.js";
 import UploadProgressBar from "../Components/UploadProgressBar.vue";
 import Notificator from "../Components/Notificator.vue";
 import { provide, ref } from "@vue/runtime-core";
-
+import { usePage } from "@inertiajs/inertia-vue3";
 export default {
     components: {
         Header,
@@ -196,7 +196,8 @@ export default {
         // const resetCancelToken = ()=> {
         //     cancelToken.value =
         // }
-
+        const sidebarMenuItems = ref(usePage().props.value.sidebarMenuItems);
+        provide("sidebarMenuItems", sidebarMenuItems);
         provide("total", total);
         provide("updateTotal", updateTotal);
         provide("filesArray", filesArray);
