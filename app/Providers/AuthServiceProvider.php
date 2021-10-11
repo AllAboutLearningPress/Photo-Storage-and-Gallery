@@ -29,5 +29,8 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('photos.trash', [\App\Policies\PhotoPolicy::class, 'trash']);
         Gate::define('photos.download',  [\App\Policies\PhotoPolicy::class, 'download']);
+        Gate::define('invitations.index', [\App\Policies\InvitationPolicy::class, 'viewAny']);
+        Gate::define('invitations.create', [\App\Policies\InvitationPolicy::class, 'create']);
+        Gate::define('invitations.delete', [\App\Policies\InvitationPolicy::class, 'delete']);
     }
 }

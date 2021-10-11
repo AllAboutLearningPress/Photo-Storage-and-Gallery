@@ -49,80 +49,7 @@
                 </tr>
             </tbody>
         </table>
-
-        <!-- Modal -->
-        <div
-            class="modal fade"
-            id="staticBackdrop"
-            data-bs-backdrop="static"
-            data-bs-keyboard="false"
-            tabindex="-1"
-            aria-labelledby="staticBackdropLabel"
-            aria-hidden="true"
-            ref="invite-modal"
-        >
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropLabel">
-                            Invite user by email
-                        </h5>
-                        <button
-                            type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"
-                        ></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="input-group mb-3">
-                            <span
-                                class="input-group-text bg-transparent"
-                                id="inputGroup-sizing-default"
-                                >Email</span
-                            >
-                            <input
-                                ref="invitation-email"
-                                type="email"
-                                placeholder="user@example.com"
-                                class="form-control"
-                                aria-label="Sizing example input"
-                                aria-describedby="inputGroup-sizing-default"
-                            />
-                        </div>
-                        <select
-                            class="form-select form-select-sm"
-                            aria-label=".form-select-sm example"
-                        >
-                            <option selected>Select User Role</option>
-                            <option
-                                v-for="role in roles"
-                                :key="role.id"
-                                :value="role.id"
-                            >
-                                {{ role.name }}
-                            </option>
-                        </select>
-                    </div>
-                    <div class="modal-footer">
-                        <button
-                            type="button"
-                            class="btn btn-secondary"
-                            data-bs-dismiss="modal"
-                        >
-                            Close
-                        </button>
-                        <button
-                            type="button"
-                            class="btn btn-primary"
-                            v-on:click="sendInvitation"
-                        >
-                            Send Invite
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <send-invitation-modal ref="invite-modal"></send-invitation-modal>
     </div>
 </template>
 <style lang="scss" scoped>
@@ -148,8 +75,12 @@ import MainLayout from "@/Layouts/MainLayout.vue";
 import Modal from "bootstrap/js/dist/modal";
 import axios from "axios";
 import { notify } from "@/util.js";
+
+import SendInvitationModal from "./SendInvitationModal.vue";
 export default {
+    components: { SendInvitationModal },
     props: ["invitations", "roles"],
+
     layout: MainLayout,
     data() {
         return { deleteModal: null };
@@ -157,35 +88,17 @@ export default {
 
     methods: {
         toggleInviteModal(e) {
-            if (this.deleteModal == null) {
-                this.deleteModal = new Modal(this.$refs["invite-modal"], {
+            let inviteModalComp = document.querySelector("#invite-modal");
+            if (this.inviteModal == null) {
+                this.inviteModal = new Modal(inviteModalComp, {
                     backdrop: "static",
                 });
-                console.log(this.deleteModal);
+                console.log(this.inviteModal);
             }
-            this.$refs["invitation-email"].value = "";
-            this.deleteModal.toggle();
+            inviteModalComp.querySelector("#invitation-email").value = "";
+            this.inviteModal.toggle();
         },
-        sendInvitation(e, email) {
-            if (this.deleteModal) {
-                this.deleteModal.hide();
-            }
-            axios
-                .post(route("invitations.send_invite"), {
-                    email: email ? email : this.$refs["invitation-email"].value,
-                })
-                .then((resp) => {
-                    notify("Invitation send", "success");
-                    this.$refs["invitation-email"].value = "";
-                })
-                .catch((err) => {
-                    notify(
-                        "Something went wrong. Please send invitation again",
-                        "danger"
-                    );
-                    console.error(err);
-                });
-        },
+
         /**Generates YYYY-MM-DD date format from mysql datetime */
         genSentAt(dateTime) {
             let dateObject = new Date(dateTime);
@@ -206,7 +119,7 @@ export default {
                     notify("Invitation Deleted", "success");
                 })
                 .catch((err) => {
-                    notify("Something went wrong");
+                    notify("Something went wrong", "danger");
                     this.invitations.data.splice(index, 0, invite);
                 });
         },

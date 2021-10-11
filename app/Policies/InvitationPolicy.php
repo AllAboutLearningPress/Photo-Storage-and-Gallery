@@ -20,7 +20,7 @@ class InvitationPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->hasPermission($this->modelPlural . '.view');
+        return $user->hasPermission($this->modelPlural . '.index');
     }
 
     /**
@@ -32,7 +32,7 @@ class InvitationPolicy
      */
     public function view(User $user, Invitation $invitation)
     {
-        //
+        return $user->hasPermission($this->modelPlural . '.view');
     }
 
     /**
@@ -43,7 +43,7 @@ class InvitationPolicy
      */
     public function create(User $user)
     {
-        //
+        return $user->hasPermission($this->modelPlural . '.create');
     }
 
     /**
@@ -55,7 +55,7 @@ class InvitationPolicy
      */
     public function update(User $user, Invitation $invitation)
     {
-        //
+        return $user->hasPermission($this->modelPlural . '.create');
     }
 
     /**
@@ -67,7 +67,7 @@ class InvitationPolicy
      */
     public function delete(User $user, Invitation $invitation)
     {
-        //
+        return $user->hasPermission($this->modelPlural . '.delete');
     }
 
     /**

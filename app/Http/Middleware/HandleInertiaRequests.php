@@ -47,7 +47,7 @@ class HandleInertiaRequests extends Middleware
 
         ];
 
-        if (Auth::check() && !$request->header('x-inertia')) {
+        if (Auth::check() && !$request->header('X-Inertia')) {
             $shared['sidebarMenuItems']  =  $this->permittedSidebarMenus();
             $shared['permissions'] = request()->header('x-inertia') ? null : $request->user()->getCachedPermSlugs();
         }

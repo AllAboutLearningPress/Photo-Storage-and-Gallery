@@ -34,9 +34,12 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth')->group(function () {
     Route::get("/", [IndexController::class, 'index'])->name('home');
     Route::post("/fetch-more", [IndexController::class, 'fetch_more'])->name('index.fetch_more');
-    //Route::resource('photo', PhotoController::class);
-    Route::get("/trash", [PhotoController::class, 'trash'])->name('photos.trash');
 
+    //Routes related to trash
+    Route::middleware('can:photos.trash')->group(function () {
+        Route::get("trash", [PhotoController::class, 'trash'])->name('photos.trash');
+        Route::get('trash/{id}/{slug}', [PhotoController::class, 'show'])->name('photos.trash.show');
+    });
     /* Routes related to uploading files */
     Route::prefix('upload')->name("uploads.")->group(function () {
         Route::get("/", [UploadController::class, 'index'])->name('index');
@@ -82,9 +85,9 @@ Route::middleware('auth')->group(function () {
 
     /** Routes related to Invitations */
     Route::prefix('invitations')->name('invitations.')->group(function () {
-        Route::get('inivtations', [InvitationController::class, 'index'])->name('index');
-        Route::post('send-invite', [InvitationController::class, 'sendInvite'])->name('send_invite');
-        Route::post("{id}/delete", [InvitationController::class, 'deleteInvite'])->name('delete_invite');
+        Route::get('all', [InvitationController::class, 'index'])->name('index')->middleware('can:invitations.index');
+        Route::post('send-invite', [InvitationController::class, 'sendInvite'])->name('send_invite')->middleware('can:invitations.create');
+        Route::post("{id}/delete", [InvitationController::class, 'deleteInvite'])->name('delete_invite')->middleware('can:invitations.delete');;
     });
 
     /** Routes related to notifications */

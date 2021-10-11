@@ -126,7 +126,7 @@ class PhotoController extends Controller
 
     public function trash(Request $request)
     {
-        Gate::authorize('photos.trash');
+
         $photos = Photo::onlyTrashed()->where('height', "!=", null)->cursorPaginate(30);
         return Inertia::render('Index', [
             'photos' => genTempSrc($photos, 'thumbnails'),
