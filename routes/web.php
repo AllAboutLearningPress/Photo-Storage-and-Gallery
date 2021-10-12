@@ -35,11 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::get("/", [IndexController::class, 'index'])->name('home');
     Route::post("/fetch-more", [IndexController::class, 'fetch_more'])->name('index.fetch_more');
 
-    //Routes related to trash
-    Route::middleware('can:photos.trash')->group(function () {
-        Route::get("trash", [PhotoController::class, 'trash'])->name('photos.trash');
-        Route::get('trash/{id}/{slug}', [PhotoController::class, 'show'])->name('photos.trash.show');
-    });
+
     /* Routes related to uploading files */
     Route::prefix('upload')->name("uploads.")->group(function () {
         Route::get("/", [UploadController::class, 'index'])->name('index');
@@ -65,7 +61,11 @@ Route::middleware('auth')->group(function () {
         Route::post("restore", [PhotoController::class, 'restore'])->name('restore');
         Route::get('{id}/{slug}', [PhotoController::class, 'show'])->name('show');
     });
-
+    //Routes related to trash
+    Route::middleware('can:photos.trash')->group(function () {
+        Route::get("trash", [PhotoController::class, 'trash'])->name('photos.trash');
+        Route::get('trash/{id}/{slug}', [PhotoController::class, 'show'])->name('photos.trash.show');
+    });
     /** Routes related to share */
     Route::prefix('share')->name('share.')->group(function () {
         Route::post('create', [ShareController::class, 'create'])->name('create');
