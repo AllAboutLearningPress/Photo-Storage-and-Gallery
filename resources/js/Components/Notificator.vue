@@ -77,17 +77,24 @@ export default {
     },
     methods: {
         notifyFlash() {
-            if (this.$page.props.flash.success) {
-                if (typeof this.$page.props.flash.success == "string") {
-                    this.notifyFlashMsg(this.$page.props.flash.success);
-                } else {
-                    this.$page.props.flash.success.forEach(
-                        this.notifySuccessMsg
-                    );
+            if (this.$page.props.flash) {
+                for (let key in this.$page.props.flash) {
+                    let msgs = this.$page.props.flash[key];
+                    if (msgs) {
+                        if (typeof msgs == "string") {
+                            this.notifyFlashMsg(msgs, key);
+                        } else {
+                            console.log("msgs", msgs);
+                            console.log("keys", key);
+                            msgs.forEach((msg) =>
+                                this.notifyFlashMsg(msg, key)
+                            );
+                        }
+                    }
                 }
             }
         },
-        notifySuccessMsg(flashMsg) {
+        notifyFlashMsg(flashMsg, type) {
             let button = null;
             let body = null;
             console.log(flashMsg);

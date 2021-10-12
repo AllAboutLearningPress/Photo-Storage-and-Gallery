@@ -4,6 +4,7 @@
         <div class="d-flex flex-row justify-content-between">
             <h2 class="fw-light mb-4">Account Roles</h2>
             <button
+                v-if="canCreate"
                 v-on:click="$inertia.visit(route('roles.create'))"
                 type="button"
                 class="btn btn-success invite-button"
@@ -16,7 +17,7 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Name</th>
-                    <th scope="col">Action</th>
+                    <th v-if="canCreate || canDelete" scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -24,11 +25,12 @@
                     <th scope="row">1</th>
                     <td>{{ role.name }}</td>
 
-                    <td>
+                    <td v-if="canCreate || canDelete">
                         <button
+                            v-if="canCreate"
                             v-on:click="
                                 $inertia.visit(
-                                    route('roles.show', { id: role.id })
+                                    route('roles.edit', { id: role.id })
                                 )
                             "
                             type="button"
@@ -37,6 +39,7 @@
                             Edit
                         </button>
                         <button
+                            v-if="canDelete"
                             type="button"
                             class="btn btn-sm btn-danger delete-invite"
                             v-on:click="deleteRole(invite.id, index)"
@@ -49,7 +52,7 @@
         </table>
 
         <!-- Modal -->
-        <div
+        <!-- <div
             class="modal fade"
             id="staticBackdrop"
             data-bs-backdrop="static"
@@ -120,7 +123,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 </template>
 <style lang="scss" scoped>
@@ -146,9 +149,16 @@ import MainLayout from "@/Layouts/MainLayout.vue";
 import Modal from "bootstrap/js/dist/modal";
 import axios from "axios";
 import { notify } from "@/util.js";
+import { inject } from "@vue/runtime-core";
 export default {
     props: ["roles"],
     layout: MainLayout,
+    setup() {
+        const authorize = inject("authorize");
+        const canCreate = authorize("roles.create");
+        const canDelete = authorize("roles.delete");
+        return { canCreate, canDelete };
+    },
     data() {
         return {};
     },

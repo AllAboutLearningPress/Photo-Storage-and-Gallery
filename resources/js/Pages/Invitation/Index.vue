@@ -101,11 +101,9 @@ export default {
     },
 
     setup() {
-        const permissions = inject("permissions");
-        console.log(permissions);
-        const canInvite = permissions.value.includes("invitations.create");
-        console.log("can invite: ", canInvite);
-        const canDelete = permissions.value.includes("invitations.delete");
+        const authorize = inject("authorize");
+        const canInvite = authorize("invitations.create");
+        const canDelete = authorize("invitations.delete");
         return {
             canInvite,
             canDelete,

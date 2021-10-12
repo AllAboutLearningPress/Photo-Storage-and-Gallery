@@ -12,10 +12,12 @@
             </button>
         </div> -->
 
-        <div class="card mb-3 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+        <div class="card mb-3 col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
             <!-- <img class="card-img-top" src="" alt="Card image cap" /> -->
             <div class="card-body">
-                <h5 class="card-title">Create New Role</h5>
+                <h5 class="card-title">
+                    {{ role ? "Update Role" : "Create New Role" }}
+                </h5>
                 <div class="card-text">
                     <div class="input-group input-group-sm mb-3">
                         <span
@@ -43,7 +45,7 @@
                         <div
                             v-for="perm in permissions"
                             :key="perm.id"
-                            class="form-check col-xl-4 col-md-4 col-sm-12 col-6"
+                            class="form-check col-xl-4 col-md-4 col-sm-4 col-6"
                         >
                             <input
                                 class="form-check-input"

@@ -100,7 +100,15 @@ export default {
             // user is need to to show "ShowDetailsButton"
             this.photo = { id: id, user: {} };
 
-            const nextURL = route("photos.trash.show", { id: id, slug: slug });
+            let photoViewRoute =
+                route().current() == "photos.trash"
+                    ? "photos.trash.show"
+                    : "photos.show";
+
+            const nextURL = route(photoViewRoute, {
+                id: id,
+                slug: slug,
+            });
             const nextTitle = "My new page title";
             const nextState = {
                 additionalInformation: "Updated the URL with JS",

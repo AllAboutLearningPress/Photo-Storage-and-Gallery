@@ -198,7 +198,12 @@ export default {
         // }
         const sidebarMenuItems = ref(usePage().props.value.sidebarMenuItems);
         const permissions = ref(usePage().props.value.permissions);
-        provide("permissions", permissions);
+        const authorize = function (perm) {
+            console.log(perm);
+            return permissions.value.includes(perm);
+        };
+        // provide("permissions", permissions);
+        provide("authorize", authorize);
         provide("sidebarMenuItems", sidebarMenuItems);
         provide("total", total);
         provide("updateTotal", updateTotal);

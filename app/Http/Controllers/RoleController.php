@@ -74,6 +74,17 @@ class RoleController extends Controller
      */
     public function show($id)
     {
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $this->authorize('create', Role::class);
         $role = Role::findOrFail($id);
         // with(array('permissions' => function ($q) {
         //     $q->select('permission_id as id');
@@ -85,17 +96,6 @@ class RoleController extends Controller
             'added_permissions' => $role->permissions()->allRelatedIds(),
             'permissions' => Permission::all()
         ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**
