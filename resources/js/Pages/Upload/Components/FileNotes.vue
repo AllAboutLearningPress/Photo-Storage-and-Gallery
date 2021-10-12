@@ -1,8 +1,8 @@
 <template>
     <div class="file__notes">
-        <a class="file__note btn btn-outline-primary" href="#"
+        <!-- <a class="file__note btn btn-outline-primary" href="#"
             >Choose a family?</a
-        >
+        > -->
         <a
             v-if="hasDuplicate"
             class="file__note btn btn-outline-warning"
