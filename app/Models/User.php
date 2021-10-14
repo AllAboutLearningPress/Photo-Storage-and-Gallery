@@ -83,7 +83,9 @@ class User extends Authenticatable
 
     public function getCachedPermSlugs()
     {
+
         return Cache::rememberForever('role-perms' . $this->role_id, function () {
+            dd($this->role->permissions()->select('slug')->get()->pluck('slug')->toArray());
             return $this->role->permissions()->select('slug')->get()->pluck('slug')->toArray();
         });
     }
