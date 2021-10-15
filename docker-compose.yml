@@ -7,7 +7,7 @@ services:
         user: ec2-user
         uid: 1000
       context: .
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/php/Dockerfile
     image: php-app
     restart: unless-stopped
     tty: true
@@ -18,23 +18,13 @@ services:
 
     volumes:
       - ./:/var/www
-      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
-      #- ./docker/supervisor/supervisord.conf:/etc/supervisor/supervisord.conf
+      - ./docker/php/my.ini:/usr/local/etc/php/conf.d/my.ini
 
     networks:
       - internet
-
-    # command:
-    #   - /bin/sh
-    #   - -c
-    # #   - supervisord -c /var/www/docker/supervisor/supervisord.conf
-    #   - php /var/www/artisan optimize
-    #   - supervisorctl start all
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
-    # ports:
-    #   - "9001:9000"
 
   # Nginx Service
   nginx:
@@ -49,7 +39,6 @@ services:
       - "${HTTPS_PORT}:443"
     volumes:
       - ./:/var/www
-      # - ./docker/nginx_prod:/etc/nginx/conf.d
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
     environment:
@@ -57,11 +46,8 @@ services:
       APP_URL: "${APP_URL_BASE}"
     networks:
       - internet
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
 
-    # external_links:
-    #   - app
-    # links:
-    #   - app
     depends_on:
       - app
 
@@ -71,16 +57,11 @@ services:
     volumes:
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
-    command: certonly --webroot --webroot-path=/var/www/html --email info@ashrafulfrioz.com --agree-tos --no-eff-email --staging  -d milan.aalpphotos.ashrafulfiroz.com
-
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
 # Network
 networks:
   internet:
 
-
-# Data Volumes
-volumes:
-  dbdata:
 
 
