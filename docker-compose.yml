@@ -1,6 +1,5 @@
 version: '3'
 services:
-
   # PHP Service
   app:
     build:
@@ -21,6 +20,7 @@ services:
       - ./:/var/www
       - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
       #- ./docker/supervisor/supervisord.conf:/etc/supervisor/supervisord.conf
+
     networks:
       - internet
 
@@ -37,8 +37,11 @@ services:
     #   - "9001:9000"
 
   # Nginx Service
-  webserver:
-    image: nginx:alpine
+  nginx:
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+    image: nginx-server
     restart: unless-stopped
     tty: true
     ports:
@@ -46,18 +49,29 @@ services:
       - "${HTTPS_PORT}:443"
     volumes:
       - ./:/var/www
-      - ./docker/nginx_local:/etc/nginx/conf.d
-      # - /etc/ssl/certs/oto-repair.crt:/etc/ssl/certs/ssl.crt
-      # - /etc/ssl/private/oto-repair.key:/etc/ssl/private/ssl-private.key
+      # - ./docker/nginx_prod:/etc/nginx/conf.d
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    environment:
+      APP_ENV: "${APP_ENV}"
+      APP_URL: "${APP_URL_BASE}"
     networks:
       - internet
 
-    external_links:
-      - app
-    links:
-      - app
+    # external_links:
+    #   - app
+    # links:
+    #   - app
     depends_on:
       - app
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    command: certonly --webroot --webroot-path=/var/www/html --email info@ashrafulfrioz.com --agree-tos --no-eff-email --staging  -d milan.aalpphotos.ashrafulfiroz.com
 
 
 # Network
@@ -68,4 +82,5 @@ networks:
 # Data Volumes
 volumes:
   dbdata:
+
 
