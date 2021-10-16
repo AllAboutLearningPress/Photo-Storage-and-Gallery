@@ -85,7 +85,7 @@ class User extends Authenticatable
     {
 
         return Cache::rememberForever('role-perms' . $this->role_id, function () {
-            dd($this->role->permissions()->select('slug')->get()->pluck('slug')->toArray());
+            // dd($this->role->permissions()->select('slug')->get()->pluck('slug')->toArray());
             return $this->role->permissions()->select('slug')->get()->pluck('slug')->toArray();
         });
     }

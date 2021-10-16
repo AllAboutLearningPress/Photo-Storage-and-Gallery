@@ -51,14 +51,11 @@
                                 class="form-check-input"
                                 type="checkbox"
                                 :value="perm.id"
-                                id="flexCheckDefault"
+                                :id="perm.slug"
                                 v-model="form.permissions"
                             />
 
-                            <label
-                                class="form-check-label"
-                                for="flexCheckDefault"
-                            >
+                            <label class="form-check-label" :for="perm.slug">
                                 {{ perm.name }}
                             </label>
                         </div>
