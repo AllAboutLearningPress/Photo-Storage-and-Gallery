@@ -30,30 +30,30 @@
     "license": "MIT",
     "require": {
         "php": "^8.0",
-        "ashrafakon/laravel-scout-elastic-aws": "*",
-        "aws/aws-sdk-php": "^3.180",
-        "elasticsearch/elasticsearch": "^7.13",
-        "fruitcake/laravel-cors": "^2.0",
-        "guzzlehttp/guzzle": "^7.0.1",
+        "ashrafakon/laravel-scout-elastic-aws": "^4.3",
+        "aws/aws-sdk-php": "^3.218",
+        "elasticsearch/elasticsearch": "^8.1",
+        "fruitcake/laravel-cors": "^3.0",
+        "guzzlehttp/guzzle": "^7.4",
         "inertiajs/inertia-laravel": "^0.5.4",
-        "intervention/image": "^2.5",
-        "laravel/framework": "^9.0",
-        "laravel/sanctum": "^2.6",
+        "intervention/image": "^2.7",
+        "laravel/framework": "^9.6",
+        "laravel/sanctum": "^2.15",
         "laravel/scout": "^9.4",
-        "laravel/tinker": "^2.5",
+        "laravel/tinker": "^2.7",
         "league/flysystem-aws-s3-v3": "^3.0",
-        "tightenco/ziggy": "^1.0"
+        "tightenco/ziggy": "^1.4"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.5",
-        "barryvdh/laravel-ide-helper": "^2.10",
-        "spatie/laravel-ignition": "^1.0",
+        "barryvdh/laravel-debugbar": "^3.6",
+        "barryvdh/laravel-ide-helper": "^2.12",
         "fakerphp/faker": "^1.9.1",
-        "laravel/dusk": "^6.18",
+        "laravel/dusk": "^6.22",
         "laravel/sail": "^1.0.1",
-        "mockery/mockery": "^1.4.2",
+        "mockery/mockery": "^1.5",
         "nunomaduro/collision": "^6.1",
-        "phpunit/phpunit": "^9.3.3"
+        "phpunit/phpunit": "^9.3.3",
+        "spatie/laravel-ignition": "^1.2"
     },
     "autoload": {
         "psr-4": {
