@@ -35,7 +35,7 @@
     "dependencies": {
         "@sentry/tracing": "^6.19.3",
         "@sentry/vue": "^6.19.3",
-        "npm": "^8.6.0",
+        "npm": "^8.11.0",
         "sass": "^1.49.11"
     }
 }
